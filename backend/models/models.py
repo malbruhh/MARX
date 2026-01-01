@@ -2,7 +2,7 @@ from experta import Fact, Field
 from pydantic import BaseModel
 from enum import Enum
 
-# 1. Category in Enum (dropdown)
+# Category in Enum (dropdown)
 class ProductType(str, Enum):
     B2B_SAAS = 'b2b_enterprise_saas'
     B2C_RETAIL = 'b2c_retail_goods'
@@ -26,8 +26,21 @@ class TargetCustomer(str, Enum):
     BUDGET_SHOPPER = 'budget_shopper'
     LUXURY = 'luxury'
 
+class BudgetLevel(str, Enum):
+    MICRO = 'micro' # 0 - 1k
+    SMALL = 'low' # 1k - 10k
+    MEDIUM = 'medium' # 10k - 100k
+    LARGE = 'high' # 100k - 1M
+    ENTERPRISE = 'enterprise' # 1M+
 
+
+# Extra Fact strict fields and requirements
 class ProductFact(Fact): pass
 class TargetCustomerFact(Fact): pass
+class BudgetLevelFact(Fact): pass #predefined budget range
+class RawBudget(Fact): pass #raw int amount set by user
+
+
+
 
 
