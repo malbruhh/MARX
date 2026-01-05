@@ -1,5 +1,4 @@
 from experta import Fact, Field
-from pydantic import BaseModel
 from enum import Enum
 
 # Category in Enum (dropdown)
@@ -33,12 +32,44 @@ class BudgetLevel(str, Enum):
     LARGE = 'high' # 100k - 1M
     ENTERPRISE = 'enterprise' # 1M+
 
+class PrimaryGoal(str, Enum):
+    AWARENESS = "brand_awareness"
+    LEAD_GEN = "immediate_lead_generation"
+    RETENTION = "customer_retention_loyalty"
 
-# Extra Fact strict fields and requirements
+class TimeHorizon(str, Enum):
+    SHORT = "short_term"   # 1-3 months
+    MEDIUM = "medium_term" # 3-6 months
+    LONG = "long_term"     # 6+ months
+
+class ContentCapability(str, Enum):
+    HIGH = "high_capability"
+    MEDIUM = "medium_capability"
+    LOW = "low_capability"
+
+class SalesStructure(str, Enum):
+    AUTOMATED = "automated_ecommerce"
+    SALES_TEAM = "dedicated_sales_team"
+    OWNER_DRIVEN = "owner_driven"
+
+class PriorityKPI(str, Enum):
+    CR = "conversion_rate"
+    CLV = "customer_lifetime_value"
+    TRAFFIC = "organic_traffic_impressions"
+    CPA = "cost_per_acquisition"
+    SQL = "sales_qualified_leads"
+
+# Knowledge Base Scheme (Experta Facts)
+# only use pass since no sctrict fields
 class ProductFact(Fact): pass
 class TargetCustomerFact(Fact): pass
 class BudgetLevelFact(Fact): pass #predefined budget range
 class RawBudget(Fact): pass #raw int amount set by user
+class PrimaryGoalFact(Fact): pass
+class TimeHorizonFact(Fact): pass
+class ContentCapabilityFact(Fact): pass
+class SalesStructureFact(Fact): pass
+class PriorityKPIFact(Fact): pass
 
 
 
