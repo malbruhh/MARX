@@ -1,16 +1,20 @@
 from fastapi import HTTPException
 from services.marketing_service import run_analysis_service
+from services.comprehensive_service import run_comprehensive_analysis
 from models.request import MarketingAnalysisRequest
 
 def run_analysis(request: MarketingAnalysisRequest):
+    """
+    Run comprehensive marketing analysis
+    Returns detailed, multi-dimensional recommendations
+    """
     try:
-        result = run_analysis_service(request)
-    
+        # Use comprehensive analysis instead of simple service
+        result = run_comprehensive_analysis(request)
+
         return{
             'status': 'success',
-            'data':{
-                'result': result
-            }
+            'data': result.dict()
         }
     except Exception as e:
         #Handle error
