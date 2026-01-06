@@ -12,7 +12,6 @@ class ProductType(str, Enum):
     TECHNICAL_TOOLS = 'niche_technical_tools'
     HOSPITALITY = 'hospitality'
     SUBSCRIPTION = 'subscription_recurring'
-    # FNB = 'food_and_beverage'
 
 class TargetCustomer(str, Enum):
     B2B_LARGE = 'large_enterprise'
@@ -60,18 +59,38 @@ class PriorityKPI(str, Enum):
     SQL = "sales_qualified_leads"
 
 # Knowledge Base Scheme (Experta Facts)
-# only use pass since no sctrict fields
-class ProductFact(Fact): pass
-class TargetCustomerFact(Fact): pass
-class BudgetLevelFact(Fact): pass #predefined budget range
-class RawBudget(Fact): pass #raw int amount set by user
-class PrimaryGoalFact(Fact): pass
-class TimeHorizonFact(Fact): pass
-class ContentCapabilityFact(Fact): pass
-class SalesStructureFact(Fact): pass
-class PriorityKPIFact(Fact): pass
+class ProductFact(Fact):
+    """Product type fact"""
+    pass
 
+class TargetCustomerFact(Fact):
+    """Target customer fact"""
+    pass
 
+class BudgetLevelFact(Fact):
+    """Predefined budget range fact"""
+    pass
 
+class RawBudget(Fact):
+    """Raw budget amount fact"""
+    pass
 
+class PrimaryGoalFact(Fact):
+    """Primary goal fact"""
+    pass
 
+class TimeHorizonFact(Fact):
+    """Time horizon fact"""
+    pass
+
+class ContentCapabilityFact(Fact):
+    """Content capability fact"""
+    pass
+
+class SalesStructureFact(Fact):
+    """Sales structure fact"""
+    pass
+
+class PriorityKPIFact(Fact):
+    """Priority KPI fact"""
+    pass

@@ -7,7 +7,7 @@ def run_analysis(request: MarketingAnalysisRequest):
         result = run_analysis_service(request)
     
         return{
-            'status': 'sucsess',
+            'status': 'success',
             'data':{
                 'result': result
             }
