@@ -1,6 +1,6 @@
 """
-Comprehensive Marketing Analysis Service
-Integrates the layered expert system and produces structured recommendations
+Simplified Comprehensive Marketing Analysis Service
+Produces concise, actionable recommendations for university project
 """
 from services.comprehensive_engine import ComprehensiveMarketingEngine
 from models.model import *
@@ -8,12 +8,38 @@ from models.request import MarketingAnalysisRequest
 from models.output import *
 from models.intermediate_facts import *
 from collections import defaultdict
-import calendar
+
+# Channel to Strategy Code Mapping
+CHANNEL_TO_STRATEGY = {
+    "organic_seo_content": "S1",
+    "paid_search_google_ads": "S2",
+    "paid_social_facebook_instagram_linkedin": "S3",
+    "email_marketing": "S4",
+    "content_marketing_blog_video": "S5",
+    "local_seo_gmb": "S6",
+    # S7 is ABM - will be inferred from specific conditions
+    "events_and_webinars": "S8",
+    "influencer_partnerships": "S9",
+    "strategic_partnerships": "S9",
+}
+
+STRATEGY_LABELS = {
+    "S1": "S1 - Search Engine Optimization (SEO)",
+    "S2": "S2 - Pay-Per-Click (PPC) Advertising",
+    "S3": "S3 - Social Media Marketing (SMM)",
+    "S4": "S4 - Email Marketing/Newsletters",
+    "S5": "S5 - Content Marketing",
+    "S6": "S6 - Local SEO (Google My Business)",
+    "S7": "S7 - Account-Based Marketing (ABM)",
+    "S8": "S8 - Trade Shows/Conferences",
+    "S9": "S9 - Influencer/Partnership Marketing",
+}
+
 
 def run_comprehensive_analysis(request: MarketingAnalysisRequest) -> MarketingRecommendation:
     """
     Run comprehensive marketing analysis using layered forward chaining
-    Returns structured, multi-dimensional recommendations
+    Returns simplified, actionable recommendations
     """
     try:
         # Initialize the expert system engine
@@ -33,7 +59,7 @@ def run_comprehensive_analysis(request: MarketingAnalysisRequest) -> MarketingRe
         # Run forward chaining - rules will fire in layers
         engine.run()
 
-        # Aggregate inferred facts into structured output
+        # Aggregate inferred facts into simplified output
         recommendation = _aggregate_recommendations(engine, request)
 
         return recommendation
@@ -46,701 +72,332 @@ def run_comprehensive_analysis(request: MarketingAnalysisRequest) -> MarketingRe
 
 def _aggregate_recommendations(engine: ComprehensiveMarketingEngine, request: MarketingAnalysisRequest) -> MarketingRecommendation:
     """
-    Aggregate all inferred facts from the engine into a comprehensive recommendation
+    Aggregate all inferred facts from the engine into a simplified recommendation
     """
 
     # Get facts from knowledge base
     facts = list(engine.facts.values())
 
-    # Extract intermediate facts
-    channel_priorities = _extract_channel_priorities(facts)
-    content_priorities = _extract_content_priorities(facts)
-    kpi_recommendations = _extract_kpi_recommendations(facts)
-    risks = _extract_risks(facts)
-    quick_wins = _extract_quick_wins(facts)
-    tactical_actions = _extract_tactical_actions(facts, request)
-    budget_categories = _extract_budget_categories(facts)
-    cost_tips = _extract_cost_optimization(facts)
-    scaling_triggers = _extract_scaling_triggers(facts)
-    scaling_actions = _extract_scaling_actions(facts)
-    tools = _extract_tools(facts)
-    capabilities = _extract_capabilities(facts)
-    partners = _extract_partners(facts)
+    # Extract channel priorities
+    channel_facts = [f for f in facts if isinstance(f, ChannelPriorityFact)]
 
-    # Generate strategic summaries
-    strategy_summary = _generate_strategy_summary(request, facts)
-    strategic_positioning = _generate_strategic_positioning(request, facts)
-    channel_mix_rationale = _generate_channel_rationale(request, channel_priorities)
-    messaging_focus = _generate_messaging_focus(request, facts)
-    differentiation_strategy = _generate_differentiation_strategy(request, facts)
-    scaling_strategy = _generate_scaling_strategy(scaling_actions)
+    # Map channels to strategy codes
+    strategy_codes = _extract_strategy_codes(channel_facts, request)
 
-    # Generate content themes
-    content_themes = _generate_content_themes(request)
+    # Generate 2-5 critical insights
+    critical_insights = _generate_critical_insights(facts, request)
 
-    # Generate competitive advantages
-    competitive_advantages = _generate_competitive_advantages(request)
+    # Generate budget allocation
+    budget_allocation = _generate_budget_allocation(channel_facts, request, strategy_codes)
 
-    # Calculate monthly burn rate
-    monthly_burn_rate = request.raw_budget_amount / _get_months_for_horizon(request.time_horizon)
+    # Generate channel tactics
+    channel_tactics = _generate_channel_tactics(channel_facts, facts, request)
 
-    # Build comprehensive recommendation
+    # Calculate monthly budget
+    monthly_budget = _calculate_monthly_budget(request)
+
     return MarketingRecommendation(
-        strategy_summary=strategy_summary,
-        strategic_positioning=strategic_positioning,
-        primary_channels=channel_priorities[:5],  # Top 5 channels
-        channel_mix_rationale=channel_mix_rationale,
-        content_strategy=content_priorities[:5],  # Top 5 content types
-        content_themes=content_themes,
-        messaging_focus=messaging_focus,
-        quick_wins=quick_wins,
-        short_term_actions=tactical_actions['short_term'],
-        medium_term_actions=tactical_actions['medium_term'],
-        long_term_actions=tactical_actions['long_term'],
-        primary_kpis=kpi_recommendations['primary'],
-        secondary_kpis=kpi_recommendations['secondary'],
-        risks_and_mitigations=risks,
-        budget_allocation_summary=budget_categories,
-        monthly_burn_rate=round(monthly_burn_rate, 2),
-        cost_optimization_tips=cost_tips,
-        competitive_advantages=competitive_advantages,
-        differentiation_strategy=differentiation_strategy,
-        scaling_triggers=scaling_triggers,
-        scaling_strategy=scaling_strategy,
-        recommended_tools=tools,
-        required_capabilities=capabilities,
-        potential_partners=partners
+        recommended_strategies=strategy_codes,
+        critical_insights=critical_insights,
+        budget_allocation=budget_allocation,
+        total_monthly_budget=monthly_budget,
+        channel_tactics=channel_tactics
     )
 
 
-def _extract_channel_priorities(facts) -> List[ChannelRecommendation]:
-    """Extract and rank channel recommendations"""
-    channel_map = defaultdict(lambda: {'priority': 5, 'budget': 0})
-
-    for fact in facts:
-        if isinstance(fact, ChannelPriorityFact):
-            if fact['priority'] < channel_map[fact['channel']]['priority']:
-                channel_map[fact['channel']]['priority'] = fact['priority']
-            channel_map[fact['channel']]['budget'] = max(
-                channel_map[fact['channel']]['budget'],
-                fact['budget_percent']
-            )
-
-    # Convert to ChannelRecommendation objects
-    channel_recommendations = []
-    rationales = _get_channel_rationales()
-    expected_impacts = _get_channel_impacts()
-
-    for channel, data in channel_map.items():
-        channel_recommendations.append(ChannelRecommendation(
-            channel=_map_channel_string_to_enum(channel),
-            priority=data['priority'],
-            budget_allocation_percent=data['budget'],
-            rationale=rationales.get(channel, "Recommended based on your business profile"),
-            expected_impact=expected_impacts.get(channel, "Positive impact on key metrics")
-        ))
-
-    # Sort by priority (1 is highest)
-    channel_recommendations.sort(key=lambda x: (x.priority, -x.budget_allocation_percent))
-
-    # Normalize budget percentages to sum to 100%
-    total_budget = sum(c.budget_allocation_percent for c in channel_recommendations[:5])
-    if total_budget > 0:
-        for channel in channel_recommendations[:5]:
-            channel.budget_allocation_percent = round((channel.budget_allocation_percent / total_budget) * 100, 1)
-
-    return channel_recommendations
-
-
-def _extract_content_priorities(facts) -> List[ContentRecommendation]:
-    """Extract content recommendations"""
-    content_map = {}
-
-    for fact in facts:
-        if isinstance(fact, ContentTypePriorityFact):
-            if fact['content_type'] not in content_map or fact['priority'] < content_map[fact['content_type']]['priority']:
-                content_map[fact['content_type']] = {
-                    'priority': fact['priority'],
-                    'frequency': fact['frequency']
-                }
-
-    content_recommendations = []
-    topic_map = _get_content_topic_map()
-    distribution_map = _get_content_distribution_map()
-
-    for content_type, data in content_map.items():
-        content_recommendations.append(ContentRecommendation(
-            content_type=_map_content_string_to_enum(content_type),
-            frequency=data['frequency'],
-            priority=data['priority'],
-            target_topics=topic_map.get(content_type, ["Industry insights", "Product benefits", "Customer success"]),
-            distribution_channels=distribution_map.get(content_type, ["Website", "Social media", "Email"])
-        ))
-
-    content_recommendations.sort(key=lambda x: x.priority)
-    return content_recommendations
-
-
-def _extract_kpi_recommendations(facts) -> Dict[str, List[KPITarget]]:
-    """Extract KPI recommendations categorized by priority"""
-    primary_kpis = []
-    secondary_kpis = []
-
-    for fact in facts:
-        if isinstance(fact, KPIRecommendationFact):
-            kpi = KPITarget(
-                metric_name=fact['kpi'],
-                target_value=fact['target'],
-                measurement_frequency="Weekly" if 'conversion' in fact['kpi'].lower() else "Monthly",
-                benchmark=None
-            )
-
-            if fact['priority'] == 'primary':
-                primary_kpis.append(kpi)
-            else:
-                secondary_kpis.append(kpi)
-
-    return {'primary': primary_kpis, 'secondary': secondary_kpis}
-
-
-def _extract_risks(facts) -> List[RiskFactor]:
-    """Extract risk factors"""
-    risks = []
-
-    for fact in facts:
-        if isinstance(fact, RiskIdentificationFact):
-            risks.append(RiskFactor(
-                risk=fact['risk'],
-                severity=fact['severity'],
-                mitigation=fact['mitigation']
-            ))
-
-    return risks
-
-
-def _extract_quick_wins(facts) -> List[TacticalAction]:
-    """Extract quick win actions"""
-    quick_wins = []
-
-    for fact in facts:
-        if isinstance(fact, QuickWinFact):
-            quick_wins.append(TacticalAction(
-                action=fact['action'],
-                timeline="Week 1-4",
-                priority=fact['priority'],
-                estimated_effort=fact['effort'],
-                expected_outcome="Immediate impact on marketing foundation",
-                dependencies=[]
-            ))
-
-    # Sort by priority
-    priority_order = {'Critical': 0, 'High': 1, 'Medium': 2, 'Low': 3}
-    quick_wins.sort(key=lambda x: priority_order.get(x.priority, 4))
-
-    return quick_wins
-
-
-def _extract_tactical_actions(facts, request: MarketingAnalysisRequest) -> Dict[str, List[TacticalAction]]:
-    """Generate tactical actions for different time horizons"""
-
-    # These are strategic actions based on the overall analysis
-    short_term = [
-        TacticalAction(
-            action="Set up analytics tracking and conversion funnels",
-            timeline="Month 1",
-            priority="Critical",
-            estimated_effort="Medium",
-            expected_outcome="Complete visibility into marketing performance",
-            dependencies=[]
-        ),
-        TacticalAction(
-            action="Launch first campaign on primary channel",
-            timeline="Month 1-2",
-            priority="High",
-            estimated_effort="High",
-            expected_outcome="Initial lead flow and performance data",
-            dependencies=["Analytics setup"]
-        )
-    ]
-
-    # Add content-specific actions
-    if request.content_capability == ContentCapability.HIGH:
-        short_term.append(TacticalAction(
-            action="Publish comprehensive content piece (whitepaper/guide)",
-            timeline="Month 2-3",
-            priority="High",
-            estimated_effort="High",
-            expected_outcome="Lead magnet and SEO authority building",
-            dependencies=[]
-        ))
-
-    medium_term = [
-        TacticalAction(
-            action="Expand to secondary channels based on performance data",
-            timeline="Month 3-4",
-            priority="High",
-            estimated_effort="Medium",
-            expected_outcome="Diversified traffic sources and reduced channel risk",
-            dependencies=["Primary channel performance validation"]
-        ),
-        TacticalAction(
-            action="Implement marketing automation workflows",
-            timeline="Month 4-5",
-            priority="Medium",
-            estimated_effort="High",
-            expected_outcome="Improved lead nurturing and conversion efficiency",
-            dependencies=["Email list of 500+ leads"]
-        )
-    ]
-
-    # Add retention actions if applicable
-    if request.primary_goal == PrimaryGoal.RETENTION:
-        medium_term.append(TacticalAction(
-            action="Launch customer loyalty or referral program",
-            timeline="Month 5-6",
-            priority="High",
-            estimated_effort="High",
-            expected_outcome="Increased customer lifetime value and organic growth",
-            dependencies=["Customer base of 100+ active users"]
-        ))
-
-    long_term = [
-        TacticalAction(
-            action="Conduct comprehensive marketing audit and optimization",
-            timeline="Month 6-9",
-            priority="Medium",
-            estimated_effort="Medium",
-            expected_outcome="Refined strategy based on 6 months of data",
-            dependencies=[]
-        ),
-        TacticalAction(
-            action="Scale successful channels and test advanced tactics",
-            timeline="Month 9-12",
-            priority="High",
-            estimated_effort="High",
-            expected_outcome="Accelerated growth with proven playbooks",
-            dependencies=["Positive ROI on existing channels"]
-        )
-    ]
-
-    # Add brand-building actions for long-term awareness goals
-    if request.primary_goal == PrimaryGoal.AWARENESS and request.time_horizon == TimeHorizon.LONG:
-        long_term.append(TacticalAction(
-            action="Develop brand partnership or sponsorship strategy",
-            timeline="Month 10-12",
-            priority="Medium",
-            estimated_effort="High",
-            expected_outcome="Enhanced brand recognition and credibility",
-            dependencies=["Established market presence"]
-        ))
-
-    return {
-        'short_term': short_term,
-        'medium_term': medium_term,
-        'long_term': long_term
-    }
-
-
-def _extract_budget_categories(facts) -> Dict[str, float]:
-    """Extract budget allocation by category"""
-    budget_dict = {}
-
-    for fact in facts:
-        if isinstance(fact, BudgetCategoryFact):
-            budget_dict[fact['category']] = fact['percentage']
-
-    return budget_dict
-
-
-def _extract_cost_optimization(facts) -> List[str]:
-    """Extract cost optimization tips"""
-    tips = []
-
-    for fact in facts:
-        if isinstance(fact, CostOptimizationFact):
-            tips.append(fact['tip'])
-
-    return tips
-
-
-def _extract_scaling_triggers(facts) -> List[str]:
-    """Extract scaling triggers"""
-    triggers = []
-
-    for fact in facts:
-        if isinstance(fact, ScalingTriggerFact):
-            triggers.append(fact['trigger'])
-
-    # Add default triggers if none found
-    if not triggers:
-        triggers = [
-            "Consistent positive ROI for 3+ months",
-            "Marketing qualified leads exceed sales capacity",
-            "Customer acquisition cost below industry benchmark"
-        ]
-
-    return triggers
-
-
-def _extract_scaling_actions(facts) -> List[str]:
-    """Extract scaling actions"""
-    actions = []
-
-    for fact in facts:
-        if isinstance(fact, ScalingActionFact):
-            actions.append(fact['action'])
-
-    return actions
-
-
-def _extract_tools(facts) -> List[str]:
-    """Extract recommended tools"""
-    tools = []
-
-    for fact in facts:
-        if isinstance(fact, ToolRecommendationFact):
-            tools.append(fact['tool'])
-
-    # Remove duplicates while preserving order
-    return list(dict.fromkeys(tools))
-
-
-def _extract_capabilities(facts) -> List[str]:
-    """Extract required capabilities"""
-    capabilities = []
-
-    for fact in facts:
-        if isinstance(fact, CapabilityRequirementFact):
-            capabilities.append(f"{fact['capability']} (Importance: {fact['importance']})")
-
-    return capabilities
-
-
-def _extract_partners(facts) -> List[str]:
-    """Extract potential partners"""
-    partners = []
-
-    for fact in facts:
-        if isinstance(fact, PartnerRecommendationFact):
-            partners.append(fact['partner_type'])
-
-    return partners
-
-
-def _generate_strategy_summary(request: MarketingAnalysisRequest, facts) -> str:
-    """Generate high-level strategy summary"""
-
-    product_strategies = {
-        ProductType.B2B_SAAS: "enterprise SaaS solution",
-        ProductType.B2C_RETAIL: "consumer retail offering",
-        ProductType.LOCAL_SERVICE: "local service business",
-        ProductType.CONSULTING: "high-end consulting practice",
-        ProductType.DIGITAL_PRODUCT: "digital product",
-        ProductType.FMCG: "consumer packaged goods",
-        ProductType.TECHNICAL_TOOLS: "technical tools",
-        ProductType.HOSPITALITY: "hospitality business",
-        ProductType.SUBSCRIPTION: "subscription service"
-    }
-
-    goal_strategies = {
-        PrimaryGoal.AWARENESS: "brand awareness and market presence",
-        PrimaryGoal.LEAD_GEN: "lead generation and customer acquisition",
-        PrimaryGoal.RETENTION: "customer retention and lifetime value maximization"
-    }
-
-    budget_context = {
-        BudgetLevel.MICRO: "with a focus on high-impact, low-cost tactics",
-        BudgetLevel.SMALL: "balancing paid and organic channels",
-        BudgetLevel.MEDIUM: "leveraging a multi-channel approach",
-        BudgetLevel.LARGE: "with comprehensive demand generation",
-        BudgetLevel.ENTERPRISE: "through full-scale enterprise marketing"
-    }
-
-    # Determine budget level from facts
-    budget_level = BudgetLevel.MEDIUM
-    for fact in facts:
-        if isinstance(fact, BudgetLevelFact):
-            budget_level = BudgetLevel(fact['tier'])
-            break
-
-    return f"Comprehensive marketing strategy for your {product_strategies.get(request.product_type, 'business')} " \
-           f"focused on {goal_strategies.get(request.primary_goal, 'growth')} " \
-           f"{budget_context.get(budget_level, '')} over a {request.time_horizon.value.replace('_', '-')} time horizon."
-
-
-def _generate_strategic_positioning(request: MarketingAnalysisRequest, facts) -> str:
-    """Generate strategic positioning recommendation"""
-
+def _extract_strategy_codes(channel_facts: list, request: MarketingAnalysisRequest) -> list:
+    """Map recommended channels to strategy codes (S1-S9)"""
+
+    # Sort channels by priority
+    sorted_channels = sorted(channel_facts, key=lambda f: f['priority'])
+
+    strategy_set = set()
+
+    # Map channels to strategies
+    for fact in sorted_channels[:5]:  # Top 5 channels
+        channel_name = fact['channel']
+        if channel_name in CHANNEL_TO_STRATEGY:
+            strategy_set.add(CHANNEL_TO_STRATEGY[channel_name])
+
+    # Add ABM (S7) for B2B enterprise with sales team
+    if (request.product_type in [ProductType.B2B_SAAS, ProductType.CONSULTING] and
+        request.target_customer == TargetCustomer.B2B_LARGE and
+        request.sales_structure == SalesStructure.SALES_TEAM):
+        strategy_set.add("S7")
+
+    # Convert to labeled format
+    strategy_codes = [STRATEGY_LABELS[code] for code in sorted(strategy_set)]
+
+    # Ensure at least 3 strategies
+    if len(strategy_codes) < 3:
+        # Add default strategies
+        defaults = ["S1", "S2", "S5"]
+        for default in defaults:
+            if STRATEGY_LABELS[default] not in strategy_codes:
+                strategy_codes.append(STRATEGY_LABELS[default])
+                if len(strategy_codes) >= 3:
+                    break
+
+    return strategy_codes[:5]  # Max 5 strategies
+
+
+def _generate_critical_insights(facts: list, request: MarketingAnalysisRequest) -> list:
+    """Generate 2-5 critical strategic insights"""
+
+    insights = []
+
+    # Extract key facts
+    strategic_approach = next((f['approach'] for f in facts if isinstance(f, StrategicApproachFact)), None)
+    marketing_focus = next((f['focus'] for f in facts if isinstance(f, MarketingFocusFact)), None)
+    sales_cycle = next((f['cycle'] for f in facts if isinstance(f, SalesCycleFact)), None)
+
+    # Insight 1: Primary strategic direction
+    if request.primary_goal == PrimaryGoal.AWARENESS:
+        insights.append("Focus on brand visibility and reach - prioritize content distribution and thought leadership to build market presence")
+    elif request.primary_goal == PrimaryGoal.LEAD_GEN:
+        insights.append("Optimize for conversion - implement targeted campaigns with clear CTAs and lead capture mechanisms")
+    else:  # RETENTION
+        insights.append("Strengthen customer relationships - invest in personalized communication and value-added content for existing customers")
+
+    # Insight 2: Budget and channel strategy
+    budget_level = _determine_budget_level(request.raw_budget_amount)
+    if budget_level in [BudgetLevel.MICRO, BudgetLevel.SMALL]:
+        insights.append("With limited budget, concentrate on high-ROI organic channels (SEO, content) and test paid channels with small experiments")
+    elif budget_level in [BudgetLevel.LARGE, BudgetLevel.ENTERPRISE]:
+        insights.append("Leverage multi-channel approach - diversify across paid and organic to maximize reach while maintaining efficiency")
+    else:
+        insights.append("Balance paid acquisition with organic growth - allocate 60% to proven channels and 40% to testing new opportunities")
+
+    # Insight 3: Product-specific strategy
     if request.product_type in [ProductType.B2B_SAAS, ProductType.CONSULTING]:
-        return "Position as a thought leader and trusted advisor in your industry. Emphasize expertise, reliability, and proven results through case studies and data-driven content."
-    elif request.product_type == ProductType.B2C_RETAIL:
-        if request.target_customer == TargetCustomer.LUXURY:
-            return "Position as a premium, aspirational brand. Focus on exclusivity, quality, and brand storytelling to justify premium pricing."
-        elif request.target_customer == TargetCustomer.BUDGET_SHOPPER:
-            return "Position as the value leader in your category. Emphasize affordability, practicality, and smart shopping without compromising quality."
-        else:
-            return "Position based on unique product benefits and lifestyle alignment. Create emotional connections through authentic storytelling and social proof."
+        insights.append("B2B buyers need education and trust - create case studies, whitepapers, and demonstrate ROI through content")
     elif request.product_type == ProductType.LOCAL_SERVICE:
-        return "Position as the trusted local expert. Leverage community engagement, reviews, and local partnerships to build credibility and word-of-mouth referrals."
-    elif request.product_type == ProductType.TECHNICAL_TOOLS:
-        return "Position as the technical solution of choice for practitioners. Focus on product superiority, integration capabilities, and developer advocacy."
-    else:
-        return "Differentiate through unique value proposition and customer success stories. Build trust through transparency, proof points, and consistent delivery."
+        insights.append("Local dominance is key - prioritize Google My Business, local SEO, and community engagement to capture nearby customers")
+    elif request.product_type in [ProductType.B2C_RETAIL, ProductType.FMCG]:
+        insights.append("Focus on purchase intent moments - use retargeting, social proof, and time-sensitive offers to drive conversions")
+
+    # Insight 4: Time horizon consideration
+    if request.time_horizon == TimeHorizon.SHORT and len(insights) < 5:
+        insights.append("Short timeline requires immediate action - prioritize paid channels and quick-win optimizations over long-term SEO")
+    elif request.time_horizon == TimeHorizon.LONG and len(insights) < 5:
+        insights.append("Long-term perspective enables compound growth - invest in SEO, content library, and brand equity that appreciates over time")
+
+    # Insight 5: Content capability leverage
+    if request.content_capability == ContentCapability.HIGH and len(insights) < 5:
+        insights.append("Maximize your content strength - produce authoritative resources that attract organic traffic and establish industry credibility")
+    elif request.content_capability == ContentCapability.LOW and len(insights) < 5:
+        insights.append("Outsource or simplify content creation - focus on curated content, user-generated content, and paid channels that don't require heavy content production")
+
+    return insights[:5]  # Max 5 insights
 
 
-def _generate_channel_rationale(request: MarketingAnalysisRequest, channels: List[ChannelRecommendation]) -> str:
-    """Generate rationale for channel mix"""
+def _generate_budget_allocation(channel_facts: list, request: MarketingAnalysisRequest, strategy_codes: list) -> list:
+    """Generate simplified budget allocation"""
 
-    if not channels:
-        return "Diversified channel approach based on your business profile."
+    monthly_budget = _calculate_monthly_budget(request)
 
-    primary_channel = channels[0].channel.value.replace('_', ' ').title()
+    # Sort channels by priority
+    sorted_channels = sorted(channel_facts, key=lambda f: f['priority'])
 
-    if request.primary_goal == PrimaryGoal.LEAD_GEN:
-        return f"Channel mix optimized for lead generation with {primary_channel} as the primary driver. " \
-               f"Secondary channels provide diversification and support the customer journey from awareness to conversion."
-    elif request.primary_goal == PrimaryGoal.AWARENESS:
-        return f"Broad-reach channel strategy with emphasis on {primary_channel} to maximize brand visibility. " \
-               f"Multi-channel presence ensures consistent touchpoints across the customer journey."
-    else:
-        return f"Retention-focused channel mix with {primary_channel} as the anchor for ongoing customer engagement. " \
-               f"Supporting channels nurture relationships and drive repeat business."
+    allocations = []
+    total_percent = 0
 
+    # Map channels to strategies and allocate budget
+    strategy_budget_map = {}
 
-def _generate_messaging_focus(request: MarketingAnalysisRequest, facts) -> str:
-    """Generate messaging focus recommendation"""
+    for fact in sorted_channels[:7]:  # Top channels
+        channel_name = fact['channel']
+        budget_percent = fact.get('budget_percent', 0)
 
-    messaging_angle = None
-    for fact in facts:
-        if isinstance(fact, MessagingAngleFact):
-            messaging_angle = fact['angle']
-            break
+        if channel_name in CHANNEL_TO_STRATEGY:
+            strategy_code = CHANNEL_TO_STRATEGY[channel_name]
 
-    if messaging_angle == "differentiation":
-        return "Focus messaging on unique differentiators that set you apart from competitors. Emphasize what only you can offer."
-    elif request.priority_kpi == PriorityKPI.CPA:
-        return "ROI-focused messaging that emphasizes tangible business outcomes and fast time-to-value."
-    elif request.priority_kpi == PriorityKPI.CLV:
-        return "Value-driven messaging focused on long-term benefits, customer success, and partnership approach."
-    elif request.product_type == ProductType.CONSULTING:
-        return "Expertise-led messaging that positions you as the authority. Share insights, perspectives, and thought leadership."
-    else:
-        return "Customer-centric messaging that addresses pain points, aspirations, and desired outcomes. Focus on benefits over features."
+            # Aggregate budget for same strategy
+            if strategy_code not in strategy_budget_map:
+                strategy_budget_map[strategy_code] = 0
+            strategy_budget_map[strategy_code] += budget_percent
 
+    # Create allocation objects
+    for strategy_code, percentage in sorted(strategy_budget_map.items(), key=lambda x: x[1], reverse=True):
+        if percentage > 0:
+            allocations.append(BudgetAllocation(
+                strategy_code=STRATEGY_LABELS[strategy_code],
+                percentage=round(percentage, 1),
+                monthly_amount=round(monthly_budget * (percentage / 100), 2)
+            ))
+            total_percent += percentage
 
-def _generate_differentiation_strategy(request: MarketingAnalysisRequest, facts) -> str:
-    """Generate differentiation strategy"""
+    # Normalize if over 100%
+    if total_percent > 100:
+        for alloc in allocations:
+            alloc.percentage = round((alloc.percentage / total_percent) * 100, 1)
+            alloc.monthly_amount = round(monthly_budget * (alloc.percentage / 100), 2)
 
-    competition_level = "moderate"
-    for fact in facts:
-        if isinstance(fact, CompetitionLevelFact):
-            competition_level = fact['level']
-            break
-
-    if competition_level == "very_high":
-        return "In a highly competitive market, differentiate through niche specialization, exceptional customer experience, " \
-               "or innovative positioning. Avoid competing purely on price or generic features."
-    elif competition_level == "high":
-        return "Stand out through superior content marketing, stronger social proof, and more personalized customer engagement. " \
-               "Build brand preference through consistency and quality."
-    else:
-        return "Leverage your position in a less saturated market to establish category leadership. Focus on building trust " \
-               "and becoming the go-to solution before competitors intensify."
-
-
-def _generate_scaling_strategy(scaling_actions: List[str]) -> str:
-    """Generate scaling strategy description"""
-
-    if scaling_actions:
-        return "Scale marketing investment systematically based on performance triggers. " + " ".join(scaling_actions[:2])
-    else:
-        return "Scale incrementally as channels prove ROI. Increase budgets 20-30% monthly while maintaining or improving efficiency metrics. " \
-               "Test new channels only after optimizing existing ones."
-
-
-def _generate_content_themes(request: MarketingAnalysisRequest) -> List[str]:
-    """Generate content themes based on business type"""
-
-    theme_map = {
-        ProductType.B2B_SAAS: [
-            "Industry trends and insights",
-            "Product tutorials and best practices",
-            "Customer success stories and ROI metrics",
-            "Thought leadership on business challenges",
-            "Competitive comparisons and buying guides"
-        ],
-        ProductType.B2C_RETAIL: [
-            "Lifestyle content and inspiration",
-            "Product styling and usage ideas",
-            "Customer testimonials and reviews",
-            "Behind-the-scenes and brand story",
-            "Seasonal trends and gift guides"
-        ],
-        ProductType.LOCAL_SERVICE: [
-            "Local community involvement",
-            "Customer testimonials and before/after",
-            "Service education and tips",
-            "Team spotlights and company culture",
-            "Local events and partnerships"
-        ],
-        ProductType.CONSULTING: [
-            "Industry analysis and market insights",
-            "Methodologies and frameworks",
-            "Case studies and transformation stories",
-            "Speaking engagements and conference content",
-            "Research reports and original data"
-        ],
-        ProductType.DIGITAL_PRODUCT: [
-            "Educational content and tutorials",
-            "Success strategies and frameworks",
-            "User-generated success stories",
-            "Industry news and commentary",
-            "Product updates and roadmap"
+    # If no allocations, create default
+    if not allocations:
+        defaults = [
+            ("S1", 30),
+            ("S2", 40),
+            ("S5", 30)
         ]
+        for code, pct in defaults:
+            allocations.append(BudgetAllocation(
+                strategy_code=STRATEGY_LABELS[code],
+                percentage=pct,
+                monthly_amount=round(monthly_budget * (pct / 100), 2)
+            ))
+
+    return allocations
+
+
+def _generate_channel_tactics(channel_facts: list, all_facts: list, request: MarketingAnalysisRequest) -> list:
+    """Generate specific tactics for each channel"""
+
+    tactics = []
+
+    # Sort channels by priority
+    sorted_channels = sorted(channel_facts, key=lambda f: f['priority'])
+
+    # Get quick wins and tactical actions
+    quick_wins = [f for f in all_facts if isinstance(f, QuickWinFact)]
+    tactical_actions = [f for f in all_facts if isinstance(f, TacticalActionFact)]
+
+    processed_strategies = set()
+
+    for fact in sorted_channels[:5]:  # Top 5 channels
+        channel_name = fact['channel']
+        priority_num = fact['priority']
+
+        if channel_name not in CHANNEL_TO_STRATEGY:
+            continue
+
+        strategy_code = CHANNEL_TO_STRATEGY[channel_name]
+        strategy_label = STRATEGY_LABELS[strategy_code]
+
+        if strategy_label in processed_strategies:
+            continue
+
+        processed_strategies.add(strategy_label)
+
+        # Determine priority label
+        priority_label = "High" if priority_num <= 2 else ("Medium" if priority_num <= 3 else "Low")
+
+        # Generate tactic based on strategy
+        tactic_text, outcome = _get_tactic_for_strategy(strategy_code, request, channel_name)
+
+        tactics.append(ChannelTactic(
+            strategy_code=strategy_label,
+            tactic=tactic_text,
+            priority=priority_label,
+            expected_outcome=outcome
+        ))
+
+    # Ensure at least 3 tactics
+    if len(tactics) < 3:
+        default_tactics = _get_default_tactics(request)
+        for dt in default_tactics:
+            if dt.strategy_code not in processed_strategies:
+                tactics.append(dt)
+                if len(tactics) >= 3:
+                    break
+
+    return tactics[:6]  # Max 6 tactics
+
+
+def _get_tactic_for_strategy(strategy_code: str, request: MarketingAnalysisRequest, channel_name: str):
+    """Get specific tactic and expected outcome for a strategy"""
+
+    tactics_map = {
+        "S1": (
+            "Optimize website for target keywords and create SEO-focused content pillars",
+            "Increase organic traffic by 30-50% over 3-6 months"
+        ),
+        "S2": (
+            "Launch targeted PPC campaigns on Google Ads with A/B tested ad copy",
+            "Generate qualified leads with target CPA below industry average"
+        ),
+        "S3": (
+            "Build consistent social presence with daily posts and engagement",
+            "Grow follower base and drive 15-20% of website traffic from social"
+        ),
+        "S4": (
+            "Develop email nurture sequences and monthly newsletter campaigns",
+            "Achieve 20-25% open rate and 3-5% click-through rate"
+        ),
+        "S5": (
+            "Create value-driven content (blogs, videos, guides) addressing customer pain points",
+            "Establish thought leadership and generate inbound leads"
+        ),
+        "S6": (
+            "Optimize Google My Business profile and collect customer reviews",
+            "Rank in top 3 local map pack for primary keywords"
+        ),
+        "S7": (
+            "Identify top 20 target accounts and create personalized outreach campaigns",
+            "Increase enterprise deal closure rate by 40%"
+        ),
+        "S8": (
+            "Attend industry conferences and host booth/speaking sessions",
+            "Generate 50-100 qualified leads per event"
+        ),
+        "S9": (
+            "Partner with industry influencers or complementary brands",
+            "Expand reach to new audiences and increase brand credibility"
+        ),
     }
 
-    return theme_map.get(request.product_type, [
-        "Industry insights and trends",
-        "Product benefits and use cases",
-        "Customer success stories",
-        "Educational content",
-        "Company news and updates"
-    ])
+    return tactics_map.get(strategy_code, ("Implement marketing initiatives", "Drive business growth"))
 
 
-def _generate_competitive_advantages(request: MarketingAnalysisRequest) -> List[str]:
-    """Generate competitive advantages to emphasize"""
+def _get_default_tactics(request: MarketingAnalysisRequest) -> list:
+    """Get default tactics when not enough are generated"""
 
-    advantages = []
+    defaults = [
+        ChannelTactic(
+            strategy_code=STRATEGY_LABELS["S1"],
+            tactic="Optimize website for target keywords and create SEO-focused content pillars",
+            priority="High",
+            expected_outcome="Increase organic traffic by 30-50% over 3-6 months"
+        ),
+        ChannelTactic(
+            strategy_code=STRATEGY_LABELS["S2"],
+            tactic="Launch targeted PPC campaigns on Google Ads with A/B tested ad copy",
+            priority="High",
+            expected_outcome="Generate qualified leads with target CPA below industry average"
+        ),
+        ChannelTactic(
+            strategy_code=STRATEGY_LABELS["S5"],
+            tactic="Create value-driven content (blogs, videos, guides) addressing customer pain points",
+            priority="Medium",
+            expected_outcome="Establish thought leadership and generate inbound leads"
+        ),
+    ]
 
-    if request.content_capability == ContentCapability.HIGH:
-        advantages.append("Strong content creation capability enables thought leadership positioning")
-
-    if request.sales_structure == SalesStructure.SALES_TEAM:
-        advantages.append("Dedicated sales team allows for high-touch customer engagement")
-    elif request.sales_structure == SalesStructure.AUTOMATED:
-        advantages.append("Automated sales process enables scalability and efficiency")
-
-    if request.product_type in [ProductType.B2B_SAAS, ProductType.TECHNICAL_TOOLS]:
-        advantages.append("Technical product depth creates barriers to switching")
-
-    if request.product_type == ProductType.LOCAL_SERVICE:
-        advantages.append("Local market presence and community relationships")
-
-    if request.time_horizon == TimeHorizon.LONG:
-        advantages.append("Long-term perspective allows for sustainable brand building")
-
-    # Add at least a few generic advantages
-    if len(advantages) < 3:
-        advantages.extend([
-            "Focused strategy aligned with business goals",
-            "Data-driven approach to marketing investment",
-            "Agile execution with continuous optimization"
-        ])
-
-    return advantages[:5]
+    return defaults
 
 
-def _get_months_for_horizon(horizon: TimeHorizon) -> int:
-    """Convert time horizon to months"""
-    if horizon == TimeHorizon.SHORT:
-        return 2
-    elif horizon == TimeHorizon.MEDIUM:
-        return 4.5
+def _calculate_monthly_budget(request: MarketingAnalysisRequest) -> float:
+    """Calculate monthly budget based on time horizon"""
+
+    months = {
+        TimeHorizon.SHORT: 2,
+        TimeHorizon.MEDIUM: 4,
+        TimeHorizon.LONG: 9
+    }.get(request.time_horizon, 6)
+
+    return round(request.raw_budget_amount / months, 2)
+
+
+def _determine_budget_level(amount: float) -> BudgetLevel:
+    """Determine budget level from raw amount"""
+
+    if amount < 1000:
+        return BudgetLevel.MICRO
+    elif amount < 10000:
+        return BudgetLevel.SMALL
+    elif amount < 100000:
+        return BudgetLevel.MEDIUM
+    elif amount < 1000000:
+        return BudgetLevel.LARGE
     else:
-        return 9
-
-
-def _map_channel_string_to_enum(channel_str: str) -> ChannelType:
-    """Map channel string to ChannelType enum"""
-    mapping = {
-        'paid_search': ChannelType.PAID_SEARCH,
-        'paid_social': ChannelType.PAID_SOCIAL,
-        'organic_seo': ChannelType.ORGANIC_SEO,
-        'email_marketing': ChannelType.EMAIL_MARKETING,
-        'content_marketing': ChannelType.CONTENT_MARKETING,
-        'influencer': ChannelType.INFLUENCER,
-        'events_webinars': ChannelType.EVENTS_WEBINARS,
-        'community': ChannelType.COMMUNITY,
-        'local_seo': ChannelType.LOCAL_SEO,
-        'retargeting': ChannelType.RETARGETING,
-        'referral': ChannelType.REFERRAL
-    }
-    return mapping.get(channel_str, ChannelType.ORGANIC_SEO)
-
-
-def _map_content_string_to_enum(content_str: str) -> ContentType:
-    """Map content string to ContentType enum"""
-    mapping = {
-        'blog_articles': ContentType.BLOG_ARTICLES,
-        'video_content': ContentType.VIDEO_CONTENT,
-        'case_studies': ContentType.CASE_STUDIES,
-        'whitepapers': ContentType.WHITEPAPERS,
-        'webinars': ContentType.WEBINARS,
-        'social_posts': ContentType.SOCIAL_POSTS,
-        'email_newsletters': ContentType.EMAIL_NEWSLETTERS,
-        'user_generated': ContentType.USER_GENERATED
-    }
-    return mapping.get(content_str, ContentType.BLOG_ARTICLES)
-
-
-def _get_channel_rationales() -> Dict[str, str]:
-    """Get rationales for each channel"""
-    return {
-        'paid_search': "High-intent users actively searching for solutions like yours",
-        'paid_social': "Precise targeting and visual storytelling capabilities",
-        'organic_seo': "Long-term sustainable traffic with compound returns",
-        'email_marketing': "Direct communication channel with highest ROI potential",
-        'content_marketing': "Builds authority and supports entire customer journey",
-        'influencer': "Leverage trusted voices to reach target audience authentically",
-        'events_webinars': "Deep engagement and relationship building with prospects",
-        'community': "Organic growth through engaged user base and advocates",
-        'local_seo': "Critical for local discovery and mobile search traffic",
-        'retargeting': "Re-engage warm audience with high conversion potential",
-        'referral': "Lowest cost acquisition through existing customer advocacy"
-    }
-
-
-def _get_channel_impacts() -> Dict[str, str]:
-    """Get expected impacts for each channel"""
-    return {
-        'paid_search': "Immediate qualified traffic and lead flow",
-        'paid_social': "Brand awareness and engagement at scale",
-        'organic_seo': "Sustainable traffic growth and authority building",
-        'email_marketing': "Improved conversion and customer lifetime value",
-        'content_marketing': "Thought leadership and inbound lead generation",
-        'influencer': "Expanded reach and social proof",
-        'events_webinars': "High-quality pipeline and relationship development",
-        'community': "Customer retention and organic advocacy",
-        'local_seo': "Increased local visibility and foot traffic",
-        'retargeting': "Improved conversion rates and sales efficiency",
-        'referral': "Lower CAC and higher quality customers"
-    }
-
-
-def _get_content_topic_map() -> Dict[str, List[str]]:
-    """Get topic recommendations for content types"""
-    return {
-        'blog_articles': ["Industry insights", "How-to guides", "Best practices", "Trends analysis"],
-        'video_content': ["Product demos", "Customer testimonials", "Behind-the-scenes", "Tutorials"],
-        'case_studies': ["Customer success stories", "ROI demonstrations", "Implementation stories"],
-        'whitepapers': ["Research findings", "Industry reports", "Strategic frameworks"],
-        'webinars': ["Expert panels", "Product deep-dives", "Q&A sessions", "Training workshops"],
-        'social_posts': ["Daily tips", "User stories", "Product highlights", "Industry news"],
-        'email_newsletters': ["Curated insights", "Product updates", "Exclusive offers", "Success stories"],
-        'user_generated': ["Customer photos", "Reviews", "Testimonials", "Community content"]
-    }
-
-
-def _get_content_distribution_map() -> Dict[str, List[str]]:
-    """Get distribution channel recommendations for content types"""
-    return {
-        'blog_articles': ["Website/Blog", "LinkedIn", "Medium", "Email newsletter"],
-        'video_content': ["YouTube", "Social media", "Website", "Email"],
-        'case_studies': ["Website resources", "Sales collateral", "LinkedIn", "Email campaigns"],
-        'whitepapers': ["Gated website content", "LinkedIn", "Industry publications"],
-        'webinars': ["Email promotion", "LinkedIn", "Partner channels", "Website"],
-        'social_posts': ["Instagram", "Facebook", "LinkedIn", "Twitter"],
-        'email_newsletters': ["Email marketing platform", "Website signup"],
-        'user_generated': ["Social media", "Website testimonials", "Marketing materials"]
-    }
+        return BudgetLevel.ENTERPRISE

@@ -1,121 +1,63 @@
 """
-Comprehensive Output Model for Marketing Expert System
-This model captures multi-dimensional marketing recommendations
+Simplified Output Model for Marketing Expert System (University Project)
+Focuses on core recommendations with concise, actionable insights
 """
 from pydantic import BaseModel, Field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from enum import Enum
 
-class ChannelType(str, Enum):
-    PAID_SEARCH = "paid_search_google_ads"
-    PAID_SOCIAL = "paid_social_facebook_instagram_linkedin"
-    ORGANIC_SEO = "organic_seo_content"
-    EMAIL_MARKETING = "email_marketing"
-    CONTENT_MARKETING = "content_marketing_blog_video"
-    INFLUENCER = "influencer_partnerships"
-    PR_MEDIA = "pr_and_media_relations"
-    EVENTS_WEBINARS = "events_and_webinars"
-    AFFILIATE = "affiliate_marketing"
-    DIRECT_MAIL = "direct_mail"
-    COMMUNITY = "community_building"
-    PARTNERSHIPS = "strategic_partnerships"
-    RETARGETING = "retargeting_remarketing"
-    DISPLAY_ADS = "display_advertising"
-    VIDEO_ADS = "video_advertising_youtube"
-    PODCAST = "podcast_sponsorships"
-    LOCAL_SEO = "local_seo_gmb"
-    MARKETPLACE = "marketplace_optimization"
-    CRO = "conversion_rate_optimization"
-    REFERRAL = "referral_programs"
+class StrategyCode(str, Enum):
+    """Marketing Strategy Codes"""
+    S1 = "S1 - Search Engine Optimization (SEO)"
+    S2 = "S2 - Pay-Per-Click (PPC) Advertising"
+    S3 = "S3 - Social Media Marketing (SMM)"
+    S4 = "S4 - Email Marketing/Newsletters"
+    S5 = "S5 - Content Marketing"
+    S6 = "S6 - Local SEO (Google My Business)"
+    S7 = "S7 - Account-Based Marketing (ABM)"
+    S8 = "S8 - Trade Shows/Conferences"
+    S9 = "S9 - Influencer/Partnership Marketing"
 
-class ChannelRecommendation(BaseModel):
-    channel: ChannelType
-    priority: int = Field(..., ge=1, le=5, description="1=highest, 5=lowest")
-    budget_allocation_percent: float = Field(..., ge=0, le=100)
-    rationale: str
-    expected_impact: str
+class BudgetAllocation(BaseModel):
+    """Budget distribution across strategies"""
+    strategy_code: str
+    percentage: float = Field(..., ge=0, le=100)
+    monthly_amount: float
 
-class ContentType(str, Enum):
-    BLOG_ARTICLES = "blog_articles_seo"
-    VIDEO_CONTENT = "video_content"
-    INFOGRAPHICS = "infographics"
-    CASE_STUDIES = "case_studies"
-    WHITEPAPERS = "whitepapers_ebooks"
-    WEBINARS = "webinars_workshops"
-    PODCASTS = "podcast_episodes"
-    SOCIAL_POSTS = "social_media_posts"
-    EMAIL_NEWSLETTERS = "email_newsletters"
-    USER_GENERATED = "user_generated_content"
-    INTERACTIVE = "interactive_content_tools"
-    TESTIMONIALS = "customer_testimonials"
-
-class ContentRecommendation(BaseModel):
-    content_type: ContentType
-    frequency: str  # e.g., "2-3 per week", "monthly"
-    priority: int = Field(..., ge=1, le=5)
-    target_topics: List[str]
-    distribution_channels: List[str]
-
-class TacticalAction(BaseModel):
-    action: str
-    timeline: str  # e.g., "Week 1-2", "Month 1", "Ongoing"
-    priority: str  # "Critical", "High", "Medium", "Low"
-    estimated_effort: str  # "Low", "Medium", "High"
+class ChannelTactic(BaseModel):
+    """Specific tactic for a marketing channel"""
+    strategy_code: str
+    tactic: str
+    priority: str  # "High", "Medium", "Low"
     expected_outcome: str
-    dependencies: List[str] = []
-
-class KPITarget(BaseModel):
-    metric_name: str
-    target_value: str
-    measurement_frequency: str
-    benchmark: Optional[str] = None
-
-class RiskFactor(BaseModel):
-    risk: str
-    severity: str  # "High", "Medium", "Low"
-    mitigation: str
 
 class MarketingRecommendation(BaseModel):
-    # Core Strategy
-    strategy_summary: str = Field(..., description="High-level strategic direction")
-    strategic_positioning: str = Field(..., description="How to position in market")
+    """Simplified marketing recommendation output"""
 
-    # Channel Strategy
-    primary_channels: List[ChannelRecommendation] = Field(..., description="Prioritized marketing channels")
-    channel_mix_rationale: str
+    # Core recommended strategies (S1-S9 format)
+    recommended_strategies: List[str] = Field(
+        ...,
+        description="List of recommended strategy codes with labels (e.g., 'S1 - SEO')"
+    )
 
-    # Content Strategy
-    content_strategy: List[ContentRecommendation]
-    content_themes: List[str]
-    messaging_focus: str
+    # 2-5 critical insights
+    critical_insights: List[str] = Field(
+        ...,
+        min_items=2,
+        max_items=5,
+        description="Key strategic recommendations and insights"
+    )
 
-    # Tactical Execution
-    quick_wins: List[TacticalAction] = Field(..., description="Actions for first 30 days")
-    short_term_actions: List[TacticalAction] = Field(..., description="1-3 months")
-    medium_term_actions: List[TacticalAction] = Field(..., description="3-6 months")
-    long_term_actions: List[TacticalAction] = Field(..., description="6+ months")
+    # Budget allocation
+    budget_allocation: List[BudgetAllocation] = Field(
+        ...,
+        description="How budget should be distributed across strategies"
+    )
 
-    # Measurement
-    primary_kpis: List[KPITarget]
-    secondary_kpis: List[KPITarget]
+    total_monthly_budget: float
 
-    # Risk Management
-    risks_and_mitigations: List[RiskFactor]
-
-    # Budget Guidance
-    budget_allocation_summary: Dict[str, float] = Field(..., description="Category-level budget distribution")
-    monthly_burn_rate: float
-    cost_optimization_tips: List[str]
-
-    # Competitive Positioning
-    competitive_advantages: List[str]
-    differentiation_strategy: str
-
-    # Scaling Guidance
-    scaling_triggers: List[str] = Field(..., description="When to scale up investment")
-    scaling_strategy: str
-
-    # Tools and Resources
-    recommended_tools: List[str]
-    required_capabilities: List[str]
-    potential_partners: List[str]
+    # Channel-specific tactics
+    channel_tactics: List[ChannelTactic] = Field(
+        ...,
+        description="Specific actionable tactics for each channel"
+    )
