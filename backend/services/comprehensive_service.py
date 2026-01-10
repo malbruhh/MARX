@@ -3,6 +3,7 @@ Comprehensive Marketing Analysis Service
 Integrates the layered expert system and produces structured recommendations
 """
 from services.comprehensive_engine import ComprehensiveMarketingEngine
+from models.model import *
 from models.request import MarketingAnalysisRequest
 from models.output import *
 from models.intermediate_facts import *
@@ -615,7 +616,7 @@ def _generate_competitive_advantages(request: MarketingAnalysisRequest) -> List[
     if request.content_capability == ContentCapability.HIGH:
         advantages.append("Strong content creation capability enables thought leadership positioning")
 
-    if request.sales_structure == SalesStructure.DEDICATED_SALES_TEAM:
+    if request.sales_structure == SalesStructure.SALES_TEAM:
         advantages.append("Dedicated sales team allows for high-touch customer engagement")
     elif request.sales_structure == SalesStructure.AUTOMATED:
         advantages.append("Automated sales process enables scalability and efficiency")
