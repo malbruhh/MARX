@@ -1123,8 +1123,6 @@ THEN:
   "recommended_strategies": [
     "S1 - Search Engine Optimization (SEO)",
     "S2 - Pay-Per-Click (PPC) Advertising",
-    "S3 - Social Media Marketing (SMM)",
-    "S4 - Email Marketing/Newsletters",
     "S5 - Content Marketing"
   ],
 
@@ -1146,6 +1144,11 @@ THEN:
       "strategy_code": "S2 - Pay-Per-Click (PPC) Advertising",
       "percentage": 40.0,
       "monthly_amount": 666.67
+    },
+    {
+      "strategy_code": "S5 - Content Marketing",
+      "percentage": 30.0,
+      "monthly_amount": 500.00
     }
   ],
 
@@ -1157,6 +1160,18 @@ THEN:
       "tactic": "Optimize website for target keywords and create SEO-focused content pillars",
       "priority": "High",
       "expected_outcome": "Increase organic traffic by 30-50% over 3-6 months"
+    },
+    {
+      "strategy_code": "S2 - Pay-Per-Click (PPC) Advertising",
+      "tactic": "Launch targeted PPC campaigns on Google Ads with A/B tested ad copy",
+      "priority": "High",
+      "expected_outcome": "Generate qualified leads with target CPA below industry average"
+    },
+    {
+      "strategy_code": "S5 - Content Marketing",
+      "tactic": "Create value-driven content (blogs, videos, guides) addressing customer pain points",
+      "priority": "Medium",
+      "expected_outcome": "Establish thought leadership and generate inbound leads"
     }
   ]
 }
@@ -1369,9 +1384,7 @@ THEN:
   "recommended_strategies": [
     "S7 - Account-Based Marketing (ABM)",
     "S8 - Trade Shows/Conferences",
-    "S5 - Content Marketing",
-    "S2 - Pay-Per-Click (PPC) Advertising",
-    "S3 - Social Media Marketing (SMM)"
+    "S5 - Content Marketing"
   ],
 
   "critical_insights": [
@@ -1384,24 +1397,19 @@ THEN:
 
   "budget_allocation": [
     {
+      "strategy_code": "S7 - Account-Based Marketing (ABM)",
+      "percentage": 25.0,
+      "monthly_amount": 4166.67
+    },
+    {
       "strategy_code": "S8 - Trade Shows/Conferences",
-      "percentage": 30.0,
-      "monthly_amount": 5000.00
+      "percentage": 40.0,
+      "monthly_amount": 6666.67
     },
     {
       "strategy_code": "S5 - Content Marketing",
-      "percentage": 28.0,
-      "monthly_amount": 4666.67
-    },
-    {
-      "strategy_code": "S2 - Pay-Per-Click (PPC) Advertising)",
-      "percentage": 22.0,
-      "monthly_amount": 3666.67
-    },
-    {
-      "strategy_code": "S3 - Social Media Marketing (SMM)",
-      "percentage": 20.0,
-      "monthly_amount": 3333.33
+      "percentage": 35.0,
+      "monthly_amount": 5833.33
     }
   ],
 
@@ -1425,12 +1433,6 @@ THEN:
       "tactic": "Create value-driven content (blogs, videos, guides) addressing customer pain points",
       "priority": "High",
       "expected_outcome": "Establish thought leadership and generate inbound leads"
-    },
-    {
-      "strategy_code": "S2 - Pay-Per-Click (PPC) Advertising",
-      "tactic": "Launch targeted PPC campaigns on Google Ads with A/B tested ad copy",
-      "priority": "Medium",
-      "expected_outcome": "Generate qualified leads with target CPA below industry average"
     }
   ]
 }

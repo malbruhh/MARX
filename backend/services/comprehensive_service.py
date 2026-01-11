@@ -81,17 +81,17 @@ def _aggregate_recommendations(engine: ComprehensiveMarketingEngine, request: Ma
     # Extract channel priorities
     channel_facts = [f for f in facts if isinstance(f, ChannelPriorityFact)]
 
-    # Map channels to strategy codes
+    # Map channels to strategy codes (TOP 3)
     strategy_codes = _extract_strategy_codes(channel_facts, request)
 
     # Generate 2-5 critical insights
     critical_insights = _generate_critical_insights(facts, request)
 
-    # Generate budget allocation
+    # Generate budget allocation (ONLY for top 3 strategies)
     budget_allocation = _generate_budget_allocation(channel_facts, request, strategy_codes)
 
-    # Generate channel tactics
-    channel_tactics = _generate_channel_tactics(channel_facts, facts, request)
+    # Generate channel tactics (ONLY for top 3 strategies)
+    channel_tactics = _generate_channel_tactics(channel_facts, facts, request, strategy_codes)
 
     # Calculate monthly budget
     monthly_budget = _calculate_monthly_budget(request)
@@ -138,7 +138,7 @@ def _extract_strategy_codes(channel_facts: list, request: MarketingAnalysisReque
                 if len(strategy_codes) >= 3:
                     break
 
-    return strategy_codes[:5]  # Max 5 strategies
+    return strategy_codes[:3]  # Max 3 strategies
 
 
 def _generate_critical_insights(facts: list, request: MarketingAnalysisRequest) -> list:
@@ -192,7 +192,7 @@ def _generate_critical_insights(facts: list, request: MarketingAnalysisRequest) 
 
 
 def _generate_budget_allocation(channel_facts: list, request: MarketingAnalysisRequest, strategy_codes: list) -> list:
-    """Generate simplified budget allocation"""
+    """Generate simplified budget allocation - ONLY for recommended strategies"""
 
     monthly_budget = _calculate_monthly_budget(request)
 
@@ -211,13 +211,18 @@ def _generate_budget_allocation(channel_facts: list, request: MarketingAnalysisR
 
         if channel_name in CHANNEL_TO_STRATEGY:
             strategy_code = CHANNEL_TO_STRATEGY[channel_name]
+            strategy_label = STRATEGY_LABELS[strategy_code]
+
+            # ONLY include if this strategy is in recommended_strategies
+            if strategy_label not in strategy_codes:
+                continue
 
             # Aggregate budget for same strategy
             if strategy_code not in strategy_budget_map:
                 strategy_budget_map[strategy_code] = 0
             strategy_budget_map[strategy_code] += budget_percent
 
-    # Create allocation objects
+    # Create allocation objects ONLY for recommended strategies
     for strategy_code, percentage in sorted(strategy_budget_map.items(), key=lambda x: x[1], reverse=True):
         if percentage > 0:
             allocations.append(BudgetAllocation(
@@ -233,7 +238,7 @@ def _generate_budget_allocation(channel_facts: list, request: MarketingAnalysisR
             alloc.percentage = round((alloc.percentage / total_percent) * 100, 1)
             alloc.monthly_amount = round(monthly_budget * (alloc.percentage / 100), 2)
 
-    # If no allocations, create default
+    # If no allocations, create default (should match recommended strategies)
     if not allocations:
         defaults = [
             ("S1", 30),
@@ -250,8 +255,8 @@ def _generate_budget_allocation(channel_facts: list, request: MarketingAnalysisR
     return allocations
 
 
-def _generate_channel_tactics(channel_facts: list, all_facts: list, request: MarketingAnalysisRequest) -> list:
-    """Generate specific tactics for each channel"""
+def _generate_channel_tactics(channel_facts: list, all_facts: list, request: MarketingAnalysisRequest, strategy_codes: list) -> list:
+    """Generate specific tactics for each channel - ONLY for recommended strategies"""
 
     tactics = []
 
@@ -264,7 +269,7 @@ def _generate_channel_tactics(channel_facts: list, all_facts: list, request: Mar
 
     processed_strategies = set()
 
-    for fact in sorted_channels[:5]:  # Top 5 channels
+    for fact in sorted_channels[:10]:  # Check more channels to find matches
         channel_name = fact['channel']
         priority_num = fact['priority']
 
@@ -273,6 +278,10 @@ def _generate_channel_tactics(channel_facts: list, all_facts: list, request: Mar
 
         strategy_code = CHANNEL_TO_STRATEGY[channel_name]
         strategy_label = STRATEGY_LABELS[strategy_code]
+
+        # ONLY include if this strategy is in recommended_strategies
+        if strategy_label not in strategy_codes:
+            continue
 
         if strategy_label in processed_strategies:
             continue
@@ -292,16 +301,20 @@ def _generate_channel_tactics(channel_facts: list, all_facts: list, request: Mar
             expected_outcome=outcome
         ))
 
-    # Ensure at least 3 tactics
-    if len(tactics) < 3:
+        # Stop when we have tactics for all recommended strategies
+        if len(tactics) >= len(strategy_codes):
+            break
+
+    # Ensure we have tactics for all recommended strategies
+    if len(tactics) < len(strategy_codes):
         default_tactics = _get_default_tactics(request)
         for dt in default_tactics:
-            if dt.strategy_code not in processed_strategies:
+            if dt.strategy_code in strategy_codes and dt.strategy_code not in processed_strategies:
                 tactics.append(dt)
-                if len(tactics) >= 3:
+                if len(tactics) >= len(strategy_codes):
                     break
 
-    return tactics[:6]  # Max 6 tactics
+    return tactics[:3]  # Max 3 tactics (matching recommended strategies)
 
 
 def _get_tactic_for_strategy(strategy_code: str, request: MarketingAnalysisRequest, channel_name: str):
