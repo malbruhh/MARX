@@ -54,6 +54,12 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
             self.declare(BudgetLevelFact(tier=BudgetLevel.ENTERPRISE.value))
 
     # ==================== LAYER 1: Market Context Analysis ====================
+    # Fire ProductFact 
+    # Declare new Fact = MarketMaturity, CompetitionLevel
+    #
+    # Fire TargetCustomerFact
+    # Declare new Fact = CustomerAcquisitionComplexity, SalesCycle
+
 
     @Rule(ProductFact(product_type=ProductType.B2B_SAAS.value))
     def market_maturity_b2b_saas(self):
@@ -169,7 +175,9 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
         self.declare(SalesCycleFact(cycle="long"))
 
     # ==================== LAYER 2: Strategic Direction ====================
-
+    # Fire PrimaryGoalFact, Time Horizon
+    # Declare new Fact = StrategicApproach, MarketingFocus
+    # Default new Fact = StrategicApproachFact: niche_domination ; MessagingAngleFact : differentiation;
     @Rule(
         PrimaryGoalFact(goal=PrimaryGoal.AWARENESS.value),
         TimeHorizonFact(horizon=TimeHorizon.LONG.value)
@@ -215,7 +223,10 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
         self.declare(MessagingAngleFact(angle="differentiation"))
 
     # ==================== LAYER 3: Channel Suitability - Paid Search ====================
+    # Fire ChannelPriorityFact, ChannelReadinessFact, + new Fact declared above
+    # Declare new Fact = ChannelPriorityFact 
 
+    # Channel Suitability - Paid Search 
     @Rule(
         AND(
             OR(
