@@ -1,223 +1,1063 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MARX | Marketing Expert Analysis</title>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>MARX - Marketing Expert Analysis</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        
+        /* ============================================
+           CSS VARIABLES - Cream Purple/Pink Theme
+           ============================================ */
+        :root {
+            --cream-purple: #E8D5E3;
+            --cream-pink: #F5D7E8;
+            --purple-dark: #8B6F9E;
+            --pink-dark: #C89BB8;
+            --purple-light: #F0E6F5;
+            --white-cream: #FFF8FC;
+            --glass-bg: rgba(255, 255, 255, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --shadow-light: 0 8px 32px rgba(139, 111, 158, 0.15);
+            --shadow-medium: 0 12px 40px rgba(139, 111, 158, 0.25);
+            --shadow-heavy: 0 16px 48px rgba(139, 111, 158, 0.35);
+        }
+
+        /* ============================================
+           RESET & BASE STYLES
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Plus+Jakarta+Sans', sans-serif;
-            background: radial-gradient(circle at center, #f0fdf4 0%, #166534 100%);
-            color: #1a2e1a;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #4A3A52;
         }
 
+        /* ============================================
+           CURVED GRADIENT BACKGROUND
+           ============================================ */
+        body {
+            background: 
+                /* Top darker section with cream purple/pink outer curve */
+                radial-gradient(ellipse 120% 80% at 50% 0%, 
+                    rgba(139, 111, 158, 0.4) 0%, 
+                    rgba(200, 155, 184, 0.3) 30%,
+                    rgba(232, 213, 227, 0.2) 60%,
+                    transparent 80%),
+                /* Inner brighter curve */
+                radial-gradient(ellipse 100% 60% at 50% 0%,
+                    rgba(255, 248, 252, 0.6) 0%,
+                    rgba(240, 230, 245, 0.4) 40%,
+                    transparent 70%),
+                /* Base gradient fading downward */
+                linear-gradient(180deg, 
+                    rgba(139, 111, 158, 0.5) 0%,
+                    rgba(200, 155, 184, 0.3) 25%,
+                    rgba(232, 213, 227, 0.2) 50%,
+                    rgba(240, 230, 245, 0.15) 75%,
+                    rgba(255, 248, 252, 0.1) 100%);
+        }
+
+        /* Inverse gradient for summary section and below */
+        .inverse-gradient {
+            background: 
+                radial-gradient(ellipse 120% 80% at 50% 100%, 
+                    rgba(139, 111, 158, 0.4) 0%, 
+                    rgba(200, 155, 184, 0.3) 30%,
+                    rgba(232, 213, 227, 0.2) 60%,
+                    transparent 80%),
+                radial-gradient(ellipse 100% 60% at 50% 100%,
+                    rgba(255, 248, 252, 0.6) 0%,
+                    rgba(240, 230, 245, 0.4) 40%,
+                    transparent 70%),
+                linear-gradient(0deg, 
+                    rgba(139, 111, 158, 0.5) 0%,
+                    rgba(200, 155, 184, 0.3) 25%,
+                    rgba(232, 213, 227, 0.2) 50%,
+                    rgba(240, 230, 245, 0.15) 75%,
+                    rgba(255, 248, 252, 0.1) 100%);
+        }
+
+        /* ============================================
+           GLASS PANEL EFFECT
+           ============================================ */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-        }
-
-        .glass-button {
-            background: rgba(22, 101, 52, 0.4);
-            backdrop-filter: blur(8px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-light);
             transition: all 0.3s ease;
         }
 
-        .glass-button:hover {
-            background: rgba(22, 101, 52, 0.6);
+        .glass-panel:hover {
+            box-shadow: var(--shadow-medium);
             transform: translateY(-2px);
         }
 
-        .checkpoint-active {
-            background-color: #166534 !important;
-            box-shadow: 0 0 15px rgba(22, 101, 52, 0.5);
+        /* ============================================
+           NAVBAR - Glass Panel with Shadow
+           ============================================ */
+        #navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(139, 111, 158, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .checkpoint-unvisited {
-            background-color: rgba(255, 255, 255, 0.6);
+        #navbar.scrolled {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 6px 30px rgba(139, 111, 158, 0.3);
         }
 
-        .floating-nav {
+        /* MARX Logo in Navbar */
+        .marx-logo-navbar {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            font-size: 1.8rem;
+            color: var(--purple-dark);
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.4s ease;
+        }
+
+        #navbar.scrolled .marx-logo-navbar {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ============================================
+           HERO TITLE - MARX with Animation
+           ============================================ */
+        .hero-marx {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            font-size: clamp(4rem, 15vw, 12rem);
+            letter-spacing: -4px;
+            color: var(--white-cream);
+            text-shadow: 
+                0 4px 20px rgba(139, 111, 158, 0.3),
+                0 8px 40px rgba(139, 111, 158, 0.2);
+            transition: all 0.2s ease-out;
+            transform-origin: center;
+            animation: fadeInScale 1.2s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ============================================
+           PROGRESS BAR - Sticky Left Sidebar
+           ============================================ */
+        #progress-bar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1001;
+            display: none; /* Hidden on mobile */
+        }
+
+        @media (min-width: 768px) {
+            #progress-bar {
+                display: flex;
+            }
+        }
+
+        .progress-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 12px 8px;
+            box-shadow: 0 8px 24px rgba(139, 111, 158, 0.2);
         }
 
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .progress-step {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.4s ease;
+            background: rgba(255, 255, 255, 0.25);
+            border: 2px solid rgba(139, 111, 158, 0.3);
+            color: rgba(139, 111, 158, 0.6);
+            box-shadow: 0 4px 12px rgba(139, 111, 158, 0.15);
+        }
+
+        .progress-step.visited {
+            background: linear-gradient(135deg, rgba(139, 111, 158, 0.8), rgba(200, 155, 184, 0.9));
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+            box-shadow: 0 8px 24px rgba(139, 111, 158, 0.4);
+            transform: scale(1.05);
+        }
+
+        .progress-step.active {
+            background: linear-gradient(135deg, rgba(139, 111, 158, 0.95), rgba(200, 155, 184, 0.95));
+            border-color: rgba(255, 255, 255, 0.6);
+            color: white;
+            box-shadow: 0 10px 28px rgba(139, 111, 158, 0.5);
+            transform: scale(1.1);
+        }
+
+        .progress-step.upcoming {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(139, 111, 158, 0.25);
+            color: rgba(139, 111, 158, 0.5);
+        }
+
+        .progress-line {
+            width: 3px;
+            height: 60px;
+            background: linear-gradient(to bottom, 
+                rgba(139, 111, 158, 0.4), 
+                rgba(139, 111, 158, 0.15));
+            margin: 0;
+        }
+
+        /* Add padding to sections to prevent overlap with progress bar */
+        @media (min-width: 768px) {
+            section[id]:not(#home):not(#about):not(#output) {
+                padding-left: 100px;
+            }
+        }
+
+        /* Output section doesn't need extra padding */
+        section#output {
+            padding-left: 20px;
+        }
+
+        /* ============================================
+           BUTTONS - Glass Panel Darker
+           ============================================ */
+        .glass-button {
+            background: rgba(139, 111, 158, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(139, 111, 158, 0.5);
+            box-shadow: 0 8px 24px rgba(139, 111, 158, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .glass-button:hover:not(:disabled) {
+            background: rgba(139, 111, 158, 0.55);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(139, 111, 158, 0.4);
+        }
+
+        .glass-button:active:not(:disabled) {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .glass-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ============================================
+           INPUT FIELDS
+           ============================================ */
+        input[type="text"] {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--purple-dark);
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 4px rgba(139, 111, 158, 0.15);
+        }
+
+        /* ============================================
+           CATEGORY CARDS
+           ============================================ */
+        .category-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .category-card.selected {
+            background: rgba(139, 111, 158, 0.35);
+            border-color: var(--purple-dark);
+            box-shadow: 0 12px 36px rgba(139, 111, 158, 0.3);
+        }
+
+        /* ============================================
+           PRIORITY COLORS - Output Channels
+           ============================================ */
+        .priority-high {
+            background: rgba(231, 76, 60, 0.25);
+            border-color: rgba(231, 76, 60, 0.5);
+        }
+
+        .priority-medium {
+            background: rgba(241, 196, 15, 0.25);
+            border-color: rgba(241, 196, 15, 0.5);
+        }
+
+        .priority-low {
+            background: rgba(52, 152, 219, 0.25);
+            border-color: rgba(52, 152, 219, 0.5);
+        }
+
+        /* ============================================
+           LOADING ANIMATION
+           ============================================ */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            border: 3px solid rgba(139, 111, 158, 0.3);
+            border-top-color: var(--purple-dark);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .stagger-item {
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .stagger-item:nth-child(1) { animation-delay: 0.1s; }
+        .stagger-item:nth-child(2) { animation-delay: 0.2s; }
+        .stagger-item:nth-child(3) { animation-delay: 0.3s; }
+        .stagger-item:nth-child(4) { animation-delay: 0.4s; }
+        .stagger-item:nth-child(5) { animation-delay: 0.5s; }
+        .stagger-item:nth-child(6) { animation-delay: 0.6s; }
+
+        /* ============================================
+           NAVIGATION ARROWS
+           ============================================ */
+        .nav-arrow {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 2rem;
+            color: var(--purple-dark);
+            font-weight: bold;
+        }
+
+        .nav-arrow:hover {
+            transform: scale(1.15);
+            color: var(--pink-dark);
+        }
+
+        /* ============================================
+           SMOOTH SCROLL
+           ============================================ */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* ============================================
+           SECTION SPACING
+           ============================================ */
+        section {
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+            padding: 100px 20px 60px;
+        }
+
+        /* Home and About sections don't need left padding */
+        section#home,
+        section#about {
+            padding-left: 20px;
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 768px) {
+            .hero-marx {
+                font-size: clamp(3rem, 12vw, 8rem);
+            }
+
+            .progress-step {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+
+            .progress-line {
+                height: 40px;
+            }
+
+            section {
+                padding: 80px 15px 40px;
+            }
+
+            /* Hide progress bar on mobile */
+            #progress-bar {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-marx {
+                font-size: clamp(2.5rem, 10vw, 6rem);
+            }
+
+            .progress-step {
+                width: 35px;
+                height: 35px;
+                font-size: 0.8rem;
+            }
+
+            .progress-line {
+                height: 30px;
+            }
+        }
+
+        /* Adjust progress bar position on larger screens */
+        @media (min-width: 1400px) {
+            #progress-bar {
+                left: 40px;
+            }
+        }
+
+        /* ============================================
+           OUTPUT SECTION STYLES
+           ============================================ */
+        .output-card {
+            background: rgba(240, 230, 245, 0.3);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(139, 111, 158, 0.4);
+        }
+
+        /* Star Rating */
+        .star {
+            color: #F39C12;
+            font-size: 1.3rem;
+        }
+
+        .star-empty {
+            color: rgba(243, 156, 18, 0.3);
+        }
     </style>
 </head>
-<body class="overflow-x-hidden">
-    <div id="app" class="relative">
-        
-        <nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[90%] z-50 floating-nav rounded-2xl p-4 flex justify-between items-center px-8 border border-white/20">
-            <div id="nav-logo" class="text-2xl font-extrabold opacity-0">MARX</div>
-            <div class="space-x-8 font-semibold">
-                <a href="#home" class="hover:text-green-900 transition-colors">Home</a>
-                <a href="#about" class="hover:text-green-900 transition-colors">About us</a>
-                <span class="text-gray-400">XX</span>
+<body>
+    <div id="app">
+        <!-- ============================================
+             NAVBAR - Glass Panel with Logo
+             ============================================ -->
+        <nav id="navbar" class="py-4 px-6 md:px-8">
+            <div class="max-w-7xl mx-auto flex justify-between items-center">
+                <!-- MARX Logo (appears on scroll) -->
+                <div class="marx-logo-navbar">MARX</div>
+                
+                <!-- Navigation Links -->
+                <div class="flex gap-6 md:gap-8">
+                    <a @click.prevent="scrollToSection('home')" 
+                       class="text-gray-700 hover:text-purple-700 font-semibold transition-colors cursor-pointer text-sm md:text-base">
+                        Home
+                    </a>
+                    <a @click.prevent="scrollToSection('about')" 
+                       class="text-gray-700 hover:text-purple-700 font-semibold transition-colors cursor-pointer text-sm md:text-base">
+                        About us
+                    </a>
+                </div>
             </div>
         </nav>
 
-        <div class="fixed left-8 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-4">
-            <div v-for="i in 8" :key="i" 
-                 class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-xs font-bold transition-all duration-500"
-                 :class="currentSection >= i ? 'checkpoint-active text-white' : 'checkpoint-unvisited text-gray-500'">
-                1
+        <!-- ============================================
+             HOME SECTION
+             ============================================ -->
+        <section id="home" class="flex flex-col items-center justify-center px-4 md:px-8">
+            <!-- MARX Title with Subtitle -->
+            <div class="text-center mb-12 md:mb-16">
+                <h1 class="hero-marx mb-4" :style="{ transform: `scale(${heroScale})` }">MARX</h1>
+                <p class="text-2xl md:text-3xl lg:text-4xl text-white font-semibold fade-in" style="animation-delay: 0.3s; text-shadow: 0 2px 10px rgba(139, 111, 158, 0.3);">
+                    Marketing Expert Analysis
+                </p>
             </div>
-            <div class="w-0.5 h-full bg-white absolute top-0 -z-10"></div>
-        </div>
-
-        <section id="home" class="min-h-screen flex flex-col items-center justify-center p-8">
-            <h1 id="main-title" class="text-[120px] font-black tracking-tighter text-green-950 mb-0">MARX</h1>
-            <p class="text-2xl font-bold text-green-800 -mt-4 mb-12">Marketing Expert Analysis</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full mb-12">
-                <div class="glass-panel p-8 rounded-3xl">
-                    <h3 class="text-xl font-extrabold mb-4">What is MARX?</h3>
-                    <p class="text-sm leading-relaxed text-green-900">MARX is an AI-driven strategy engine designed to parse complex business data and output surgical marketing recommendations. We bridge the gap between raw data and executable growth.</p>
+            <!-- Three Information Sections -->
+            <div class="grid md:grid-cols-3 gap-6 md:gap-8 max-w-6xl w-full mb-12 md:mb-16">
+                <!-- What is MARX? -->
+                <div class="glass-panel rounded-3xl p-6 md:p-8 stagger-item">
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-3">What is MARX?</h3>
+                    <p class="text-gray-700 leading-relaxed text-sm md:text-base">
+                        MARX is an intelligent marketing strategy platform that analyzes your business parameters and recommends data-driven marketing channels tailored to maximize your ROI and achieve your specific goals.
+                    </p>
                 </div>
-                <div id="about" class="glass-panel p-8 rounded-3xl">
-                    <h3 class="text-xl font-extrabold mb-4">How to use MARX?</h3>
-                    <p class="text-sm leading-relaxed text-green-900">Input your constraints, goals, and capabilities. Our expert system analyzes thousands of permutations to recommend the best strategies for your specific niche.</p>
+
+                <!-- How to use MARX? -->
+                <div class="glass-panel rounded-3xl p-6 md:p-8 stagger-item">
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-3">How to use MARX?</h3>
+                    <p class="text-gray-700 leading-relaxed text-sm md:text-base">
+                        Select your product, audience, budget, goals, and operating approach. MARX will analyze and recommend the best strategies with optimized allocation.
+                    </p>
                 </div>
-                <div class="glass-panel p-8 rounded-3xl">
-                    <h3 class="text-xl font-extrabold mb-4">Customer Reviews</h3>
-                    <div class="space-y-4">
-                        <div v-for="(rev, idx) in reviews" :key="idx" class="bg-white/30 p-3 rounded-xl text-[10px]">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="font-bold">John Doe</span>
-                                <span class="text-yellow-600">★ {{ rev.stars }}</span>
+
+                <!-- The Reviews -->
+                <div class="glass-panel rounded-3xl p-6 md:p-8 stagger-item">
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">The Reviews</h3>
+                    <div class="space-y-3 md:space-y-4">
+                        <!-- Review 1 - 5 stars -->
+                        <div class="bg-white bg-opacity-30 rounded-xl p-3 md:p-4">
+                            <div class="flex gap-1 mb-1">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
                             </div>
-                            <p>"Perfect analysis for my business!"</p>
+                            <p class="text-sm md:text-base text-gray-800 font-semibold">John Doe</p>
+                            <p class="text-xs md:text-sm text-gray-700">"Exceptional insights and ROI."</p>
+                        </div>
+                        
+                        <!-- Review 2 - 5 stars -->
+                        <div class="bg-white bg-opacity-30 rounded-xl p-3 md:p-4">
+                            <div class="flex gap-1 mb-1">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                            <p class="text-sm md:text-base text-gray-800 font-semibold">John Doe</p>
+                            <p class="text-xs md:text-sm text-gray-700">"Game-changer for our strategy."</p>
+                        </div>
+                        
+                        <!-- Review 3 - 4 stars -->
+                        <div class="bg-white bg-opacity-30 rounded-xl p-3 md:p-4">
+                            <div class="flex gap-1 mb-1">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star-empty">★</span>
+                            </div>
+                            <p class="text-sm md:text-base text-gray-800 font-semibold">John Doe</p>
+                            <p class="text-xs md:text-sm text-gray-700">"Very helpful and intuitive."</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <a href="#input-budget" class="glass-button px-10 py-4 rounded-full text-white font-bold text-lg">Lets Get Started.</a>
+            <!-- Let's Get Started Button -->
+            <button @click="scrollToSection('budget')" 
+                    class="glass-button rounded-full px-10 md:px-16 py-4 md:py-5 text-lg md:text-xl font-bold text-white stagger-item" 
+                    style="animation-delay: 0.6s;">
+                Let's Get Started
+            </button>
         </section>
 
-        <section id="input-budget" class="min-h-screen flex flex-col items-center justify-center p-8 relative">
-            <h2 class="text-6xl font-black text-green-900 mb-8">Lets Get Started.</h2>
-            <div class="relative w-full max-w-md">
-                <span v-if="formData.budget" class="absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-bold text-green-900">$</span>
-                <input type="number" 
-                       v-model="formData.budget"
-                       placeholder="Your Budget (USD)" 
-                       class="w-full glass-panel p-6 rounded-2xl text-2xl text-center outline-none focus:ring-4 ring-green-500/20 font-bold placeholder:text-gray-400">
-            </div>
-            <div class="absolute bottom-10 flex gap-4 opacity-50">
-                <div class="glass-panel p-4 rounded-xl text-xs">B2B SaaS</div>
-                <div class="glass-panel p-4 rounded-xl text-xs">Retail Goods</div>
+        <!-- ============================================
+             ABOUT SECTION (for navigation)
+             ============================================ -->
+        <section id="about" class="flex items-center justify-center px-4 md:px-8">
+            <div class="glass-panel rounded-3xl p-8 md:p-12 max-w-4xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">About MARX</h2>
+                <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-4">
+                    MARX (Marketing Expert Analysis) leverages advanced algorithms and industry best practices to provide businesses with actionable marketing strategies. Our platform analyzes multiple factors including your product type, target audience, budget constraints, and business goals to deliver personalized recommendations.
+                </p>
+                <p class="text-base md:text-lg text-gray-700 leading-relaxed">
+                    Whether you're a startup looking to establish market presence or an enterprise optimizing marketing spend, MARX provides data-driven insights to help you succeed in today's competitive landscape.
+                </p>
             </div>
         </section>
 
-        <section v-for="(cat, cIdx) in categories" :key="cIdx" :id="'cat-' + cIdx" class="min-h-screen flex items-center justify-center p-12">
-            <div class="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                
-                <div class="pr-8">
-                    <h2 class="text-5xl font-black text-green-950 mb-4">{{ cat.title }}</h2>
-                    <p class="text-lg text-green-800 leading-relaxed">{{ cat.description }}</p>
-                </div>
-
-                <div class="relative">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div v-for="(opt, oIdx) in visibleOptions(cat)" :key="oIdx" 
-                             @click="selectOption(cat.key, opt.value)"
-                             class="glass-panel p-6 rounded-3xl cursor-pointer hover:bg-white/40 transition-all flex flex-col items-center text-center group"
-                             :class="{'ring-4 ring-green-600 bg-white/50': formData[cat.key] === opt.value}">
-                            <div class="mb-4 text-green-800 group-hover:scale-110 transition-transform">
-                                <i :data-lucide="opt.icon"></i>
+        <!-- ============================================
+             BUDGET INPUT SECTION
+             ============================================ -->
+        <section id="budget" class="flex items-center justify-start px-4 md:px-8 py-12 md:py-16 min-h-screen">
+            <div class="max-w-7xl w-full mx-auto">
+                <!-- Main Content -->
+                <div class="w-full">
+                    <div class="glass-panel rounded-3xl p-8 md:p-12 mb-8">
+                        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 text-center">
+                            Let's Get Started.
+                        </h2>
+                        <p class="text-center text-gray-100 text-base md:text-lg mb-8">
+                            Tell us your working budget so MARX can match the right playbook.
+                        </p>
+                        <div class="max-w-2xl mx-auto">
+                            <label class="block text-white font-semibold mb-3 text-center text-lg">
+                                Your Budget (USD)
+                            </label>
+                            <div class="relative">
+                                <span v-if="formData.budget" 
+                                      class="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-gray-800 font-bold">
+                                    $
+                                </span>
+                                <input 
+                                    type="text" 
+                                    inputmode="decimal"
+                                    v-model="formData.budget"
+                                    @input="formatBudget"
+                                    :class="['w-full rounded-2xl px-4 py-4 text-center text-xl md:text-2xl font-semibold text-gray-800', formData.budget ? 'pl-10' : '']"
+                                    placeholder="Enter amount"
+                                >
                             </div>
-                            <h4 class="font-extrabold text-sm mb-2">{{ opt.label }}</h4>
-                            <p class="text-[10px] text-green-900 opacity-70">{{ opt.desc }}</p>
                         </div>
                     </div>
+
+                    <!-- Preview hint -->
+                    <div class="text-center text-gray-100 text-sm md:text-base opacity-70">
+                        Scroll down to continue →
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             PRODUCT TYPE SECTION
+             ============================================ -->
+        <section id="product" class="flex items-start justify-start px-4 md:px-8 py-12 md:py-16 min-h-screen">
+            <div class="max-w-7xl w-full mx-auto">
+                <!-- Content Area -->
+                <div class="grid lg:grid-cols-[300px,1fr] gap-6">
+                    <!-- Left: Category Description -->
+                    <div class="glass-panel rounded-3xl p-6 md:p-8">
+                        <h3 class="text-xl md:text-2xl font-extrabold text-white mb-2">
+                            {{ factCategoryLabel(productPages[currentProductPage]?.length || products.length) }}
+                        </h3>
+                        <p class="text-gray-100 text-sm md:text-base">
+                            Select the category that best describes your product or service offering.
+                        </p>
+                    </div>
+
+                    <!-- Right: Category Cards -->
+                    <div>
+                        <div v-for="(page, pageIndex) in productPages" 
+                             :key="pageIndex" 
+                             v-show="currentProductPage === pageIndex">
+                            <div :class="getGridClass(productPages[pageIndex].length)">
+                                <div v-for="product in page" 
+                                     :key="product.value" 
+                                     @click="selectOption('product', product.value)"
+                                     :class="['category-card glass-panel rounded-2xl p-5 md:p-6', formData.product === product.value ? 'selected' : '']">
+                                    <div class="text-3xl md:text-4xl mb-3">{{ product.icon }}</div>
+                                    <h4 class="font-bold text-gray-800 mb-1 text-base md:text-lg">{{ product.label }}</h4>
+                                    <p class="text-sm text-gray-700">{{ product.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Navigation Arrows for 6+ items -->
+                        <div v-if="productPages.length > 1" class="flex justify-between items-center mt-6">
+                            <button v-if="currentProductPage > 0" 
+                                    @click="currentProductPage--" 
+                                    class="nav-arrow">
+                                &lt;
+                            </button>
+                            <div v-else></div>
+                            <button v-if="currentProductPage < productPages.length - 1" 
+                                    @click="currentProductPage++" 
+                                    class="nav-arrow">
+                                &gt;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             TARGET CUSTOMER SECTION
+             ============================================ -->
+        <section id="customer" class="flex items-start justify-start px-4 md:px-8 py-12 md:py-16 min-h-screen">
+            <div class="max-w-7xl w-full mx-auto">
+                <div class="grid lg:grid-cols-[300px,1fr] gap-6">
+                    <div class="glass-panel rounded-3xl p-6 md:p-8">
+                        <h3 class="text-xl md:text-2xl font-extrabold text-white mb-2">
+                            {{ factCategoryLabel(customerPages[currentCustomerPage]?.length || customers.length) }}
+                        </h3>
+                        <p class="text-gray-100 text-sm md:text-base">
+                            Define your primary customer segment to tailor marketing strategies effectively.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div v-for="(page, pageIndex) in customerPages" 
+                             :key="pageIndex" 
+                             v-show="currentCustomerPage === pageIndex">
+                            <div :class="getGridClass(customerPages[pageIndex].length)">
+                                <div v-for="customer in page" 
+                                     :key="customer.value" 
+                                     @click="selectOption('customer', customer.value)"
+                                     :class="['category-card glass-panel rounded-2xl p-5 md:p-6', formData.customer === customer.value ? 'selected' : '']">
+                                    <div class="text-3xl md:text-4xl mb-3">{{ customer.icon }}</div>
+                                    <h4 class="font-bold text-gray-800 mb-1 text-base md:text-lg">{{ customer.label }}</h4>
+                                    <p class="text-sm text-gray-700">{{ customer.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div v-if="customerPages.length > 1" class="flex justify-between items-center mt-6">
+                            <button v-if="currentCustomerPage > 0" @click="currentCustomerPage--" class="nav-arrow">&lt;</button>
+                            <div v-else></div>
+                            <button v-if="currentCustomerPage < customerPages.length - 1" @click="currentCustomerPage++" class="nav-arrow">&gt;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             PRIMARY GOAL SECTION
+             ============================================ -->
+        <section id="goal" class="flex items-start justify-start px-4 md:px-8 py-12 md:py-16 min-h-screen">
+            <div class="max-w-7xl w-full mx-auto">
+                <div class="grid lg:grid-cols-[300px,1fr] gap-6">
+                    <div class="glass-panel rounded-3xl p-6 md:p-8">
+                        <h3 class="text-xl md:text-2xl font-extrabold text-white mb-1">
+                            {{ factCategoryLabel(goals.length) }}
+                        </h3>
+                        <p class="text-white text-sm font-semibold mb-2">Primary Goal</p>
+                        <p class="text-gray-100 text-sm md:text-base">
+                            What is your main marketing objective? Choose the goal that matters most.
+                        </p>
+                    </div>
+
+                    <div :class="getGridClass(goals.length)">
+                        <div v-for="goal in goals" 
+                             :key="goal.value" 
+                             @click="selectOption('goal', goal.value)"
+                             :class="['category-card glass-panel rounded-2xl p-5 md:p-6', formData.goal === goal.value ? 'selected' : '']">
+                            <div class="text-3xl md:text-4xl mb-3">{{ goal.icon }}</div>
+                            <h4 class="font-bold text-gray-800 mb-2 text-base md:text-lg">{{ goal.label }}</h4>
+                            <p class="text-sm text-gray-700">{{ goal.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             TIME HORIZON SECTION
+             ============================================ -->
+        <section id="time" class="flex items-start justify-start px-4 md:px-8 py-12 md:py-16 min-h-screen">
+            <div class="max-w-7xl w-full mx-auto">
+                <div class="grid lg:grid-cols-[300px,1fr] gap-6">
+                    <div class="glass-panel rounded-3xl p-6 md:p-8">
+                        <h3 class="text-xl md:text-2xl font-extrabold text-white mb-1">
+                            {{ factCategoryLabel(timeHorizons.length) }}
+                        </h3>
+                        <p class="text-white text-sm font-semibold mb-2">Time Horizon</p>
+                        <p class="text-gray-100 text-sm md:text-base">
+                            How long do you plan to run your marketing campaign?
+                        </p>
+                    </div>
+
+                    <div :class="getGridClass(timeHorizons.length)">
+                        <div v-for="time in timeHorizons" 
+                             :key="time.value" 
+                             @click="selectOption('time', time.value)"
+                             :class="['category-card glass-panel rounded-2xl p-5 md:p-6', formData.time === time.value ? 'selected' : '']">
+                            <div class="text-3xl md:text-4xl mb-3">{{ time.icon }}</div>
+                            <h4 class="font-bold text-gray-800 mb-2 text-base md:text-lg">{{ time.label }}</h4>
+                            <p class="text-sm text-gray-700">{{ time.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             CONTENT CAPABILITY SECTION
+             ============================================ -->
+        <section id="content" class="flex items-start justify-start px-4 md:px-8 py-12 md:py-16 min-h-screen">
+            <div class="max-w-7xl w-full mx-auto">
+                <div class="grid lg:grid-cols-[300px,1fr] gap-6">
+                    <div class="glass-panel rounded-3xl p-6 md:p-8">
+                        <h3 class="text-xl md:text-2xl font-extrabold text-white mb-1">
+                            {{ factCategoryLabel(contentCapabilities.length) }}
+                        </h3>
+                        <p class="text-white text-sm font-semibold mb-2">Content Capability</p>
+                        <p class="text-gray-100 text-sm md:text-base">
+                            Rate your team's ability to create marketing content consistently.
+                        </p>
+                    </div>
+
+                    <div :class="getGridClass(contentCapabilities.length)">
+                        <div v-for="content in contentCapabilities" 
+                             :key="content.value" 
+                             @click="selectOption('content', content.value)"
+                             :class="['category-card glass-panel rounded-2xl p-5 md:p-6', formData.content === content.value ? 'selected' : '']">
+                            <div class="text-3xl md:text-4xl mb-3">{{ content.icon }}</div>
+                            <h4 class="font-bold text-gray-800 mb-2 text-base md:text-lg">{{ content.label }}</h4>
+                            <p class="text-sm text-gray-700">{{ content.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             SALES STRUCTURE SECTION
+             ============================================ -->
+        <section id="sales" class="flex items-start justify-start px-4 md:px-8 py-12 md:py-16 min-h-screen">
+            <div class="max-w-7xl w-full mx-auto">
+                <div class="grid lg:grid-cols-[300px,1fr] gap-6">
+                    <div class="glass-panel rounded-3xl p-6 md:p-8">
+                        <h3 class="text-xl md:text-2xl font-extrabold text-white mb-1">
+                            {{ factCategoryLabel(salesStructures.length) }}
+                        </h3>
+                        <p class="text-white text-sm font-semibold mb-2">Sales Structure</p>
+                        <p class="text-gray-100 text-sm md:text-base">
+                            How do you primarily handle sales and customer acquisition?
+                        </p>
+                    </div>
+
+                    <div :class="getGridClass(salesStructures.length)">
+                        <div v-for="sales in salesStructures" 
+                             :key="sales.value" 
+                             @click="selectOption('sales', sales.value)"
+                             :class="['category-card glass-panel rounded-2xl p-5 md:p-6', formData.sales === sales.value ? 'selected' : '']">
+                            <div class="text-3xl md:text-4xl mb-3">{{ sales.icon }}</div>
+                            <h4 class="font-bold text-gray-800 mb-2 text-base md:text-lg">{{ sales.label }}</h4>
+                            <p class="text-sm text-gray-700">{{ sales.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             PRIORITY KPI SECTION
+             ============================================ -->
+        <section id="kpi" class="flex items-start justify-start px-4 md:px-8 py-12 md:py-16 min-h-screen">
+            <div class="max-w-7xl w-full mx-auto">
+                <div class="grid lg:grid-cols-[300px,1fr] gap-6">
+                    <div class="glass-panel rounded-3xl p-6 md:p-8">
+                        <h3 class="text-xl md:text-2xl font-extrabold text-white mb-1">
+                            {{ factCategoryLabel(kpis.length) }}
+                        </h3>
+                        <p class="text-white text-sm font-semibold mb-2">Priority KPI</p>
+                        <p class="text-gray-100 text-sm md:text-base">
+                            Which key performance indicator matters most to your business?
+                        </p>
+                    </div>
+
+                    <div :class="getGridClass(kpis.length)">
+                        <div v-for="kpi in kpis" 
+                             :key="kpi.value" 
+                             @click="selectOption('kpi', kpi.value)"
+                             :class="['category-card glass-panel rounded-2xl p-5 md:p-6', formData.kpi === kpi.value ? 'selected' : '']">
+                            <div class="text-3xl md:text-4xl mb-3">{{ kpi.icon }}</div>
+                            <h4 class="font-bold text-gray-800 mb-2 text-base md:text-lg">{{ kpi.label }}</h4>
+                            <p class="text-sm text-gray-700">{{ kpi.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             SUMMARY SECTION (with inverse gradient)
+             ============================================ -->
+        <section id="summary" class="inverse-gradient flex items-center justify-center px-4 md:px-8 py-12 md:py-16 min-h-screen">
+            <div class="max-w-7xl w-full mx-auto">
+                <div class="w-full">
+                    <h2 class="text-4xl md:text-5xl font-bold text-white text-center mb-8">Summary</h2>
                     
-                    <div v-if="cat.options.length > 6" class="absolute -right-16 top-1/2 -translate-y-1/2">
-                        <button @click="cat.page = cat.page === 0 ? 1 : 0" class="glass-panel w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/50">
-                            <i :data-lucide="cat.page === 0 ? 'chevron-right' : 'chevron-left'"></i>
+                    <div class="glass-panel rounded-3xl p-8 md:p-12 mb-8">
+                        <!-- Budget Display -->
+                        <p class="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8">
+                            Budget (USD): ${{ formattedBudget }}
+                        </p>
+                        
+                        <!-- Selected Categories Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                            <div class="glass-panel rounded-2xl p-5 md:p-6 text-center">
+                                <div class="text-3xl md:text-4xl mb-2">{{ getIconForSelection('product') }}</div>
+                                <p class="font-semibold text-gray-800 text-sm md:text-base">{{ getLabelForSelection('product') }}</p>
+                            </div>
+                            <div class="glass-panel rounded-2xl p-5 md:p-6 text-center">
+                                <div class="text-3xl md:text-4xl mb-2">{{ getIconForSelection('customer') }}</div>
+                                <p class="font-semibold text-gray-800 text-sm md:text-base">{{ getLabelForSelection('customer') }}</p>
+                            </div>
+                            <div class="glass-panel rounded-2xl p-5 md:p-6 text-center">
+                                <div class="text-3xl md:text-4xl mb-2">{{ getIconForSelection('goal') }}</div>
+                                <p class="font-semibold text-gray-800 text-sm md:text-base">{{ getLabelForSelection('goal') }}</p>
+                            </div>
+                            <div class="glass-panel rounded-2xl p-5 md:p-6 text-center">
+                                <div class="text-3xl md:text-4xl mb-2">{{ getIconForSelection('time') }}</div>
+                                <p class="font-semibold text-gray-800 text-sm md:text-base">{{ getLabelForSelection('time') }}</p>
+                            </div>
+                            <div class="glass-panel rounded-2xl p-5 md:p-6 text-center">
+                                <div class="text-3xl md:text-4xl mb-2">{{ getIconForSelection('content') }}</div>
+                                <p class="font-semibold text-gray-800 text-sm md:text-base">{{ getLabelForSelection('content') }}</p>
+                            </div>
+                            <div class="glass-panel rounded-2xl p-5 md:p-6 text-center">
+                                <div class="text-3xl md:text-4xl mb-2">{{ getIconForSelection('sales') }}</div>
+                                <p class="font-semibold text-gray-800 text-sm md:text-base">{{ getLabelForSelection('sales') }}</p>
+                            </div>
+                            <div class="glass-panel rounded-2xl p-5 md:p-6 text-center sm:col-span-2 lg:col-span-3">
+                                <div class="text-3xl md:text-4xl mb-2">{{ getIconForSelection('kpi') }}</div>
+                                <p class="font-semibold text-gray-800 text-sm md:text-base">{{ getLabelForSelection('kpi') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Strategize Button -->
+                    <div class="text-center">
+                        <button @click="strategize" 
+                                :disabled="isLoading" 
+                                class="glass-button rounded-full px-12 md:px-16 py-4 md:py-5 text-xl md:text-2xl font-bold text-white disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span v-if="!isLoading">Strategize</span>
+                            <span v-else class="flex items-center gap-3 justify-center">
+                                <div class="spinner"></div>
+                                Strategizing...
+                            </span>
                         </button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="summary" class="min-h-screen flex flex-col items-center justify-center p-8">
-            <h2 class="text-6xl font-black text-green-950 mb-2">Summary</h2>
-            <p class="text-3xl font-bold text-green-800 mb-12 text-center">Budget (USD) : ${{ formData.budget || '0' }}</p>
-            
-            <div class="grid grid-cols-3 gap-4 max-w-4xl w-full mb-12">
-                <div v-for="(val, key) in formData" :key="key" v-if="key !== 'budget'" class="glass-panel p-4 rounded-2xl flex items-center gap-4">
-                    <div class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
-                        <i data-lucide="check" class="w-4 h-4 text-green-700"></i>
-                    </div>
-                    <div class="text-[10px]">
-                        <p class="uppercase font-bold text-gray-500">{{ key.replace(/([A-Z])/g, ' $1') }}</p>
-                        <p class="font-extrabold">{{ val || 'Not Selected' }}</p>
-                    </div>
-                </div>
-            </div>
+        <!-- ============================================
+             OUTPUT SECTION (Recommended Strategies)
+             ============================================ -->
+        <section v-if="showOutput" id="output" class="inverse-gradient flex items-start justify-center px-4 md:px-8 py-12 md:py-20 min-h-screen">
+            <div class="max-w-6xl w-full fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 text-center mb-12">Our Recommended Strategies</h2>
 
-            <button @click="strategize" :disabled="loading" class="glass-button px-16 py-6 rounded-2xl text-white font-black text-2xl flex items-center gap-4">
-                {{ loading ? 'Strategizing...' : 'Strategize' }}
-                <div v-if="loading" class="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
-            </button>
-        </section>
-
-        <section v-if="output" id="output" class="min-h-screen p-8 flex flex-col items-center justify-center">
-            <h2 class="text-5xl font-black text-green-950 mb-12">Our Recommended Strategies</h2>
-            
-            <div class="max-w-6xl w-full space-y-8">
-                <div class="flex gap-8">
-                    <div class="glass-panel p-8 rounded-[40px] flex-1">
-                        <h3 class="text-2xl font-black mb-6">Critical Insights</h3>
+                <!-- Critical Insights & Total Budget -->
+                <div class="grid md:grid-cols-2 gap-6 mb-12">
+                    <!-- Critical Insights -->
+                    <div class="output-card rounded-3xl p-6 md:p-8">
+                        <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Critical Insights</h3>
                         <ul class="space-y-3">
-                            <li v-for="ins in output.critical_insights" class="flex items-start gap-3 text-sm text-green-950">
-                                <span class="mt-1.5 w-2 h-2 rounded-full bg-green-900 shrink-0"></span>
-                                {{ ins }}
+                            <li v-for="(insight, index) in outputData.critical_insights" 
+                                :key="index" 
+                                class="flex gap-3">
+                                <span class="text-purple-700 font-bold text-lg">•</span>
+                                <span class="text-gray-700 text-sm md:text-base">{{ insight }}</span>
                             </li>
                         </ul>
                     </div>
-                    <div class="glass-panel p-8 rounded-[40px] w-64 flex flex-col items-center justify-center text-center">
-                        <h4 class="text-xl font-bold mb-2">Total Budget</h4>
-                        <p class="text-3xl font-black text-green-900">${{ output.total_monthly_budget.toLocaleString() }} USD/mo</p>
+
+                    <!-- Total Budget -->
+                    <div class="output-card rounded-3xl p-6 md:p-8 flex flex-col justify-center items-center">
+                        <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">Total Monthly Budget</h3>
+                        <p class="text-4xl md:text-5xl font-bold text-purple-700">
+                            ${{ outputData.total_monthly_budget?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || '0.00' }}
+                        </p>
+                        <p class="text-gray-600 mt-2 text-sm md:text-base">per month</p>
                     </div>
                 </div>
 
-                <div class="flex items-end justify-center gap-8 pt-12">
-                    <div v-for="(chan, idx) in output.channel_tactics" :key="idx" 
-                         :style="{ marginBottom: (2 - idx) * 20 + 'px' }"
-                         class="glass-panel rounded-[40px] w-80 overflow-hidden border-2"
-                         :class="getPriorityClass(chan.priority)">
-                        <div class="p-6 text-center text-white font-bold text-lg" :class="getPriorityBg(chan.priority)">
-                            {{ chan.strategy_code }}
-                        </div>
-                        <div class="p-6 space-y-4">
-                            <div>
-                                <h5 class="font-bold text-sm mb-2">Channel Tactics</h5>
-                                <ul class="text-xs space-y-1 opacity-80">
-                                    <li>• Priority: {{ chan.priority }}</li>
-                                    <li>• Tactic: {{ chan.tactic }}</li>
-                                    <li>• Expected Outcome: {{ chan.expected_outcome }}</li>
-                                </ul>
-                            </div>
-                            <div class="flex gap-2">
-                                <div class="glass-panel p-3 flex-1 rounded-xl text-center font-black text-xl">
-                                    {{ getBudgetPerc(chan.strategy_code) }}%
+                <!-- Recommended Channels -->
+                <div class="mb-8">
+                    <h3 class="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">Recommended Channels</h3>
+                    
+                    <!-- Channels sorted by priority (High, Medium, Low) -->
+                    <div class="flex flex-col md:flex-row gap-6 justify-center items-end">
+                        <div v-for="(channel, index) in sortedChannels" 
+                             :key="index"
+                             :class="[
+                                 'rounded-3xl p-6 md:p-8 flex-1 max-w-sm transition-all glass-panel',
+                                 channel.priority === 'High' ? 'priority-high' : 
+                                 channel.priority === 'Medium' ? 'priority-medium' : 'priority-low'
+                             ]"
+                             :style="{
+                                 transform: channel.priority === 'High' ? 'translateY(0)' : 
+                                            channel.priority === 'Medium' ? 'translateY(20px)' : 'translateY(40px)'
+                             }">
+                            
+                            <!-- Channel Title -->
+                            <div class="mb-4">
+                                <h4 class="text-lg md:text-xl font-bold text-gray-800 mb-2">{{ channel.strategy_code }}</h4>
+                                <div class="inline-block px-3 py-1 rounded-full text-xs md:text-sm font-semibold"
+                                     :class="{
+                                         'bg-red-100 text-red-700': channel.priority === 'High',
+                                         'bg-yellow-100 text-yellow-700': channel.priority === 'Medium',
+                                         'bg-blue-100 text-blue-700': channel.priority === 'Low'
+                                     }">
+                                    Priority: {{ channel.priority }}
                                 </div>
-                                <div class="glass-panel p-3 flex-[2] rounded-xl text-center font-bold text-sm">
-                                    ${{ getBudgetAmt(chan.strategy_code) }} / mo
+                            </div>
+
+                            <!-- Channel Tactics -->
+                            <div class="mb-4">
+                                <h5 class="font-semibold text-gray-700 mb-2 text-sm md:text-base">Channel Tactics</h5>
+                                <p class="text-xs md:text-sm text-gray-600">{{ channel.tactic }}</p>
+                            </div>
+
+                            <!-- Expected Outcome -->
+                            <div class="mb-4">
+                                <h5 class="font-semibold text-gray-700 mb-2 text-sm md:text-base">Expected Outcome</h5>
+                                <p class="text-xs md:text-sm text-gray-600">{{ channel.expected_outcome }}</p>
+                            </div>
+
+                            <!-- Budget Allocation -->
+                            <div class="mt-6 pt-4 border-t border-gray-300">
+                                <h5 class="font-semibold text-gray-700 mb-2 text-sm md:text-base">Budget Allocation</h5>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-2xl md:text-3xl font-bold text-gray-800">
+                                        {{ getBudgetPercentage(channel.strategy_code) }}%
+                                    </span>
+                                    <span class="text-base md:text-lg text-gray-600">
+                                        ${{ getBudgetAmount(channel.strategy_code)?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}/mo
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -225,7 +1065,6 @@
                 </div>
             </div>
         </section>
-
     </div>
 
     <script src="app.js"></script>
