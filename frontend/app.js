@@ -117,3 +117,74 @@ window.addEventListener('scroll', () => {
         }
     });
 });
+
+// Data for Product Type
+const productData = [
+    { id: 'b2b_saas', title: 'B2B SaaS', desc: 'Enterprise software.', icon: 'fa-cloud' },
+    { id: 'b2c_retail', title: 'B2C Retail', desc: 'Physical consumer goods.', icon: 'fa-shopping-bag' },
+    { id: 'local_service', title: 'Local Service', desc: 'Physical local services.', icon: 'fa-map-marker-alt' },
+    { id: 'consulting', title: 'Consulting', desc: 'Professional expertise.', icon: 'fa-user-tie' },
+    { id: 'digital_product', title: 'Digital Product', desc: 'Info products/courses.', icon: 'fa-laptop-code' },
+    { id: 'fmcg', title: 'FMCG', desc: 'Fast moving goods.', icon: 'fa-box' },
+    // These 3 will be seen on drag/scroll
+    { id: 'technical_tools', title: 'Technical Tools', desc: 'Specialized hardware.', icon: 'fa-tools' },
+    { id: 'hospitality', title: 'Hospitality', desc: 'Tourism and hotels.', icon: 'fa-hotel' },
+    { id: 'subscription', title: 'Subscription', desc: 'Recurring revenue.', icon: 'fa-sync' }
+];
+const carousel = document.getElementById('product-carousel');
+
+// Render Cards
+productData.forEach((item, index) => {
+    const card = document.createElement('div');
+    // Adding 'glass' and 'fact-card' classes
+    card.className = 'fact-card glass rounded-[2rem] cursor-pointer';
+    card.innerHTML = `
+        <div class="flex-shrink-0 w-12 flex justify-center">
+            <i class="fas ${item.icon} fact-icon"></i>
+        </div>
+        <div class="text-left">
+            <h3 class="font-bold text-purple-950 text-sm uppercase tracking-tight">${item.title}</h3>
+            <p class="text-[10px] text-purple-900/60 leading-tight mt-1">${item.desc}</p>
+        </div>
+    `;
+
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.fact-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+    });
+
+    carousel.appendChild(card);
+});
+
+// Fix Drag Logic for Grid/Flex Hybrid
+let isDown = false;
+let startX;
+let scrollLeft;
+const container = document.getElementById('drag-container');
+
+container.addEventListener('mousedown', (e) => {
+    isDown = true;
+    startX = e.pageX - container.offsetLeft;
+    scrollLeft = container.scrollLeft;
+});
+
+container.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - container.offsetLeft;
+    const walk = (x - startX) * 2; 
+    container.scrollLeft = scrollLeft - walk;
+});
+
+window.addEventListener('mouseup', () => isDown = false);
+
+// FIX: Background Inversion Trigger based on scroll
+window.addEventListener('scroll', () => {
+    const scrollVal = window.scrollY;
+    // Dynamic threshold: Invert background when past 50% of the document
+    if (scrollVal > (document.documentElement.scrollHeight / 2)) {
+        document.body.classList.add('inverted');
+    } else {
+        document.body.classList.remove('inverted');
+    }
+});
