@@ -120,31 +120,31 @@ window.addEventListener('scroll', () => {
 
 // Data for Product Type
 const productData = [
-    { id: 'b2b_saas', title: 'B2B SaaS', desc: 'Enterprise software.', icon: 'fa-cloud' },
-    { id: 'b2c_retail', title: 'B2C Retail', desc: 'Physical consumer goods.', icon: 'fa-shopping-bag' },
-    { id: 'local_service', title: 'Local Service', desc: 'Physical local services.', icon: 'fa-map-marker-alt' },
-    { id: 'consulting', title: 'Consulting', desc: 'Professional expertise.', icon: 'fa-user-tie' },
-    { id: 'digital_product', title: 'Digital Product', desc: 'Info products/courses.', icon: 'fa-laptop-code' },
-    { id: 'fmcg', title: 'FMCG', desc: 'Fast moving goods.', icon: 'fa-box' },
-    // These 3 will be seen on drag/scroll
-    { id: 'technical_tools', title: 'Technical Tools', desc: 'Specialized hardware.', icon: 'fa-tools' },
-    { id: 'hospitality', title: 'Hospitality', desc: 'Tourism and hotels.', icon: 'fa-hotel' },
-    { id: 'subscription', title: 'Subscription', desc: 'Recurring revenue.', icon: 'fa-sync' }
+    { id: 'b2b_saas', title: 'B2B SaaS', desc: 'Enterprise software solutions.', icon: 'fa-server' },
+    { id: 'b2c_retail', title: 'B2C Retail', desc: 'Direct consumer goods.', icon: 'fa-bag-shopping' },
+    { id: 'local_service', title: 'Local Service', desc: 'Regional physical services.', icon: 'fa-location-dot' },
+    { id: 'consulting', title: 'Consulting', desc: 'Expert professional advice.', icon: 'fa-user-tie' },
+    { id: 'digital_product', title: 'Digital Product', desc: 'Online courses and assets.', icon: 'fa-file-code' },
+    { id: 'fmcg', title: 'FMCG', desc: 'Consumer retail goods.', icon: 'fa-cart-flatbed' },
+    // Draggable Items
+    { id: 'technical_tools', title: 'Technical Tools', desc: 'Niche hardware/software.', icon: 'fa-screwdriver-wrench' },
+    { id: 'hospitality', title: 'Hospitality', desc: 'Tourism and travel.', icon: 'fa-bed' },
+    { id: 'subscription', title: 'Subscription', desc: 'Recurring revenue models.', icon: 'fa-arrows-rotate' }
 ];
 const carousel = document.getElementById('product-carousel');
+const dragContainer = document.getElementById('drag-container');
 
-// Render Cards
-productData.forEach((item, index) => {
+// Render the 9 Cards
+productData.forEach(item => {
     const card = document.createElement('div');
-    // Adding 'glass' and 'fact-card' classes
-    card.className = 'fact-card glass rounded-[2rem] cursor-pointer';
+    card.className = 'fact-card glass rounded-[1.5rem] cursor-pointer';
     card.innerHTML = `
-        <div class="flex-shrink-0 w-12 flex justify-center">
+        <div class="w-9 h-9 bg-white/90 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
             <i class="fas ${item.icon} fact-icon"></i>
         </div>
-        <div class="text-left">
-            <h3 class="font-bold text-purple-950 text-sm uppercase tracking-tight">${item.title}</h3>
-            <p class="text-[10px] text-purple-900/60 leading-tight mt-1">${item.desc}</p>
+        <div>
+            <h3 class="font-bold text-white text-[11px] uppercase tracking-wider">${item.title}</h3>
+            <p class="text-[9px] text-white/50 leading-tight">${item.desc}</p>
         </div>
     `;
 
@@ -156,35 +156,99 @@ productData.forEach((item, index) => {
     carousel.appendChild(card);
 });
 
-// Fix Drag Logic for Grid/Flex Hybrid
+// Dragging Logic
 let isDown = false;
 let startX;
 let scrollLeft;
-const container = document.getElementById('drag-container');
 
-container.addEventListener('mousedown', (e) => {
+dragContainer.addEventListener('mousedown', (e) => {
     isDown = true;
-    startX = e.pageX - container.offsetLeft;
-    scrollLeft = container.scrollLeft;
+    dragContainer.classList.add('active');
+    startX = e.pageX - dragContainer.offsetLeft;
+    scrollLeft = dragContainer.scrollLeft;
 });
 
-container.addEventListener('mousemove', (e) => {
+dragContainer.addEventListener('mouseleave', () => { isDown = false; });
+dragContainer.addEventListener('mouseup', () => { isDown = false; });
+
+dragContainer.addEventListener('mousemove', (e) => {
     if (!isDown) return;
     e.preventDefault();
-    const x = e.pageX - container.offsetLeft;
+    const x = e.pageX - dragContainer.offsetLeft;
     const walk = (x - startX) * 2; 
-    container.scrollLeft = scrollLeft - walk;
+    dragContainer.scrollLeft = scrollLeft - walk;
+}); 
+
+
+
+// THIS MUST BE AT THE LOWEST PAGE
+const globalNextBtn = document.getElementById('global-next-btn');
+
+// Array of section IDs in order of progress
+const sectionIds = [
+    'home',
+    'card-1', // Budget
+    'card-2', // Product Type
+    'analysis-section', // If you add more, insert IDs here
+    'summary-section'
+];
+
+globalNextBtn.addEventListener('click', () => {
+    const scrollVal = window.scrollY + (window.innerHeight / 2); // Center-based detection
+    let nextTarget = sectionIds[sectionIds.length - 1]; // Default to summary
+
+    // Loop through sections to find where we currently are
+    for (let i = 0; i < sectionIds.length - 1; i++) {
+        const element = document.getElementById(sectionIds[i]);
+        if (element) {
+            const rect = element.getBoundingClientRect();
+            const elementTop = rect.top + window.pageYOffset;
+            
+            // If we are currently "in" this section, the next target is i+1
+            if (scrollVal < elementTop + element.offsetHeight) {
+                nextTarget = sectionIds[i + 1];
+                break;
+            }
+        }
+    }
+
+    const targetElement = document.getElementById(nextTarget);
+    if (targetElement) {
+        // Use our centering logic for a professional scroll focus
+        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - (window.innerHeight / 2) + (targetElement.offsetHeight / 2);
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+    }
 });
 
-window.addEventListener('mouseup', () => isDown = false);
-
-// FIX: Background Inversion Trigger based on scroll
+// Hide the button when on  Home and the Summary Page
 window.addEventListener('scroll', () => {
-    const scrollVal = window.scrollY;
-    // Dynamic threshold: Invert background when past 50% of the document
-    if (scrollVal > (document.documentElement.scrollHeight / 2)) {
-        document.body.classList.add('inverted');
+    const firstCard = document.getElementById('card-1');
+    const summarySection = document.getElementById('summary-section');
+    const nextBtn = document.getElementById('global-next-btn');
+    
+    if (!firstCard || !summarySection || !nextBtn) return;
+
+    const firstCardRect = firstCard.getBoundingClientRect();
+    const summaryRect = summarySection.getBoundingClientRect();
+
+    // Logic: 
+    // 1. Show if the top of the Budget card is near the middle of the screen
+    // 2. Hide if the Summary section has reached the screen
+    const isInsideForm = firstCardRect.top < (window.innerHeight * 0.7);
+    const hasReachedEnd = summaryRect.top < (window.innerHeight * 0.9);
+
+    if (isInsideForm && !hasReachedEnd) {
+        nextBtn.style.opacity = '1';
+        nextBtn.style.pointerEvents = 'auto';
+        nextBtn.style.transform = 'translateY(0)';
     } else {
-        document.body.classList.remove('inverted');
+        nextBtn.style.opacity = '0';
+        nextBtn.style.pointerEvents = 'none';
+        nextBtn.style.transform = 'translateY(20px)';
     }
 });

@@ -11,18 +11,16 @@
         body { 
             font-family: 'Poppins', sans-serif; 
             margin: 0;
-            transition: background 2s ease-in-out;
-            /* FIX: Ensure background covers full long page */
-            background-attachment: fixed; 
+            transition: background 1.5s ease-in-out;
+            background-attachment: fixed;
             background-size: cover;
+            /* New Top-Left Vibrant Gradient (Creamy Purple/Pink) */
+            background: radial-gradient(circle at 0% 0%, #ff00ff 0%, #7e22ce 30%, #4c1d95 70%, #2e1065 100%);
         }
 
-        .bg-theme {
-            background: radial-gradient(circle at 50% -10%, #fff9fb 0%, #fbcfe8 20%, #7e22ce 60%, #4c1d95 100%);
-        }
-
-        .bg-theme.inverted {
-            background: radial-gradient(circle at 50% 110%, #fff9fb 0%, #fbcfe8 20%, #7e22ce 60%, #4c1d95 100%);
+        /* Inverted State: Glow moves to bottom-right as user reaches the end */
+        body.inverted {
+            background: radial-gradient(circle at 100% 100%, #ff00ff 0%, #7e22ce 30%, #4c1d95 70%, #2e1065 100%);
         }
 
         .glass {
@@ -30,7 +28,8 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            /* Small shadow to indicate floating */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .btn-glass {
@@ -72,30 +71,68 @@
         ::-webkit-scrollbar { width: 0px; }
 
         .fact-card {
-            min-width: 280px; /* Horizontal shape */
-            height: 120px;
+            width: 270px; /* Precise width for 2-column fit */
+            height: 90px;  /* Slightly shorter for a sleeker look */
             flex-shrink: 0;
             display: flex;
             align-items: center;
-            gap: 1.5rem;
-            padding: 1.5rem;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        /* Draggable Container Fix: Ensures we don't see the scrollbar */
+        #drag-container {
+            /* Standard syntax */
+            mask-image: linear-gradient(
+                to right, 
+                transparent 0%,    /* Start invisible */
+                black 5%,          /* Quickly become solid by 5% (Short fade) */
+                black 90%,         /* Stay solid until 90% */
+                transparent 100%   /* Fade out at the end (Longer fade) */
+            );
+
+            /* Webkit prefix for Safari/Chrome support */
+            -webkit-mask-image: linear-gradient(
+                to right, 
+                transparent 0%, 
+                black 5%, 
+                black 90%, 
+                transparent 100%
+            );
         }
         .fact-card:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-5px);
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.15);
         }
         .fact-card.selected {
-            border: 2px solid #4c1d95;
+            border: 2px solid #fff;
             background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
         }
         .fact-icon {
-            font-size: 1.8rem;
-            color: #000; /* Black icons */
+            font-size: 1.3rem;
+            color: #000;
         }
-        #product-carousel::-webkit-scrollbar { display: none; }
+        #drag-container::-webkit-scrollbar { display: none; }
 
+
+        /* Specific Darker Glass for Global Navigation */
+        #global-next-btn {
+            background: rgba(30, 10, 50, 0.7); /* Darker purple for prompting action */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        #global-next-btn:hover {
+            background: rgba(45, 15, 75, 0.9);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            transform: translateY(-5px);
+        }
     </style>
 </head>
 <body class="bg-theme text-white min-h-screen">
@@ -175,8 +212,8 @@
             </div>
         </div>
 
-        <div class="flex-1 flex flex-col items-center gap-[30vh] mt-20">
-            
+        <div class="flex-1 flex flex-col items-center gap-[10vh] mt-20">
+            <!-- Budget Input -->
             <div id="card-1" class="glass w-full max-w-xl min-h-[25vh] rounded-[3rem] flex flex-col items-center justify-center p-8 transition-all duration-500">
                 <h2 class="text-3xl font-extrabold text-purple-900 mb-6">Lets Get Started.</h2>
                 <div class="relative w-full max-w-md">
@@ -192,18 +229,20 @@
                 </div>
             </div> <!--budget div-->
             
+            <!-- Fact Cards -->
             <main class="relative">
-                <section id="card-2" class="min-h-screen flex flex-col md:flex-row items-center px-20 gap-16">
-                    <div class="md:w-1/3">
-                        <h2 class="text-4xl font-extrabold text-purple-900 mb-4">Product Type</h2>
-                        <p class="text-purple-950/70 text-sm font-light leading-relaxed">
-                            Select your core business offering. This allows MARX to compare your data against industry-specific growth benchmarks.
-                        </p>
-                    </div>
-                    
-                    <div class="md:w-2/3 overflow-hidden p-10" id="drag-container">
-                        <div id="product-carousel" class="flex flex-wrap md:grid md:grid-cols-2 gap-6 transition-transform duration-500 cursor-grab active:cursor-grabbing">
-                            </div>
+                <section id="card-2" class="min-h-screen flex items-center justify-center px-4">
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-5xl">
+                        <div class="w-full md:w-[400px] text-center md:text-left">
+                            <h2 class="text-4xl font-extrabold text-white mb-3">Product Type</h2>
+                            <p class="text-white/70 text-sm font-light leading-relaxed">
+                                Select your core business offering. This helps MARX analyze industry-specific patterns for your strategy.
+                            </p>
+                        </div>
+                        <div id="drag-container" class="w-full max-w-[580px] overflow-hidden py-8 px-2 cursor-grab active:cursor-grabbing">
+                            <div id="product-carousel" class="grid grid-flow-col grid-rows-3 gap-5 transition-transform duration-500">
+                                </div>
+                        </div>
                     </div>
                 </section>
             </main>
@@ -216,14 +255,21 @@
             </div>
         </div>
     </section> <!-- Step circle section-->
-
+    <section id="summary-section" class="h-screen flex items-center justify-center">
+        <h2 class="text-white text-4xl font-bold">Summary Page</h2>
+    </section>
 
     <section id="analysis-section" class="min-h-screen flex items-center justify-center p-10">
         <div class="glass w-full max-w-5xl h-[600px] rounded-[3rem] flex items-center justify-center border-dashed border-2 border-white/20">
             <p class="text-3xl font-bold text-white/20 tracking-widest uppercase">Analysis Module Placeholder</p>
         </div>
     </section>
-
+    <div class="fixed bottom-10 right-10 z-50">
+        <button id="global-next-btn" class="btn-glass px-8 py-4 rounded-2xl flex items-center gap-3 font-bold text-white shadow-2xl transition-all duration-300 group">
+            <span class="tracking-widest uppercase text-sm">Next Section</span>
+            <i class="fas fa-chevron-right transition-transform group-hover:translate-x-1"></i>
+        </button>
+    </div>  
     <script src="app.js"></script>
 </body>
 </html>
