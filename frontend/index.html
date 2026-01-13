@@ -71,36 +71,18 @@
         ::-webkit-scrollbar { width: 0px; }
 
         .fact-card {
-            width: 270px; /* Precise width for 2-column fit */
-            height: 90px;  /* Slightly shorter for a sleeker look */
+            width: 320px; /* Precise width for 2-column fit */
+            height: 140px;  /* Slightly shorter for a sleeker look */
             flex-shrink: 0;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
+            gap: 1.25rem;
+            padding: 1.5rem 1rem;
             transition: all 0.3s ease;
+            border-radius: 12px;
         }
 
-        /* Draggable Container Fix: Ensures we don't see the scrollbar */
-        #drag-container {
-            /* Standard syntax */
-            mask-image: linear-gradient(
-                to right, 
-                transparent 0%,    /* Start invisible */
-                black 5%,          /* Quickly become solid by 5% (Short fade) */
-                black 90%,         /* Stay solid until 90% */
-                transparent 100%   /* Fade out at the end (Longer fade) */
-            );
-
-            /* Webkit prefix for Safari/Chrome support */
-            -webkit-mask-image: linear-gradient(
-                to right, 
-                transparent 0%, 
-                black 5%, 
-                black 90%, 
-                transparent 100%
-            );
-        }
+        
         .fact-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -112,11 +94,38 @@
             box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
         }
         .fact-icon {
-            font-size: 1.3rem;
+            font-size: 2rem;
             color: #000;
         }
         #drag-container::-webkit-scrollbar { display: none; }
 
+        /* Draggable Container Fix: Ensures we don't see the scrollbar */
+        #drag-container {
+            /* Standard syntax */
+            mask-image: linear-gradient(
+                to right, 
+                transparent 0%,    /* Start invisible */
+                black 5%,          /* Quickly become solid by 5% (Short fade) */
+                black 90%,         /* Stay solid until 90% */
+                transparent 100%   /* Fade out at the end (Longer fade) */
+            );
+            /* Prevents text selection highlighting */
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none;      /* IE 10 and 11 */
+            user-select: none;          /* Standard syntax */
+            
+            /* Optional: Prevents images from being dragged/ghosted by the browser */
+            -webkit-user-drag: none;
+
+            /* Webkit prefix for Safari/Chrome support */
+            -webkit-mask-image: linear-gradient(
+                to right, 
+                transparent 0%, 
+                black 5%, 
+                black 90%, 
+                transparent 100%
+            );
+        }
 
         /* Specific Darker Glass for Global Navigation */
         #global-next-btn {
@@ -235,7 +244,7 @@
                     <div class="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-5xl">
                         <div class="w-full md:w-[400px] text-center md:text-left">
                             <h2 class="text-4xl font-extrabold text-white mb-3">Product Type</h2>
-                            <p class="text-white/70 text-sm font-light leading-relaxed">
+                            <p class="text-white/70 text-md font-light leading-relaxed">
                                 Select your core business offering. This helps MARX analyze industry-specific patterns for your strategy.
                             </p>
                         </div>

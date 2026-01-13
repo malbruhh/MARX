@@ -120,12 +120,12 @@ window.addEventListener('scroll', () => {
 
 // Data for Product Type
 const productData = [
-    { id: 'b2b_saas', title: 'B2B SaaS', desc: 'Enterprise software solutions.', icon: 'fa-server' },
-    { id: 'b2c_retail', title: 'B2C Retail', desc: 'Direct consumer goods.', icon: 'fa-bag-shopping' },
+    { id: 'b2b_saas', title: 'Business-to-Business SaaS', desc: 'Enterprise software solutions.', icon: 'fa-server' },
+    { id: 'b2c_retail', title: 'Business-to-Consumer Retail', desc: 'Direct consumer goods.', icon: 'fa-bag-shopping' },
     { id: 'local_service', title: 'Local Service', desc: 'Regional physical services.', icon: 'fa-location-dot' },
     { id: 'consulting', title: 'Consulting', desc: 'Expert professional advice.', icon: 'fa-user-tie' },
     { id: 'digital_product', title: 'Digital Product', desc: 'Online courses and assets.', icon: 'fa-file-code' },
-    { id: 'fmcg', title: 'FMCG', desc: 'Consumer retail goods.', icon: 'fa-cart-flatbed' },
+    { id: 'fmcg', title: 'Fast-Moving Consumer Goods', desc: 'everyday, non-durable goods sold quickly at low prices for consumers ', icon: 'fa-cart-flatbed' },
     // Draggable Items
     { id: 'technical_tools', title: 'Technical Tools', desc: 'Niche hardware/software.', icon: 'fa-screwdriver-wrench' },
     { id: 'hospitality', title: 'Hospitality', desc: 'Tourism and travel.', icon: 'fa-bed' },
@@ -139,12 +139,12 @@ productData.forEach(item => {
     const card = document.createElement('div');
     card.className = 'fact-card glass rounded-[1.5rem] cursor-pointer';
     card.innerHTML = `
-        <div class="w-9 h-9 bg-white/90 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
+        <div class="w-14 h-14 bg-white/90 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
             <i class="fas ${item.icon} fact-icon"></i>
         </div>
         <div>
-            <h3 class="font-bold text-white text-[11px] uppercase tracking-wider">${item.title}</h3>
-            <p class="text-[9px] text-white/50 leading-tight">${item.desc}</p>
+            <h3 class="font-bold text-white text-[15px] uppercase tracking-wider">${item.title}</h3>
+            <p class="text-[11px] text-white/50 leading-tight">${item.desc}</p>
         </div>
     `;
 
@@ -181,7 +181,7 @@ dragContainer.addEventListener('mousemove', (e) => {
 
 
 
-// THIS MUST BE AT THE LOWEST PAGE
+// Put this at lowest
 const globalNextBtn = document.getElementById('global-next-btn');
 
 // Array of section IDs in order of progress
