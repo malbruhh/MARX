@@ -678,6 +678,7 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
     def content_social_posts_retail(self):
         """Rule 54: Social posts for retail"""
         self.declare(ContentTypePriorityFact(
+            
             content_type="social_posts",
             priority=1,
             frequency="daily"

@@ -1,3 +1,8 @@
+import { productData, targetCustomerData } from './components/inputData.js';
+import { initializeCarousel, enableDrag} from './components/renderCarousel.js';
+
+
+
 // Grab necessary elements
 const mainTitle = document.getElementById('main-title');
 const heroWrapper = document.getElementById('hero-wrapper');
@@ -118,66 +123,70 @@ window.addEventListener('scroll', () => {
     });
 });
 
+initializeCarousel(productData, 'product-carousel');
+initializeCarousel(targetCustomerData, 'customer-carousel');
+enableDrag('drag-product');
+enableDrag('drag-customer');
 // Data for Product Type
-const productData = [
-    { id: 'b2b_saas', title: 'Business-to-Business SaaS', desc: 'Enterprise software solutions.', icon: 'fa-server' },
-    { id: 'b2c_retail', title: 'Business-to-Consumer Retail', desc: 'Direct consumer goods.', icon: 'fa-bag-shopping' },
-    { id: 'local_service', title: 'Local Service', desc: 'Regional physical services.', icon: 'fa-location-dot' },
-    { id: 'consulting', title: 'Consulting', desc: 'Expert professional advice.', icon: 'fa-user-tie' },
-    { id: 'digital_product', title: 'Digital Product', desc: 'Online courses and assets.', icon: 'fa-file-code' },
-    { id: 'fmcg', title: 'Fast-Moving Consumer Goods', desc: 'everyday, non-durable goods sold quickly at low prices for consumers ', icon: 'fa-cart-flatbed' },
-    // Draggable Items
-    { id: 'technical_tools', title: 'Technical Tools', desc: 'Niche hardware/software.', icon: 'fa-screwdriver-wrench' },
-    { id: 'hospitality', title: 'Hospitality', desc: 'Tourism and travel.', icon: 'fa-bed' },
-    { id: 'subscription', title: 'Subscription', desc: 'Recurring revenue models.', icon: 'fa-arrows-rotate' }
-];
-const carousel = document.getElementById('product-carousel');
-const dragContainer = document.getElementById('drag-container');
+// const productData = [
+//     { id: 'b2b_saas', title: 'Business-to-Business SaaS', desc: 'Enterprise software solutions.', icon: 'fa-server' },
+//     { id: 'b2c_retail', title: 'Business-to-Consumer Retail', desc: 'Direct consumer goods.', icon: 'fa-bag-shopping' },
+//     { id: 'local_service', title: 'Local Service', desc: 'Regional physical services.', icon: 'fa-location-dot' },
+//     { id: 'consulting', title: 'Consulting', desc: 'Expert professional advice.', icon: 'fa-user-tie' },
+//     { id: 'digital_product', title: 'Digital Product', desc: 'Online courses and assets.', icon: 'fa-file-code' },
+//     { id: 'fmcg', title: 'Fast-Moving Consumer Goods', desc: 'everyday, non-durable goods sold quickly at low prices for consumers ', icon: 'fa-cart-flatbed' },
+//     // Draggable Items
+//     { id: 'technical_tools', title: 'Technical Tools', desc: 'Niche hardware/software.', icon: 'fa-screwdriver-wrench' },
+//     { id: 'hospitality', title: 'Hospitality', desc: 'Tourism and travel.', icon: 'fa-bed' },
+//     { id: 'subscription', title: 'Subscription', desc: 'Recurring revenue models.', icon: 'fa-arrows-rotate' }
+// ];
+// const carousel = document.getElementById('product-carousel');
+// const dragContainer = document.getElementById('drag-container');
 
-// Render the 9 Cards
-productData.forEach(item => {
-    const card = document.createElement('div');
-    card.className = 'fact-card glass rounded-[1.5rem] cursor-pointer';
-    card.innerHTML = `
-        <div class="w-14 h-14 bg-white/90 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
-            <i class="fas ${item.icon} fact-icon"></i>
-        </div>
-        <div>
-            <h3 class="font-bold text-white text-[15px] uppercase tracking-wider">${item.title}</h3>
-            <p class="text-[11px] text-white/50 leading-tight">${item.desc}</p>
-        </div>
-    `;
+// // Render the 9 Cards
+// productData.forEach(item => {
+//     const card = document.createElement('div');
+//     card.className = 'fact-card glass rounded-[1.5rem] cursor-pointer';
+//     card.innerHTML = `
+//         <div class="w-14 h-14 bg-white/90 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
+//             <i class="fas ${item.icon} fact-icon"></i>
+//         </div>
+//         <div>
+//             <h3 class="font-bold text-white text-[15px] uppercase tracking-wider">${item.title}</h3>
+//             <p class="text-[11px] text-white/50 leading-tight">${item.desc}</p>
+//         </div>
+//     `;
 
-    card.addEventListener('click', () => {
-        document.querySelectorAll('.fact-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-    });
+//     card.addEventListener('click', () => {
+//         document.querySelectorAll('.fact-card').forEach(c => c.classList.remove('selected'));
+//         card.classList.add('selected');
+//     });
 
-    carousel.appendChild(card);
-});
+//     carousel.appendChild(card);
+// });
 
-// Dragging Logic
-let isDown = false;
-let startX;
-let scrollLeft;
+// // Dragging Logic
+// let isDown = false;
+// let startX;
+// let scrollLeft;
 
-dragContainer.addEventListener('mousedown', (e) => {
-    isDown = true;
-    dragContainer.classList.add('active');
-    startX = e.pageX - dragContainer.offsetLeft;
-    scrollLeft = dragContainer.scrollLeft;
-});
+// dragContainer.addEventListener('mousedown', (e) => {
+//     isDown = true;
+//     dragContainer.classList.add('active');
+//     startX = e.pageX - dragContainer.offsetLeft;
+//     scrollLeft = dragContainer.scrollLeft;
+// });
 
-dragContainer.addEventListener('mouseleave', () => { isDown = false; });
-dragContainer.addEventListener('mouseup', () => { isDown = false; });
+// dragContainer.addEventListener('mouseleave', () => { isDown = false; });
+// dragContainer.addEventListener('mouseup', () => { isDown = false; });
 
-dragContainer.addEventListener('mousemove', (e) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - dragContainer.offsetLeft;
-    const walk = (x - startX) * 2; 
-    dragContainer.scrollLeft = scrollLeft - walk;
-}); 
+// dragContainer.addEventListener('mousemove', (e) => {
+//     if (!isDown) return;
+//     e.preventDefault();
+//     const x = e.pageX - dragContainer.offsetLeft;
+//     const walk = (x - startX) * 2; 
+//     dragContainer.scrollLeft = scrollLeft - walk;
+// }); 
 
 
 
@@ -189,7 +198,8 @@ const sectionIds = [
     'home',
     'card-1', // Budget
     'card-2', // Product Type
-    'analysis-section', // If you add more, insert IDs here
+    'card-3', // Target Customer
+    'card-4', // Primary Goal
     'summary-section'
 ];
 

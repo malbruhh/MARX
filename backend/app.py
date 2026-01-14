@@ -42,39 +42,39 @@ app.add_middleware(
 async def analyze(request: MarketingAnalysisRequest):
     return run_analysis(request)
 
-# GET endpoints for input options
-@app.get('/api/inputs/product-types')
-async def product_types():
-    return get_product_types()
+# # GET endpoints for input options
+# @app.get('/api/inputs/product-types')
+# async def product_types():
+#     return get_product_types()
 
-@app.get('/api/inputs/target-customers')
-async def target_customers():
-    return get_target_customers()
+# @app.get('/api/inputs/target-customers')
+# async def target_customers():
+#     return get_target_customers()
 
-@app.get('/api/inputs/primary-goals')
-async def primary_goals():
-    return get_primary_goals()
+# @app.get('/api/inputs/primary-goals')
+# async def primary_goals():
+#     return get_primary_goals()
 
-@app.get('/api/inputs/time-horizons')
-async def time_horizons():
-    return get_time_horizons()
+# @app.get('/api/inputs/time-horizons')
+# async def time_horizons():
+#     return get_time_horizons()
 
-@app.get('/api/inputs/content-capabilities')
-async def content_capabilities():
-    return get_content_capabilities()
+# @app.get('/api/inputs/content-capabilities')
+# async def content_capabilities():
+#     return get_content_capabilities()
 
-@app.get('/api/inputs/sales-structures')
-async def sales_structures():
-    return get_sales_structures()
+# @app.get('/api/inputs/sales-structures')
+# async def sales_structures():
+#     return get_sales_structures()
 
-@app.get('/api/inputs/priority-kpis')
-async def priority_kpis():
-    return get_priority_kpis()
+# @app.get('/api/inputs/priority-kpis')
+# async def priority_kpis():
+#     return get_priority_kpis()
 
-# GET endpoint for all input options in one request
-@app.get('/api/inputs/all')
-async def all_input_options():
-    return get_all_input_options()
+# # GET endpoint for all input options in one request
+# @app.get('/api/inputs/all')
+# async def all_input_options():
+#     return get_all_input_options()
 
 
 if __name__ == "__main__":

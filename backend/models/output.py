@@ -61,3 +61,17 @@ class MarketingRecommendation(BaseModel):
         ...,
         description="Specific actionable tactics for each channel"
     )
+
+    # === COMBINED SECTIONS: Action Plan & Resources ===
+
+    # Action plan: Quick wins, KPIs, risks, and scaling triggers
+    action_plan: List[str] = Field(
+        default=[],
+        description="Combined action items: quick wins, KPIs to track, risks to mitigate, and scaling triggers"
+    )
+
+    # Resources: Tools, capabilities, partners, and cost optimization tips
+    resources: List[str] = Field(
+        default=[],
+        description="Combined resources: recommended tools, required capabilities, potential partners, and cost-saving tips"
+    )

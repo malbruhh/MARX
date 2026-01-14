@@ -96,12 +96,22 @@ def _aggregate_recommendations(engine: ComprehensiveMarketingEngine, request: Ma
     # Calculate monthly budget
     monthly_budget = _calculate_monthly_budget(request)
 
+    # === BUILD COMBINED SECTIONS ===
+
+    # Build action plan (quick wins + KPIs + risks + scaling)
+    action_plan = _build_action_plan(facts)
+
+    # Build resources (tools + capabilities + partners + cost tips)
+    resources = _build_resources(facts)
+
     return MarketingRecommendation(
         recommended_strategies=strategy_codes,
         critical_insights=critical_insights,
         budget_allocation=budget_allocation,
         total_monthly_budget=monthly_budget,
-        channel_tactics=channel_tactics
+        channel_tactics=channel_tactics,
+        action_plan=action_plan,
+        resources=resources
     )
 
 
@@ -147,9 +157,9 @@ def _generate_critical_insights(facts: list, request: MarketingAnalysisRequest) 
     insights = []
 
     # Extract key facts
-    strategic_approach = next((f['approach'] for f in facts if isinstance(f, StrategicApproachFact)), None)
-    marketing_focus = next((f['focus'] for f in facts if isinstance(f, MarketingFocusFact)), None)
-    sales_cycle = next((f['cycle'] for f in facts if isinstance(f, SalesCycleFact)), None)
+    # strategic_approach = next((f['approach'] for f in facts if isinstance(f, StrategicApproachFact)), None)
+    # marketing_focus = next((f['focus'] for f in facts if isinstance(f, MarketingFocusFact)), None)
+    # sales_cycle = next((f['cycle'] for f in facts if isinstance(f, SalesCycleFact)), None)
 
     # Insight 1: Primary strategic direction
     if request.primary_goal == PrimaryGoal.AWARENESS:
@@ -160,12 +170,19 @@ def _generate_critical_insights(facts: list, request: MarketingAnalysisRequest) 
         insights.append("Strengthen customer relationships - invest in personalized communication and value-added content for existing customers")
 
     # Insight 2: Budget and channel strategy
-    budget_level = _determine_budget_level(request.raw_budget_amount)
-    if budget_level in [BudgetLevel.MICRO, BudgetLevel.SMALL]:
-        insights.append("With limited budget, concentrate on high-ROI organic channels (SEO, content) and test paid channels with small experiments")
-    elif budget_level in [BudgetLevel.LARGE, BudgetLevel.ENTERPRISE]:
-        insights.append("Leverage multi-channel approach - diversify across paid and organic to maximize reach while maintaining efficiency")
+    # Extract budget level from inferred facts (already classified by engine Rule 1)
+    budget_level_fact = next((f for f in facts if isinstance(f, BudgetLevelFact)), None)
+
+    if budget_level_fact:
+        budget_tier = budget_level_fact.get('tier', '')
+        if budget_tier in [BudgetLevel.MICRO.value, BudgetLevel.SMALL.value]:
+            insights.append("With limited budget, concentrate on high-ROI organic channels (SEO, content) and test paid channels with small experiments")
+        elif budget_tier in [BudgetLevel.LARGE.value, BudgetLevel.ENTERPRISE.value]:
+            insights.append("Leverage multi-channel approach - diversify across paid and organic to maximize reach while maintaining efficiency")
+        else:
+            insights.append("Balance paid acquisition with organic growth - allocate 60% to proven channels and 40% to testing new opportunities")
     else:
+        # Fallback if no budget fact (shouldn't happen)
         insights.append("Balance paid acquisition with organic growth - allocate 60% to proven channels and 40% to testing new opportunities")
 
     # Insight 3: Product-specific strategy
@@ -401,16 +418,84 @@ def _calculate_monthly_budget(request: MarketingAnalysisRequest) -> float:
     return round(request.raw_budget_amount / months, 2)
 
 
-def _determine_budget_level(amount: float) -> BudgetLevel:
-    """Determine budget level from raw amount"""
+# ==================== COMBINED OUTPUT BUILDERS ====================
 
-    if amount < 1000:
-        return BudgetLevel.MICRO
-    elif amount < 10000:
-        return BudgetLevel.SMALL
-    elif amount < 100000:
-        return BudgetLevel.MEDIUM
-    elif amount < 1000000:
-        return BudgetLevel.LARGE
-    else:
-        return BudgetLevel.ENTERPRISE
+def _build_action_plan(facts: list) -> list:
+    """Build combined action plan from quick wins, KPIs, risks, and scaling triggers"""
+    action_plan = []
+
+    # Extract quick wins (top 2)
+    quick_win_facts = [f for f in facts if isinstance(f, QuickWinFact)]
+    priority_order = {'Critical': 1, 'High': 2, 'Medium': 3, 'Low': 4}
+    sorted_wins = sorted(quick_win_facts, key=lambda f: priority_order.get(f.get('priority', 'Medium'), 3))
+
+    for win_fact in sorted_wins[:2]:
+        action = win_fact.get('action', '')
+        priority = win_fact.get('priority', 'High')
+        action_plan.append(f"[Quick Win - {priority}] {action}")
+
+    # Extract KPIs (top 2 primary)
+    kpi_facts = [f for f in facts if isinstance(f, KPIRecommendationFact)]
+    primary_kpis = [f for f in kpi_facts if f.get('priority') == 'primary']
+
+    for kpi_fact in primary_kpis[:2]:
+        kpi = kpi_fact.get('kpi', '')
+        target = kpi_fact.get('target', '')
+        action_plan.append(f"[KPI] {kpi}: {target}")
+
+    # Extract risks (top 2, simplified)
+    risk_facts = [f for f in facts if isinstance(f, RiskIdentificationFact)]
+
+    for risk_fact in risk_facts[:2]:
+        risk = risk_fact.get('risk', '')
+        mitigation = risk_fact.get('mitigation', '')
+        action_plan.append(f"[Risk] {risk} - {mitigation}")
+
+    # Extract scaling trigger (top 1)
+    trigger_facts = [f for f in facts if isinstance(f, ScalingTriggerFact)]
+
+    for trigger_fact in trigger_facts[:1]:
+        trigger = trigger_fact.get('trigger', '')
+        action_plan.append(f"[Scaling] {trigger}")
+
+    return action_plan
+
+
+def _build_resources(facts: list) -> list:
+    """Build combined resources from tools, capabilities, partners, and cost tips"""
+    resources = []
+
+    # Extract tools (top 3)
+    tool_facts = [f for f in facts if isinstance(f, ToolRecommendationFact)]
+
+    for tool_fact in tool_facts[:3]:
+        tool = tool_fact.get('tool', '')
+        category = tool_fact.get('category', '').replace('_', ' ').title()
+        resources.append(f"[Tool] {tool} - {category}")
+
+    # Extract capabilities (top 2)
+    capability_facts = [f for f in facts if isinstance(f, CapabilityRequirementFact)]
+    importance_order = {'Critical': 1, 'High': 2, 'Medium': 3, 'Low': 4}
+    sorted_capabilities = sorted(capability_facts, key=lambda f: importance_order.get(f.get('importance', 'Medium'), 3))
+
+    for cap_fact in sorted_capabilities[:2]:
+        capability = cap_fact.get('capability', '')
+        importance = cap_fact.get('importance', 'Medium')
+        resources.append(f"[Capability - {importance}] {capability}")
+
+    # Extract partners (top 1)
+    partner_facts = [f for f in facts if isinstance(f, PartnerRecommendationFact)]
+
+    for partner_fact in partner_facts[:1]:
+        partner = partner_fact.get('partner_type', '')
+        resources.append(f"[Partner] {partner}")
+
+    # Extract cost tips (top 2)
+    cost_facts = [f for f in facts if isinstance(f, CostOptimizationFact)]
+
+    for cost_fact in cost_facts[:2]:
+        tip = cost_fact.get('tip', '')
+        if tip:
+            resources.append(f"[Cost Tip] {tip}")
+
+    return resources
