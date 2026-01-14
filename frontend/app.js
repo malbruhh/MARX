@@ -1,4 +1,4 @@
-import { productData, targetCustomerData } from './components/inputData.js';
+import { productData, targetCustomerData, primaryGoalData} from './components/inputData.js';
 import { initializeCarousel, enableDrag} from './components/renderCarousel.js';
 
 
@@ -125,8 +125,10 @@ window.addEventListener('scroll', () => {
 
 initializeCarousel(productData, 'product-carousel');
 initializeCarousel(targetCustomerData, 'customer-carousel');
+initializeCarousel(primaryGoalData, 'goal-carousel');
 enableDrag('drag-product');
 enableDrag('drag-customer');
+enableDrag('drag-goal');
 // Data for Product Type
 // const productData = [
 //     { id: 'b2b_saas', title: 'Business-to-Business SaaS', desc: 'Enterprise software solutions.', icon: 'fa-server' },

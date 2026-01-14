@@ -99,15 +99,16 @@
         }
 
         /* REUSABLE DRAG CONTAINER STYLE */
+
         .drag-wrapper::-webkit-scrollbar { 
             display: none; 
         }
         .drag-wrapper.active {
             cursor: grabbing;
         }
-        .drag-wrapper.active .fact-card {
+        /* .drag-wrapper.active .fact-card {
             transform: scale(0.98);
-        }
+        } */
         .drag-wrapper {
             scrollbar-width: none; 
             -ms-overflow-style: none; 
@@ -127,12 +128,12 @@
                 transparent 100%
             );
 
-    /* UX: Prevent highlighting and ghosting */
-    user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    -webkit-user-drag: none;
-}
+            /* UX: Prevent highlighting and ghosting */
+            user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            -webkit-user-drag: none;
+        }
 
         /* Specific Darker Glass for Global Navigation */
         #global-next-btn {
@@ -279,7 +280,24 @@
                     </div>
                 </section>
             </main>
-            <div id="card-4" class="glass w-full max-w-2xl min-h-[50vh] rounded-[3rem] opacity-30 scale-95 flex items-center justify-center">
+            <!-- Primary Goal Card -->
+            <main class="relative">
+                <section id="card-4" class="min-h-screen flex items-center justify-center px-4">
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-5xl">
+                        <div class="w-full md:w-[400px] text-center md:text-left">
+                            <h2 class="text-4xl font-extrabold text-white mb-3">Primary Goal Target</h2>
+                            <p class="text-white/70 text-md font-light leading-relaxed">
+                                Your Goal for now. PLease fill this later
+                            </p>
+                        </div>
+                        <div id="drag-goal" class="drag-wrapper w-full max-w-[580px] overflow-hidden py-8 px-2 cursor-grab active:cursor-grabbing">
+                            <div id="goal-carousel" class="grid grid-flow-col grid-rows-3 gap-5 transition-transform duration-500">
+                                </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            <div id="card-5" class="glass w-full max-w-2xl min-h-[50vh] rounded-[3rem] opacity-30 scale-95 flex items-center justify-center">
                 <p class="text-purple-900 font-bold">Next Category Preview...</p>
             </div>
         </div>

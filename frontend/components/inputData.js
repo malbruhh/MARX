@@ -21,3 +21,13 @@ export const targetCustomerData = [
     {id: 'budget_shopper', title: 'Budget Shopper', desc: 'Price-sensitive customers looking for value.', icon: 'fa-tags'},
     {id: 'luxury', title: 'Luxury', desc: 'High-net-worth individuals seeking exclusivity.', icon: 'fa-gem'}
 ];
+
+// class PrimaryGoal(str, Enum):
+//     AWARENESS = "brand_awareness"
+//     LEAD_GEN = "immediate_lead_generation"
+//     RETENTION = "customer_retention_loyalty"
+export const primaryGoalData = [
+    {id: 'brand_awareness', title: 'Brand Awareness', desc: 'Increase market visibility and build brand recognition.', icon: 'fa-eye'},
+    {id: 'immediate_lead_generation', title: 'Immediate Lead Generation', desc: 'Focus on capturing new prospects and immediate sales inquiries.', icon: 'fa-magnet'},
+    {id: 'customer_retention_loyalty', title: 'Customer Retention & Loyalty', desc: 'Strengthen relationships with existing customers for long-term growth.', icon: 'fa-handshake-angle'},
+]
