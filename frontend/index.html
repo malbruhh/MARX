@@ -134,7 +134,36 @@
             -ms-user-select: none;
             -webkit-user-drag: none;
         }
+        
+        /* Custom Slider Thumb Styling */
+        #time-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            margin-top: -8px; /* Centers thumb on the track */
+        }
 
+        #time-slider::-moz-range-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+        .slider-label:hover .glass-icon {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .slider-label:hover i {
+            color: white;
+        }
+        
         /* Specific Darker Glass for Global Navigation */
         #global-next-btn {
             background: rgba(30, 10, 50, 0.7); /* Darker purple for prompting action */
@@ -214,7 +243,7 @@
         </div>
     </main>
     <!-- Container progress bar -->
-    <section id="analysis-section" class="relative min-h-[400vh] flex flex-row px-10 pb-40">   
+    <section id="analysis-section" class="relative min-h-[200vh] flex flex-row px-10 pb-40">   
         <div class="sticky top-32 h-[75vh] flex flex-col items-center z-40 ml-10">
             <div class="w-1 h-full bg-white/20 absolute rounded-full"></div>
             <div class="flex flex-col justify-between h-full py-4 z-50">
@@ -248,7 +277,7 @@
             
             <!-- Fact Cards -->
             <main class="relative">
-                <section id="card-2" class="min-h-screen flex items-center justify-center px-4">
+                <section id="card-2" class="min-h-[25vh] flex items-center justify-center px-4">
                     <div class="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-5xl">
                         <div class="w-full md:w-[400px] text-center md:text-left">
                             <h2 class="text-4xl font-extrabold text-white mb-3">Product Type</h2>
@@ -265,7 +294,7 @@
             </main>
             <!-- Target Customer Card -->
             <main class="relative">
-                <section id="card-3" class="min-h-screen flex items-center justify-center px-4">
+                <section id="card-3" class="min-h-[25vh] flex items-center justify-center px-4">
                     <div class="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-5xl">
                         <div class="w-full md:w-[400px] text-center md:text-left">
                             <h2 class="text-4xl font-extrabold text-white mb-3">Choose Your Target Customer</h2>
@@ -282,7 +311,7 @@
             </main>
             <!-- Primary Goal Card -->
             <main class="relative">
-                <section id="card-4" class="min-h-screen flex items-center justify-center px-4">
+                <section id="card-4" class="min-h-[25vh] flex items-center justify-center px-4">
                     <div class="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-5xl">
                         <div class="w-full md:w-[400px] text-center md:text-left">
                             <h2 class="text-4xl font-extrabold text-white mb-3">Primary Goal Target</h2>
@@ -297,16 +326,76 @@
                     </div>
                 </section>
             </main>
-            <div id="card-5" class="glass w-full max-w-2xl min-h-[50vh] rounded-[3rem] opacity-30 scale-95 flex items-center justify-center">
-                <p class="text-purple-900 font-bold">Next Category Preview...</p>
-            </div>
+            <!-- Time Horizon Card  -->
+            <main class="relative">
+                <section id="card-5" class="min-h-[25vh] flex items-center justify-center px-4">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-16 md:gap-x-24 w-full max-w-7xl">
+                        <div class="w-full md:w-[400px] text-center md:text-left">
+                            <h2 class="text-4xl font-extrabold text-white mb-3">Time Horizon</h2>
+                            <p class="text-white/70 text-sm font-light leading-relaxed">
+                                Define the duration for your strategic plan. This allows MARX to adjust the intensity and frequency of the projected patterns.
+                            </p>
+                        </div>
+                        <div id="time-horizon-container" class="w-full max-w-[580px] py-8 px-2">
+                        </div>
+                    </div>
+                </section>
+            </main>
+            <!-- Content Capability Card  -->
+            <main class="relative">
+                <section id="card-6" class="min-h-[25vh] flex items-center justify-center px-4">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-16 md:gap-x-24 w-full max-w-7xl">
+                        <div class="w-full md:w-[400px] text-center md:text-left">
+                            <h2 class="text-4xl font-extrabold text-white mb-3">Content Capability</h2>
+                            <p class="text-white/70 text-sm font-light leading-relaxed">
+                            Assess your team's ability to produce marketing assets
+                        </div>
+                        <div id="capability-container" class="w-full max-w-[580px] py-8 px-2">
+                        </div>
+                    </div>
+                </section>
+            </main>
+            <!-- Sales Structure Card -->
+            <main class="relative">
+                <section id="card-7" class="min-h-[25vh] flex items-center justify-center px-4">
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-5xl">
+                        <div class="w-full md:w-[400px] text-center md:text-left">
+                            <h2 class="text-4xl font-extrabold text-white mb-3">Sales Structure</h2>
+                            <p class="text-white/70 text-md font-light leading-relaxed">
+                                Choose the primary way your business closes deals to refine the conversion patterns for your strategy.
+                            </p>
+                        </div>
+                        <div id="drag-goal" class="drag-wrapper w-full max-w-[580px] overflow-hidden py-8 px-2 cursor-grab active:cursor-grabbing">
+                            <div id="sales-carousel" class="grid grid-flow-col grid-rows-3 gap-5 transition-transform duration-500">
+                                </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            <main class="relative">
+                <section id="card-8" class="min-h-screen flex items-center justify-center px-4">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-16 md:gap-x-32 w-full max-w-7xl">
+                        
+                        <div class="w-full md:w-[400px] text-center md:text-left">
+                            <h2 class="text-4xl font-extrabold text-white mb-3">Priority KPI</h2>
+                            <p class="text-white/70 text-sm font-light leading-relaxed">
+                                Select the metric that matters most for your current phase to optimize outcome in the final report.
+                            </p>
+                        </div>
+                        <div id="drag-kpi" class="drag-wrapper w-full max-w-[580px] py-8 px-2 cursor-grab active:cursor-grabbing">
+                            <div id="kpi-carousel" class="grid grid-flow-col grid-rows-3 gap-5 transition-transform duration-500">
+                                </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
         </div>
     </section> <!-- Step circle section-->
     <section id="summary-section" class="h-screen flex items-center justify-center">
         <h2 class="text-white text-4xl font-bold">Summary Page</h2>
     </section>
 
-    <section id="analysis-section" class="min-h-screen flex items-center justify-center p-10">
+    <section id="final-section" class="min-h-screen flex items-center justify-center p-10">
         <div class="glass w-full max-w-5xl h-[600px] rounded-[3rem] flex items-center justify-center border-dashed border-2 border-white/20">
             <p class="text-3xl font-bold text-white/20 tracking-widest uppercase">Analysis Module Placeholder</p>
         </div>
