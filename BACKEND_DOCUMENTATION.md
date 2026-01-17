@@ -11,7 +11,11 @@ Comprehensive Documentation for Expert System Backend
 3. [Intermediate Facts](#3-intermediate-facts)
 4. [Expert System Rules (104 Rules)](#4-expert-system-rules)
 5. [Output Structure](#5-output-structure)
+   - [Action Plan Structure](#action-plan-structure)
+   - [Resources Structure](#resources-structure)
+   - [Channel to Strategy Mapping](#channel-to-strategy-mapping)
 6. [Example Scenarios](#6-example-scenarios)
+7. [Changelog](#changelog)
 
 ---
 
@@ -1173,8 +1177,78 @@ THEN:
       "priority": "Medium",
       "expected_outcome": "Establish thought leadership and generate inbound leads"
     }
+  ],
+
+  "action_plan": [
+    "[Quick Win - Critical] Optimize Google My Business listing",
+    "[Quick Win - High] Complete competitor marketing analysis",
+    "[KPI] Website Conversion Rate: 2-5% improvement per quarter",
+    "[KPI] Landing Page Conversion Rate: 10-20% for cold traffic",
+    "[Risk] Limited budget may restrict channel diversification - Focus on 1-2 high-ROI channels",
+    "[Scaling] When CPA is below target for 2 consecutive weeks"
+  ],
+
+  "resources": [
+    "[Tool] Google Analytics (free) - Analytics",
+    "[Tool] Mailchimp Free Tier - Email",
+    "[Tool] Canva Free - Design",
+    "[Capability - Critical] Content Writing & Thought Leadership",
+    "[Capability - High] Marketing Automation & Email Workflows",
+    "[Partner] Content Marketing Agency or Freelance Writers",
+    "[Cost Tip] Use free tools: Google Analytics, Google Search Console, Mailchimp free tier"
   ]
 }
+```
+
+### Action Plan Structure
+
+The `action_plan` field combines multiple fact types into a unified list of actionable items:
+
+| Prefix | Source Fact Type | Max Items | Description |
+|--------|------------------|-----------|-------------|
+| `[Quick Win - {priority}]` | QuickWinFact | 2 | Immediate low-effort actions, sorted by priority (Critical > High > Medium > Low) |
+| `[KPI]` | KPIRecommendationFact | 2 | Primary KPIs to track with target values |
+| `[Risk]` | RiskIdentificationFact | 2 | Identified risks with mitigation strategies |
+| `[Scaling]` | ScalingTriggerFact | 1 | Trigger condition for scaling marketing efforts |
+
+### Resources Structure
+
+The `resources` field combines tools, capabilities, partners, and cost optimization tips:
+
+| Prefix | Source Fact Type | Max Items | Description |
+|--------|------------------|-----------|-------------|
+| `[Tool]` | ToolRecommendationFact | 3 | Recommended marketing tools with category |
+| `[Capability - {importance}]` | CapabilityRequirementFact | 2 | Required skills/capabilities, sorted by importance |
+| `[Partner]` | PartnerRecommendationFact | 1 | Recommended partner type to consider |
+| `[Cost Tip]` | CostOptimizationFact | 2 | Budget optimization recommendations |
+
+### Channel to Strategy Mapping
+
+The service layer maps internal channel names to strategy codes:
+
+```python
+CHANNEL_TO_STRATEGY = {
+    "organic_seo": "S1",           # Maps to organic_seo_content
+    "paid_search": "S2",           # Maps to paid_search_google_ads
+    "paid_social": "S3",           # Maps to paid_social_facebook_instagram_linkedin
+    "email_marketing": "S4",       # Maps to email_marketing
+    "content_marketing": "S5",     # Maps to content_marketing_blog_video
+    "local_seo": "S6",             # Maps to local_seo_gmb
+    "events_webinars": "S8",       # Maps to events_and_webinars
+    "influencer": "S9",            # Maps to influencer_partnerships
+    "community": "S9",             # Also maps to partnerships
+    "retargeting": "S2",           # Grouped with PPC
+    "referral": "S9",              # Grouped with partnerships
+}
+```
+
+**Special Case - S7 (Account-Based Marketing):**
+ABM is not channel-based but inferred from conditions:
+```
+IF: ProductType IN [B2B_SAAS, CONSULTING]
+    AND TargetCustomer = B2B_LARGE
+    AND SalesStructure = SALES_TEAM
+THEN: Add S7 to recommended_strategies
 ```
 
 ### Strategy Code Mapping
@@ -1305,6 +1379,22 @@ THEN:
       "priority": "Medium",
       "expected_outcome": "Establish thought leadership and generate inbound leads"
     }
+  ],
+
+  "action_plan": [
+    "[Quick Win - High] Complete competitor marketing analysis",
+    "[KPI] Organic Traffic Growth: 15-30% monthly growth",
+    "[KPI] Domain Authority: +5 points per quarter",
+    "[Risk] Owner-driven sales may limit scalability - Implement marketing automation, nurture sequences, and self-service options",
+    "[Scaling] When organic traffic grows 20% month-over-month"
+  ],
+
+  "resources": [
+    "[Tool] Google Ads - Paid Search",
+    "[Tool] Mailchimp or ConvertKit - Email",
+    "[Tool] SEMrush or Ahrefs (basic) - Seo",
+    "[Partner] Local SEO Specialist or Agency",
+    "[Cost Tip] Repurpose content across multiple channels"
   ]
 }
 ```
@@ -1434,6 +1524,22 @@ THEN:
       "priority": "High",
       "expected_outcome": "Establish thought leadership and generate inbound leads"
     }
+  ],
+
+  "action_plan": [
+    "[Quick Win - High] Optimize LinkedIn company page and start posting",
+    "[KPI] Sales Qualified Leads: 20% MQL to SQL conversion",
+    "[KPI] SQL to Close Rate: 25-40% depending on sales cycle",
+    "[Risk] Short timeline incompatible with long sales cycle - Set realistic expectations, focus on pipeline building not closed deals",
+    "[Scaling] When CPA is below target for 2 consecutive weeks"
+  ],
+
+  "resources": [
+    "[Tool] HubSpot or Marketo - Marketing Automation",
+    "[Tool] LinkedIn Sales Navigator - Prospecting",
+    "[Tool] Clearbit - Data Enrichment",
+    "[Capability - Medium] Technical SEO & Content Optimization",
+    "[Partner] B2B PR Firm for Media Relations"
   ]
 }
 ```
@@ -1463,6 +1569,20 @@ THEN:
 
 ---
 
-**Document Version:** 1.0
-**Last Updated:** 2026-01-11
+**Document Version:** 1.1
+**Last Updated:** 2026-01-18
 **System:** MARX (Marketing Analysis Recommendation eXpert System)
+
+### Changelog
+
+**v1.1 (2026-01-18)**
+- Added `action_plan` field to output schema - combines Quick Wins, KPIs, Risks, and Scaling Triggers
+- Added `resources` field to output schema - combines Tools, Capabilities, Partners, and Cost Tips
+- Added Channel to Strategy Mapping section with internal channel name mappings
+- Updated example outputs to include new `action_plan` and `resources` fields
+- Documented ABM (S7) special case inference logic
+
+**v1.0 (2026-01-11)**
+- Initial documentation release
+- 104 rules across 10 layers
+- Complete input/output schema documentation
