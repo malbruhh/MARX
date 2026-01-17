@@ -1,31 +1,29 @@
-const cards = [
-    document.getElementById('card-1'),
-    document.getElementById('card-2'),
-    document.getElementById('card-3'),
-    document.getElementById('card-4'),
-    document.getElementById('card-5'),
-    document.getElementById('card-6'),
-    document.getElementById('card-7'),
-    document.getElementById('card-8'),
-    document.getElementById('summary-section'),
-];
+// /frontend/hooks/scrollStepListener.js
 
 export const updateStepListener = () => {
+    const cardIds = [
+        'card-1', 'card-2', 'card-3', 'card-4', 
+        'card-5', 'card-6', 'card-7', 'card-8', 
+        'summary-section'
+    ];
+
     window.addEventListener('scroll', () => {
-        const scrollVal = window.scrollY;
         const windowHeight = window.innerHeight;
     
-        // Check which "card" is currently in the middle of the screen
-        cards.forEach((card, index) => {
+        cardIds.forEach((id, index) => {
+            const card = document.getElementById(id);
             if (!card) return;
+
             const rect = card.getBoundingClientRect();
             const stepElement = document.getElementById(`step-${index + 1}`);
     
-            // If the card top has entered the upper half of the viewport
-            if (rect.top < windowHeight * 0.5) {
-                stepElement.classList.add('active');
-            } else {
-                stepElement.classList.remove('active');
+            // FIX: Only update classes if the step circle exists in the HTML
+            if (stepElement) {
+                if (rect.top < windowHeight * 0.5) {
+                    stepElement.classList.add('active');
+                } else {
+                    stepElement.classList.remove('active');
+                }
             }
         });
     });

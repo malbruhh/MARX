@@ -1,3 +1,4 @@
+import { saveState } from "../store/state.js";
 
 export function initializeSlider(data, containerId) {
     const container = document.getElementById(containerId);
@@ -37,41 +38,22 @@ export function initializeSlider(data, containerId) {
         progress.style.width = `${percent}%`;
 
         // Update Labels (Highlighting)
-        labels.forEach((label, i) => {
-            const icon = label.querySelector('.glass-icon');
-            const iconImg = label.querySelector('i');
-            
-            if (i == val) {
-                label.classList.add('opacity-100', 'scale-110');
-                label.classList.remove('opacity-50');
-                icon.classList.add('bg-white');
-                iconImg.classList.replace('text-white/50', 'text-black');
-            } else {
-                label.classList.add('opacity-50');
-                label.classList.remove('opacity-100', 'scale-110');
-                icon.classList.remove('bg-white');
-                iconImg.classList.replace('text-black', 'text-white/50');
-            }
+        labels.forEach((label) => {
+            label.style.cursor = 'pointer';
+            label.addEventListener('click', () => {
+                const index = label.getAttribute('data-index');
+                slider.value = index;
+                // Dispatching 'input' is enough; the listener below will catch it and run updateUI once.
+                slider.dispatchEvent(new Event('input')); 
+            });
+        //save state
+        const stateKey = containerId.includes('time') ? 'time_horizon' : 'content_capability';
+        saveState(stateKey, data[val].id);
         });
-
-        // This value is what you will send to your Python Enum
-        console.log("Selected Time Horizon ID:", data[val].id);
+        const categoryLabel = containerId.replace('-container', '').replace('-', ' ').toUpperCase();
+        console.log(`[STATE UPDATE] ${categoryLabel}:`, data[val].id);
     };
-
-    labels.forEach((label) => {
-        label.style.cursor = 'pointer';
-        
-        label.addEventListener('click', () => {
-            const index = label.getAttribute('data-index');
-            slider.value = index;
-            updateUI(index);
-            slider.dispatchEvent(new Event('input'));
-        });
-    });
-
-    slider.addEventListener('input', (e) => updateUI(e.target.value));
-    updateUI(slider.value);
-    slider.addEventListener('input', (e) => updateUI(e.target.value));
     
+    slider.addEventListener('input', (e) => updateUI(e.target.value));
     updateUI(slider.value);
 }

@@ -69,7 +69,10 @@
         /* Input formatting specific styles */
         #budget-input:focus::placeholder { opacity: 0; }
         ::-webkit-scrollbar { width: 0px; }
-
+        #budget-input {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            /* ... existing styles ... */
+        }
         .fact-card {
             width: 320px; /* Precise width for 2-column fit */
             height: 140px;  /* Slightly shorter for a sleeker look */
@@ -319,7 +322,7 @@
                                 Your Goal for now. PLease fill this later
                             </p>
                         </div>
-                        <div id="drag-goal" class="drag-wrapper w-full max-w-[580px] overflow-hidden py-8 px-2 cursor-grab active:cursor-grabbing">
+                        <div class="drag-wrapper w-full max-w-[580px] overflow-hidden py-8 px-2 cursor-grab active:cursor-grabbing">
                             <div id="goal-carousel" class="grid grid-flow-col grid-rows-3 gap-5 transition-transform duration-500">
                                 </div>
                         </div>
@@ -365,7 +368,7 @@
                                 Choose the primary way your business closes deals to refine the conversion patterns for your strategy.
                             </p>
                         </div>
-                        <div id="drag-goal" class="drag-wrapper w-full max-w-[580px] overflow-hidden py-8 px-2 cursor-grab active:cursor-grabbing">
+                        <div class="drag-wrapper w-full max-w-[580px] overflow-hidden py-8 px-2 cursor-grab active:cursor-grabbing">
                             <div id="sales-carousel" class="grid grid-flow-col grid-rows-3 gap-5 transition-transform duration-500">
                                 </div>
                         </div>
@@ -375,24 +378,22 @@
             <main class="relative">
                 <section id="card-8" class="min-h-screen flex items-center justify-center px-4">
                     <div class="flex flex-col md:flex-row items-center justify-between gap-16 md:gap-x-32 w-full max-w-7xl">
-                        
                         <div class="w-full md:w-[400px] text-center md:text-left">
                             <h2 class="text-4xl font-extrabold text-white mb-3">Priority KPI</h2>
                             <p class="text-white/70 text-sm font-light leading-relaxed">
                                 Select the metric that matters most for your current phase to optimize outcome in the final report.
                             </p>
                         </div>
-                        <div id="drag-kpi" class="drag-wrapper w-full max-w-[580px] py-8 px-2 cursor-grab active:cursor-grabbing">
+                        <div class="drag-wrapper w-full max-w-[580px] py-8 px-2 cursor-grab active:cursor-grabbing">
                             <div id="kpi-carousel" class="grid grid-flow-col grid-rows-3 gap-5 transition-transform duration-500">
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
             </main>
         </div>
     </section> <!-- Step circle section-->
-    <section id="summary-section" class="h-screen flex items-center justify-center">
-        <h2 class="text-white text-4xl font-bold">Summary Page</h2>
+    <section id="summary-section" class="min-h-screen flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-700">
     </section>
 
     <section id="final-section" class="min-h-screen flex items-center justify-center p-10">

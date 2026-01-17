@@ -1,75 +1,94 @@
+// /frontend/components/nextBtn.js
+import { userInput, sectionToStateMap } from '../store/state.js';
+import { renderSummary } from '../screens/renderSummary.js';
+
 const sectionIds = [
     'home',
     'card-1', // Budget
     'card-2', // Product Type
     'card-3', // Target Customer
     'card-4', // Primary Goal
-    'card-5', // time horizon
-    'card-6', // capability
-    'card-7', // sales structure
-    'card-8', // kpi
+    'card-5', // Time Horizon
+    'card-6', // Content Capability
+    'card-7', // Sales Structure
+    'card-8', // Priority KPI
     'summary-section'
 ];
+
 export const nextSectionBtn = () => {
     const globalNextBtn = document.getElementById('global-next-btn');
 
     globalNextBtn.addEventListener('click', () => {
-        const scrollVal = window.scrollY + (window.innerHeight / 2); // Center-based detection
-        let nextTarget = sectionIds[sectionIds.length - 1]; // Default to summary
+        const scrollVal = window.scrollY + (window.innerHeight / 2);
+        let nextTarget = sectionIds[sectionIds.length - 1];
 
-        // Loop through sections to find where we currently are
+        // Find the current active section to determine the next one
         for (let i = 0; i < sectionIds.length - 1; i++) {
             const element = document.getElementById(sectionIds[i]);
-            if (element) {
-                const rect = element.getBoundingClientRect();
-                const elementTop = rect.top + window.pageYOffset;
-                
-                // If we are currently "in" this section, the next target is i+1
-                if (scrollVal < elementTop + element.offsetHeight) {
-                    nextTarget = sectionIds[i + 1];
-                    break;
-                }
+            if (element && scrollVal < (element.getBoundingClientRect().top + window.pageYOffset + element.offsetHeight)) {
+                nextTarget = sectionIds[i + 1];
+                break;
             }
         }
-
-        const targetElement = document.getElementById(nextTarget);
-        if (targetElement) {
-            // Use centering logic for a professional scroll focus
-            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-            const offsetPosition = elementPosition - (window.innerHeight / 2) + (targetElement.offsetHeight / 2);
-
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
+        if (!nextTarget) nextTarget = 'summary-section';
+        // Logic to the Summary Section
+        if (nextTarget === 'summary-section') {
+            const missing = Object.entries(sectionToStateMap).find(([id, key]) => !userInput[key]);
+            if (missing) {
+            const missingCardId = missing[0];
+            const sectionName = missing[1].replace('_', ' ').toUpperCase();
+            alert(`Please complete the ${sectionName} section.`);
+            scrollToSection(missingCardId);
+            return; // Prevent scrolling to the summary
+            }
+            renderSummary();
+            const summary = document.getElementById('summary-section');
+            summary.style.opacity = '1';
+            summary.style.pointerEvents = 'auto';
         }
+
+        const target = document.getElementById(nextTarget);
+        window.scrollTo({
+            top: target.getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2) + (target.offsetHeight / 2),
+            behavior: 'smooth'
+        });
+
+        // scrollToSection(nextTarget);
     });
 
-    // Hide the button when on  Home and the Summary Page
+    // Button Visibility Logic
     window.addEventListener('scroll', () => {
         const firstCard = document.getElementById('card-1');
         const summarySection = document.getElementById('summary-section');
-        const nextBtn = document.getElementById('global-next-btn');
-        
-        if (!firstCard || !summarySection || !nextBtn) return;
+        if (!firstCard || !summarySection || !globalNextBtn) return;
 
         const firstCardRect = firstCard.getBoundingClientRect();
         const summaryRect = summarySection.getBoundingClientRect();
 
-        // Logic: 
-        // 1. Show if the top of the Budget card is near the middle of the screen
-        // 2. Hide if the Summary section has reached the screen
         const isInsideForm = firstCardRect.top < (window.innerHeight * 0.7);
-        const hasReachedEnd = summaryRect.top < (window.innerHeight * 0.9);
+        const hasReachedEnd = summaryRect.top < (window.innerHeight * 0.5);
 
         if (isInsideForm && !hasReachedEnd) {
-            nextBtn.style.opacity = '1';
-            nextBtn.style.pointerEvents = 'auto';
-            nextBtn.style.transform = 'translateY(0)';
+            globalNextBtn.style.opacity = '1';
+            globalNextBtn.style.pointerEvents = 'auto';
+            globalNextBtn.style.transform = 'translateY(0)';
         } else {
-            nextBtn.style.opacity = '0';
-            nextBtn.style.pointerEvents = 'none';
-            nextBtn.style.transform = 'translateY(20px)';
+            globalNextBtn.style.opacity = '0';
+            globalNextBtn.style.pointerEvents = 'none';
+            globalNextBtn.style.transform = 'translateY(20px)';
         }
     });
+};
+
+function scrollToSection(id) {
+    const targetElement = document.getElementById(id);
+    if (targetElement) {
+        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - (window.innerHeight / 2) + (targetElement.offsetHeight / 2);
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+    }
 }

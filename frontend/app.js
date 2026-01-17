@@ -3,17 +3,8 @@ import { initializeCarousel, enableDrag} from './components/renderCarousel.js';
 import { initializeSlider } from './components/renderSlider.js';
 import { updateStepListener } from './hooks/scrollStepListener.js';
 import { nextSectionBtn } from './components/nextBtn.js';
+import { saveState } from './store/state.js';
 
-export const userSelections = {
-    budget: null,
-    product_type: null,
-    target_customer: null,
-    primary_goal: null,
-    time_horizon: 'medium_term', // Default slider value
-    content_capability: 'medium_capability',
-    sales_structure: null,
-    priority_kpi: null
-};
 nextSectionBtn();
 updateStepListener();
 
@@ -78,8 +69,10 @@ startBtn.addEventListener('click', () => {
 });
 
 // --- Budget Input Logic ---
+let budgetTimeout; // Variable to hold the timer
+
 budgetInput.addEventListener('input', (e) => {
-    // Only allow numbers and decimal point
+    // Filter: Numbers and decimal only (No '-' or letters)
     let value = e.target.value.replace(/[^0-9.]/g, '');
     
     // Prevent multiple decimals
@@ -88,7 +81,6 @@ budgetInput.addEventListener('input', (e) => {
     
     e.target.value = value;
 
-    // Toggle $ sign visibility and adjust text alignment
     if (value.length > 0) {
         currencySign.style.opacity = '1';
         budgetInput.style.paddingLeft = '4rem';
@@ -98,6 +90,13 @@ budgetInput.addEventListener('input', (e) => {
         budgetInput.style.paddingLeft = '3rem';
         budgetInput.style.textAlign = 'center';
     }
+
+    // 3. Debounced State Saving and Logging
+    clearTimeout(budgetTimeout); // Reset the timer on every keystroke
+    budgetTimeout = setTimeout(() => {
+        saveState('budget', value);
+        console.log(`[STATE UPDATE] BUDGET:`, value);
+    }, 600); // Waits for 600ms of "silence" before saving
 });
 
 

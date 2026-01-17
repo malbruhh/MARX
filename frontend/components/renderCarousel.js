@@ -1,4 +1,6 @@
 // /frontend/components/renderCarousel.js
+import { saveState } from "../store/state.js";
+
 export function initializeCarousel(data, containerId) {
     const carousel = document.getElementById(containerId);
     if (!carousel) return;
@@ -38,15 +40,12 @@ export function initializeCarousel(data, containerId) {
             // Original horizontal look
             cardClasses += ' items-center gap-5 p-6';
         }
-
         if (data.length === 3 && index === 2) {
         cardClasses += ' md:col-span-2';
     }
-
         if (data.length === 5 && index === 4) {
             cardClasses += ' col-span-2 justify-self-center';
         }
-
         if (data.length === 4) {
             if (index === 0 || index === 2) {
                 cardClasses += ' md:-translate-y-10'; 
@@ -69,6 +68,19 @@ export function initializeCarousel(data, containerId) {
         card.addEventListener('click', () => {
             carousel.querySelectorAll('.fact-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
+            const categoryLabel = containerId.replace('-carousel', '').replace('-', ' ').toUpperCase();
+            console.log(`[STATE UPDATE] ${categoryLabel}:`, item.id);
+            // save current state
+            const stateKey = carousel.id.replace('-carousel', '').replace('-', '_');
+            // catch special case if IDs don't match exactly
+            const finalKey = stateKey === 'product' ? 'product_type' : 
+                            stateKey === 'customer' ? 'target_customer' : 
+                            stateKey === 'goal' ? 'primary_goal' : 
+                            stateKey === 'sales' ? 'sales_structure' : 
+                            stateKey === 'kpi' ? 'priority_kpi' : 
+                            stateKey;
+
+            saveState(finalKey, item.id);
         });
 
         carousel.appendChild(card);
