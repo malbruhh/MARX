@@ -17,12 +17,24 @@ export const updateStepListener = () => {
             const rect = card.getBoundingClientRect();
             const stepElement = document.getElementById(`step-${index + 1}`);
     
-            // FIX: Only update classes if the step circle exists in the HTML
             if (stepElement) {
                 if (rect.top < windowHeight * 0.5) {
                     stepElement.classList.add('active');
                 } else {
                     stepElement.classList.remove('active');
+                }
+            }
+            // If scroll toward the summary section
+            if (id === 'summary-section' && rect.top < windowHeight * 0.8) {
+                // Check if all data is present
+                const isComplete = Object.values(sectionToStateMap).every(key => 
+                    userInput[key] !== null && userInput[key] !== ""
+                );
+
+                if (isComplete) {
+                    renderSummary();
+                    card.style.opacity = '1';
+                    card.style.pointerEvents = 'auto';
                 }
             }
         });
