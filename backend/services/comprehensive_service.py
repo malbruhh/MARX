@@ -142,10 +142,19 @@ def _extract_strategy_codes(channel_facts: list, request: MarketingAnalysisReque
     # Convert to labeled format
     strategy_codes = [STRATEGY_LABELS[code] for code in sorted(strategy_set)]
 
-    # Ensure at least 3 strategies
+    # Ensure at least 3 strategies with context-aware defaults
     if len(strategy_codes) < 3:
-        # Add default strategies
-        defaults = ["S1", "S2", "S5"]
+        # Choose defaults based on time horizon
+        if request.time_horizon == TimeHorizon.SHORT:
+            # Short-term: favor paid channels over SEO
+            defaults = ["S2", "S3", "S4"]  # PPC, Social, Email
+        elif request.time_horizon == TimeHorizon.LONG:
+            # Long-term: favor organic channels
+            defaults = ["S1", "S5", "S2"]  # SEO, Content, PPC
+        else:
+            # Medium: balanced
+            defaults = ["S2", "S5", "S1"]  # PPC, Content, SEO
+
         for default in defaults:
             if STRATEGY_LABELS[default] not in strategy_codes:
                 strategy_codes.append(STRATEGY_LABELS[default])
@@ -243,28 +252,40 @@ def _generate_budget_allocation(channel_facts: list, request: MarketingAnalysisR
                 strategy_budget_map[strategy_code] = 0
             strategy_budget_map[strategy_code] += budget_percent
 
-    # Create allocation objects ONLY for recommended strategies
+    # Ensure every recommended strategy has a budget allocation
+    # Default percentages for strategies without channel facts
+    default_budget_per_strategy = {
+        "S1": 20, "S2": 35, "S3": 30, "S4": 20, "S5": 25,
+        "S6": 25, "S7": 30, "S8": 25, "S9": 20
+    }
+
+    for strategy_label in strategy_codes:
+        # Extract code from label (e.g., "S1 - ..." -> "S1")
+        strategy_code = strategy_label.split(" - ")[0]
+        if strategy_code not in strategy_budget_map:
+            # Add default budget for strategies without channel facts
+            strategy_budget_map[strategy_code] = default_budget_per_strategy.get(strategy_code, 20)
+
+    # Calculate total to normalize BEFORE creating allocation objects
+    total_percent = sum(p for p in strategy_budget_map.values() if p > 0)
+
+    # Create allocation objects with normalized percentages
     for strategy_code, percentage in sorted(strategy_budget_map.items(), key=lambda x: x[1], reverse=True):
         if percentage > 0:
+            # Normalize to 100% during creation to avoid Pydantic validation errors
+            normalized_pct = round((percentage / total_percent) * 100, 1) if total_percent > 0 else percentage
             allocations.append(BudgetAllocation(
                 strategy_code=STRATEGY_LABELS[strategy_code],
-                percentage=round(percentage, 1),
-                monthly_amount=round(monthly_budget * (percentage / 100), 2)
+                percentage=normalized_pct,
+                monthly_amount=round(monthly_budget * (normalized_pct / 100), 2)
             ))
-            total_percent += percentage
-
-    # Normalize if over 100%
-    if total_percent > 100:
-        for alloc in allocations:
-            alloc.percentage = round((alloc.percentage / total_percent) * 100, 1)
-            alloc.monthly_amount = round(monthly_budget * (alloc.percentage / 100), 2)
 
     # If no allocations, create default (should match recommended strategies)
     if not allocations:
         defaults = [
-            ("S1", 30),
             ("S2", 40),
-            ("S5", 30)
+            ("S3", 35),
+            ("S5", 25)
         ]
         for code, pct in defaults:
             allocations.append(BudgetAllocation(
