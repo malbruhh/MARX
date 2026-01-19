@@ -235,7 +235,8 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
             ),
             BudgetLevelFact(tier=BudgetLevel.SMALL.value),
             PrimaryGoalFact(goal=PrimaryGoal.LEAD_GEN.value)
-        )
+        ),
+        salience=80
     )
     def channel_paid_search_high_intent(self):
         """Rule 24: Paid search for high-intent products"""
@@ -247,10 +248,15 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
         self.declare(ChannelReadinessFact(channel="paid_search", readiness="ready"))
 
     @Rule(
-        BudgetLevelFact(tier=BudgetLevel.MICRO.value)
+        AND(
+            BudgetLevelFact(tier=BudgetLevel.MICRO.value),
+            PrimaryGoalFact(goal=PrimaryGoal.LEAD_GEN.value),
+            NOT(ProductFact(product_type=ProductType.LOCAL_SERVICE.value))
+        ),
+        salience=50
     )
     def channel_paid_search_limited_budget(self):
-        """Rule 25: Limited paid search for micro budgets"""
+        """Rule 25: Limited paid search for micro budgets (only for lead gen, not local)"""
         self.declare(ChannelPriorityFact(
             channel="paid_search",
             priority=4,
@@ -280,7 +286,8 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
                 TargetCustomerFact(customer=TargetCustomer.GEN_Z.value),
                 TargetCustomerFact(customer=TargetCustomer.MILLENIAL.value)
             )
-        )
+        ),
+        salience=75
     )
     def channel_paid_social_b2c_youth(self):
         """Rule 27: Paid social for B2C targeting youth"""
@@ -337,10 +344,21 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
         ))
 
     @Rule(
-        ContentCapabilityFact(capability=ContentCapability.HIGH.value)
+        AND(
+            ContentCapabilityFact(capability=ContentCapability.HIGH.value),
+            OR(
+                TimeHorizonFact(horizon=TimeHorizon.LONG.value),
+                TimeHorizonFact(horizon=TimeHorizon.MEDIUM.value)
+            ),
+            OR(
+                PrimaryGoalFact(goal=PrimaryGoal.AWARENESS.value),
+                PriorityKPIFact(kpi=PriorityKPI.TRAFFIC.value)
+            )
+        ),
+        salience=60
     )
     def channel_organic_seo_content_strength(self):
-        """Rule 31: SEO when content capability is high"""
+        """Rule 31: SEO when content capability is high AND time/goal align"""
         self.declare(ChannelPriorityFact(
             channel="organic_seo",
             priority=2,
@@ -365,10 +383,14 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
     # Channel Suitability - Email Marketing
 
     @Rule(
-        PrimaryGoalFact(goal=PrimaryGoal.RETENTION.value)
+        AND(
+            PrimaryGoalFact(goal=PrimaryGoal.RETENTION.value),
+            NOT(ProductFact(product_type=ProductType.SUBSCRIPTION.value))
+        ),
+        salience=70
     )
     def channel_email_retention(self):
-        """Rule 33: Email for retention"""
+        """Rule 33: Email for retention (non-subscription products)"""
         self.declare(ChannelPriorityFact(
             channel="email_marketing",
             priority=1,
@@ -519,7 +541,8 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
         AND(
             ProductFact(product_type=ProductType.LOCAL_SERVICE.value),
             TargetCustomerFact(customer=TargetCustomer.LOCAL.value)
-        )
+        ),
+        salience=85
     )
     def channel_local_seo_service(self):
         """Rule 43: Local SEO for local services"""
@@ -593,6 +616,218 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
             priority=2,
             budget_percent=12.0
         ))
+
+    # ==================== LAYER 3B: Differentiated Channel Rules ====================
+    # These rules combine multiple inputs for better output differentiation
+    # Higher salience ensures specific rules fire before generic ones
+
+    # --- Goal + Time Horizon Combinations ---
+
+    @Rule(
+        AND(
+            PrimaryGoalFact(goal=PrimaryGoal.LEAD_GEN.value),
+            TimeHorizonFact(horizon=TimeHorizon.SHORT.value)
+        ),
+        salience=100
+    )
+    def channel_ppc_short_term_leads(self):
+        """Rule 48A: Short-term lead gen needs immediate paid channels"""
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=1, budget_percent=45.0))
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=2, budget_percent=35.0))
+
+    @Rule(
+        AND(
+            PrimaryGoalFact(goal=PrimaryGoal.AWARENESS.value),
+            TimeHorizonFact(horizon=TimeHorizon.LONG.value),
+            ContentCapabilityFact(capability=ContentCapability.HIGH.value)
+        ),
+        salience=100
+    )
+    def channel_organic_long_term_awareness(self):
+        """Rule 48B: Long-term awareness with content capability -> organic focus"""
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=1, budget_percent=40.0))
+        self.declare(ChannelPriorityFact(channel="organic_seo", priority=1, budget_percent=35.0))
+
+    @Rule(
+        AND(
+            PrimaryGoalFact(goal=PrimaryGoal.RETENTION.value),
+            ProductFact(product_type=ProductType.SUBSCRIPTION.value)
+        ),
+        salience=100
+    )
+    def channel_email_retention_subscription(self):
+        """Rule 48C: Subscription retention -> email marketing dominates"""
+        self.declare(ChannelPriorityFact(channel="email_marketing", priority=1, budget_percent=45.0))
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=2, budget_percent=30.0))
+
+    # --- Product + Customer + Budget Combinations ---
+
+    @Rule(
+        AND(
+            ProductFact(product_type=ProductType.B2C_RETAIL.value),
+            OR(
+                TargetCustomerFact(customer=TargetCustomer.GEN_Z.value),
+                TargetCustomerFact(customer=TargetCustomer.MILLENIAL.value)
+            ),
+            BudgetLevelFact(tier=BudgetLevel.SMALL.value)
+        ),
+        salience=90
+    )
+    def channel_social_b2c_youth_small(self):
+        """Rule 48D: B2C + Youth + Small budget -> social media focus"""
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=1, budget_percent=50.0))
+        self.declare(ChannelPriorityFact(channel="influencer", priority=2, budget_percent=25.0))
+
+    @Rule(
+        AND(
+            ProductFact(product_type=ProductType.LOCAL_SERVICE.value),
+            TargetCustomerFact(customer=TargetCustomer.LOCAL.value),
+            BudgetLevelFact(tier=BudgetLevel.MICRO.value)
+        ),
+        salience=100
+    )
+    def channel_local_seo_dominant(self):
+        """Rule 48E: Local service with micro budget -> local SEO only"""
+        self.declare(ChannelPriorityFact(channel="local_seo", priority=1, budget_percent=60.0))
+        self.declare(ChannelPriorityFact(channel="community", priority=2, budget_percent=25.0))
+
+    @Rule(
+        AND(
+            ProductFact(product_type=ProductType.B2B_SAAS.value),
+            TargetCustomerFact(customer=TargetCustomer.B2B_LARGE.value),
+            SalesStructureFact(structure=SalesStructure.SALES_TEAM.value)
+        ),
+        salience=100
+    )
+    def channel_abm_enterprise(self):
+        """Rule 48F: Enterprise B2B with sales team -> ABM and events"""
+        self.declare(ChannelPriorityFact(channel="events_webinars", priority=1, budget_percent=35.0))
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=2, budget_percent=30.0))
+
+    # --- KPI-Driven Channel Differentiation ---
+
+    @Rule(
+        AND(
+            PriorityKPIFact(kpi=PriorityKPI.CPA.value),
+            BudgetLevelFact(tier=BudgetLevel.MEDIUM.value),
+            PrimaryGoalFact(goal=PrimaryGoal.LEAD_GEN.value)
+        ),
+        salience=95
+    )
+    def channel_performance_cpa_focus(self):
+        """Rule 48G: CPA focus with medium budget -> heavy PPC"""
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=1, budget_percent=50.0))
+        self.declare(ChannelPriorityFact(channel="retargeting", priority=2, budget_percent=25.0))
+
+    @Rule(
+        AND(
+            PriorityKPIFact(kpi=PriorityKPI.TRAFFIC.value),
+            ContentCapabilityFact(capability=ContentCapability.LOW.value)
+        ),
+        salience=90
+    )
+    def channel_traffic_low_content(self):
+        """Rule 48H: Traffic goal but low content -> paid social for reach"""
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=1, budget_percent=45.0))
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=2, budget_percent=30.0))
+
+    @Rule(
+        AND(
+            PriorityKPIFact(kpi=PriorityKPI.CLV.value),
+            PrimaryGoalFact(goal=PrimaryGoal.RETENTION.value)
+        ),
+        salience=95
+    )
+    def channel_clv_retention_focus(self):
+        """Rule 48I: CLV + Retention -> email and referral programs"""
+        self.declare(ChannelPriorityFact(channel="email_marketing", priority=1, budget_percent=40.0))
+        self.declare(ChannelPriorityFact(channel="referral", priority=2, budget_percent=25.0))
+
+    # --- Additional Differentiation Rules ---
+
+    @Rule(
+        AND(
+            PrimaryGoalFact(goal=PrimaryGoal.LEAD_GEN.value),
+            TimeHorizonFact(horizon=TimeHorizon.MEDIUM.value),
+            ContentCapabilityFact(capability=ContentCapability.HIGH.value)
+        ),
+        salience=90
+    )
+    def channel_balanced_lead_gen(self):
+        """Rule 48J: Medium-term lead gen with content -> balanced approach"""
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=1, budget_percent=35.0))
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=2, budget_percent=30.0))
+        self.declare(ChannelPriorityFact(channel="organic_seo", priority=3, budget_percent=20.0))
+
+    @Rule(
+        AND(
+            ProductFact(product_type=ProductType.FMCG.value),
+            BudgetLevelFact(tier=BudgetLevel.LARGE.value)
+        ),
+        salience=90
+    )
+    def channel_fmcg_large_budget(self):
+        """Rule 48K: FMCG with large budget -> heavy paid social and influencer"""
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=1, budget_percent=40.0))
+        self.declare(ChannelPriorityFact(channel="influencer", priority=1, budget_percent=30.0))
+
+    @Rule(
+        AND(
+            ProductFact(product_type=ProductType.CONSULTING.value),
+            TargetCustomerFact(customer=TargetCustomer.B2B_SME.value),
+            ContentCapabilityFact(capability=ContentCapability.HIGH.value)
+        ),
+        salience=95
+    )
+    def channel_consulting_sme_content(self):
+        """Rule 48L: Consulting for SME with high content -> thought leadership"""
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=1, budget_percent=40.0))
+        self.declare(ChannelPriorityFact(channel="email_marketing", priority=2, budget_percent=25.0))
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=3, budget_percent=20.0))
+
+    @Rule(
+        AND(
+            ProductFact(product_type=ProductType.DIGITAL_PRODUCT.value),
+            OR(
+                TargetCustomerFact(customer=TargetCustomer.GEN_Z.value),
+                TargetCustomerFact(customer=TargetCustomer.MILLENIAL.value)
+            ),
+            TimeHorizonFact(horizon=TimeHorizon.SHORT.value)
+        ),
+        salience=95
+    )
+    def channel_digital_product_youth_short(self):
+        """Rule 48M: Digital product for youth, short term -> paid social dominant"""
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=1, budget_percent=55.0))
+        self.declare(ChannelPriorityFact(channel="influencer", priority=2, budget_percent=25.0))
+
+    @Rule(
+        AND(
+            ProductFact(product_type=ProductType.HOSPITALITY.value),
+            TargetCustomerFact(customer=TargetCustomer.LOCAL.value),
+            BudgetLevelFact(tier=BudgetLevel.SMALL.value)
+        ),
+        salience=95
+    )
+    def channel_hospitality_local_small(self):
+        """Rule 48N: Hospitality + Local + Small budget -> local SEO + community"""
+        self.declare(ChannelPriorityFact(channel="local_seo", priority=1, budget_percent=45.0))
+        self.declare(ChannelPriorityFact(channel="community", priority=2, budget_percent=20.0))
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=3, budget_percent=20.0))
+
+    @Rule(
+        AND(
+            ProductFact(product_type=ProductType.TECHNICAL_TOOLS.value),
+            TargetCustomerFact(customer=TargetCustomer.NICHE.value),
+            ContentCapabilityFact(capability=ContentCapability.HIGH.value)
+        ),
+        salience=95
+    )
+    def channel_technical_niche_content(self):
+        """Rule 48O: Technical tools for niche with content -> community + SEO"""
+        self.declare(ChannelPriorityFact(channel="community", priority=1, budget_percent=30.0))
+        self.declare(ChannelPriorityFact(channel="organic_seo", priority=1, budget_percent=30.0))
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=2, budget_percent=25.0))
 
     # ==================== LAYER 4: Content Strategy ====================
 

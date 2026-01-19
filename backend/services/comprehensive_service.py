@@ -11,16 +11,20 @@ from collections import defaultdict
 
 # Channel to Strategy Code Mapping
 CHANNEL_TO_STRATEGY = {
-    "organic_seo_content": "S1",
-    "paid_search_google_ads": "S2",
-    "paid_social_facebook_instagram_linkedin": "S3",
+    # Primary channels (match engine rule names)
+    "organic_seo": "S1",
+    "paid_search": "S2",
+    "paid_social": "S3",
     "email_marketing": "S4",
-    "content_marketing_blog_video": "S5",
-    "local_seo_gmb": "S6",
+    "content_marketing": "S5",
+    "local_seo": "S6",
     # S7 is ABM - will be inferred from specific conditions
-    "events_and_webinars": "S8",
-    "influencer_partnerships": "S9",
-    "strategic_partnerships": "S9",
+    "events_webinars": "S8",
+    "influencer": "S9",
+    # Secondary channels mapped to related strategies
+    "community": "S5",
+    "retargeting": "S2",
+    "referral": "S4",
 }
 
 STRATEGY_LABELS = {

@@ -1,5 +1,6 @@
 // /frontend/components/analyzeBtn.js
 import { userInput, saveAnalysisResult } from '../store/state.js';
+import { renderFinal } from '../screens/renderFinal.js';
 
 export const initializeAnalyzeBtn = (btnId) => {
     const btn = document.getElementById(btnId);
@@ -14,7 +15,6 @@ export const initializeAnalyzeBtn = (btnId) => {
                 ...userInput,
                 raw_budget_amount: parseFloat(userInput.budget) || 0
             };
-            // Remove the old 'budget' key if your API is strict
             delete payload.budget;
             console.log(payload);
             const response = await fetch('http://127.0.0.1:8000/api/analyze', {
@@ -30,15 +30,17 @@ export const initializeAnalyzeBtn = (btnId) => {
 
             const result = await response.json();
             saveAnalysisResult(result);
+            transitionToFinal();
+            renderFinal();
 
-            // Transition logic
-            const summary = document.getElementById('summary-section');
-            const final = document.getElementById('final-section');
-            if (summary && final) {
-                summary.style.display = 'none';
-                final.style.display = 'flex';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            // // Transition logic
+            // const summary = document.getElementById('summary-section');
+            // const final = document.getElementById('final-section');
+            // if (summary && final) {
+            //     summary.style.display = 'none';
+            //     final.style.display = 'flex';
+            //     window.scrollTo({ top: 0, behavior: 'smooth' });
+            // }
 
         } catch (error) {
             console.error("Analysis Error:", error);
@@ -63,5 +65,19 @@ function toggleLoading(btn, isLoading) {
         btn.disabled = false;
         btn.classList.remove('opacity-50', 'cursor-not-allowed', 'scale-95');
         btn.innerHTML = `ANALYZE STRATEGY`;
+    }
+}
+
+function transitionToFinal() {
+    const summary = document.getElementById('summary-section');
+    const final = document.getElementById('final-section');
+    if (summary && final) {
+        summary.style.display = 'none';
+        
+        // Ensure the section is visible before renderFinal populates it
+        final.style.display = 'flex';
+        final.classList.remove('hidden'); 
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
