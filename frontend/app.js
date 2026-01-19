@@ -84,19 +84,23 @@ budgetInput.addEventListener('input', (e) => {
     if (value.length > 0) {
         currencySign.style.opacity = '1';
         budgetInput.style.paddingLeft = '4rem';
-        budgetInput.style.textAlign = 'left';
+        budgetInput.style.textAlign = 'center';
     } else {
         currencySign.style.opacity = '0';
         budgetInput.style.paddingLeft = '3rem';
         budgetInput.style.textAlign = 'center';
     }
 
-    // 3. Debounced State Saving and Logging
     clearTimeout(budgetTimeout); // Reset the timer on every keystroke
     budgetTimeout = setTimeout(() => {
-        saveState('budget', value);
-        console.log(`[STATE UPDATE] BUDGET:`, value);
-    }, 600); // Waits for 600ms of "silence" before saving
+        if (value.length > 0 && !isNaN(value)) {
+            const formattedValue = parseFloat(value).toFixed(2);
+            e.target.value = formattedValue;
+            // Save the formatted value to the central state
+            saveState('budget', formattedValue);
+            console.log(`[STATE UPDATE] BUDGET:`, formattedValue);
+        }
+    }, 800); //800ms delay
 });
 
 
