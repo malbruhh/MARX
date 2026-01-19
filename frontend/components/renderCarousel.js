@@ -56,12 +56,12 @@ export function initializeCarousel(data, containerId) {
         card.dataset.id = item.id;
 
         card.innerHTML = `
-            <div class="w-14 h-14 bg-white/90 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm ${data.length <= 4 ? 'mb-2' : ''}">
-                <i class="fas ${item.icon} fact-icon"></i>
+            <div class="w-14 h-14 bg-blue-50/80 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm ${data.length <= 4 ? 'mb-2' : ''}">
+                <i class="fas ${item.icon} fact-icon text-blue-600"></i>
             </div>
             <div>
-                <h3 class="font-bold text-white text-[15px] uppercase tracking-wider">${item.title}</h3>
-                <p class="text-[11px] text-white/50 leading-tight">${item.desc}</p>
+                <h3 class="font-bold text-blue-900 text-[15px] uppercase tracking-wider">${item.title}</h3>
+                <p class="text-[11px] text-gray-500 leading-tight">${item.desc}</p>
             </div>
         `;
 

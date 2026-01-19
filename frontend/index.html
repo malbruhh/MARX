@@ -11,244 +11,313 @@
         body { 
             font-family: 'Poppins', sans-serif; 
             margin: 0;
-            transition: background 1.5s ease-in-out;
-            background-attachment: fixed;
-            background-size: cover;
-            /* New Top-Left Vibrant Gradient (Creamy Purple/Pink) */
-            background: radial-gradient(circle at 0% 0%, #ff00ff 0%, #7e22ce 30%, #4c1d95 70%, #2e1065 100%);
+            background-color: #fcfcfc;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: #0f172a;
+            overflow-x: hidden;
+            transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Inverted State: Glow moves to bottom-right as user reaches the end */
-        body.inverted {
-            background: radial-gradient(circle at 100% 100%, #ff00ff 0%, #7e22ce 30%, #4c1d95 70%, #2e1065 100%);
+        /* Darkened background state for form area */
+        body.dark-shift {
+            background-color: #e2e8f0; /* Soft slate-200 for eye comfort */
         }
+
+        /* Saturated Spray Paint Blobs */
+        .spray-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px); /* Slightly sharper for more saturation punch */
+            opacity: 0.25; /* Increased opacity for more color */
+            z-index: -1;
+            pointer-events: none;
+            animation: pulse-blob 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse-blob {
+            0% { transform: scale(1); opacity: 0.2; }
+            100% { transform: scale(1.1); opacity: 0.3; }
+        }
+
+        @keyframes click-pulse {
+            0%, 100% { transform: scale(1) rotate(-15deg); }
+            50% { transform: scale(0.8) rotate(-15deg); }
+        }
+
+        .animate-click-pulse {
+            animation: click-pulse 1.5s ease-in-out infinite;
+            display: inline-block;
+            transform: rotate(-15deg);
+        }
+
+        /* Sizes */
+        .blob-lg { width: 800px; height: 800px; filter: blur(140px); }
+        .blob-md { width: 450px; height: 450px; filter: blur(90px); }
+        .blob-sm { width: 250px; height: 250px; filter: blur(50px); }
+
+        /* Saturated Colors & Positions */
+        .blob-1 { background: #3b82f6; top: -10%; left: -10%; } /* Vibrant Blue - Large */
+        .blob-2 { background: #d946ef; bottom: -5%; right: -5%; } /* Vibrant Magenta - Large */
+        .blob-3 { background: #06b6d4; top: 20%; right: 10%; } /* Vibrant Cyan - Medium */
+        .blob-4 { background: #fbbf24; bottom: 15%; left: 5%; } /* Saturated Amber - Medium */
+        .blob-5 { background: #ef4444; top: 50%; left: 30%; } /* Saturated Red - Small */
+        .blob-6 { background: #22c55e; top: 40%; right: 20%; } /* Saturated Green - Small */
+        .blob-7 { background: #8b5cf6; top: 5%; right: 40%; } /* Vibrant Violet - Small */
 
         .glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            /* Small shadow to indicate floating */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.4); /* Frosted transparency */
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
         }
 
-        .btn-glass {
-            background: rgba(88, 28, 135, 0.5);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.75rem 1.75rem;
+            border-radius: 9999px;
+            font-weight: 600;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
 
-        .btn-glass:hover {
-            background: rgba(139, 92, 246, 0.6);
-            transform: translateY(-4px);
-            box-shadow: 0 15px 30px rgba(236, 72, 153, 0.3);
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.3);
         }
+
+        .btn-secondary {
+            background-color: #0f172a;
+            color: white;
+            padding: 0.75rem 1.75rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all 0.3s ease;
+        }
+
+        .floating-card {
+            background: white;
+            border-radius: 1.25rem;
+            padding: 1.25rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            position: absolute;
+            z-index: 10;
+            border: 1px solid rgba(0,0,0,0.03);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-25px) rotate(3deg); }
+        }
+
         .step-circle {
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4); /* Brighter for unvisited */
+            background: #f1f5f9; /* Darker off-white for contrast */
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            color: #4c1d95;
-            transition: all 0.4s ease;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #1e3a8a; /* Much darker blue */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid #e2e8f0;
         }
 
-        /* Highlighted / Visited State */
         .step-circle.active {
-            background: #2e1065; /* Darker color for visited/current */
+            background: #1e3a8a;
             color: white;
-            transform: scale(1.2);
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            transform: scale(1.25);
+            box-shadow: 0 10px 25px rgba(30, 58, 138, 0.25);
+            border-color: #1e3a8a;
         }
 
-        /* Input formatting specific styles */
         #budget-input:focus::placeholder { opacity: 0; }
         ::-webkit-scrollbar { width: 0px; }
-        #budget-input {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            /* ... existing styles ... */
-        }
+        
         .fact-card {
-            width: 320px; /* Precise width for 2-column fit */
-            height: 140px;  /* Slightly shorter for a sleeker look */
+            width: 320px;
+            height: 140px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
             gap: 1.25rem;
             padding: 1.5rem 1rem;
-            transition: all 0.3s ease;
-            border-radius: 12px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
         }
 
-        
         .fact-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.6);
         }
+
         .fact-card.selected {
-            border: 2px solid #fff;
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
-        }
-        .fact-icon {
-            font-size: 2rem;
-            color: #000;
+            border: 2px solid #2563eb;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 30px rgba(37, 99, 235, 0.2);
         }
 
-        /* REUSABLE DRAG CONTAINER STYLE */
-
-        .drag-wrapper::-webkit-scrollbar { 
-            display: none; 
-        }
-        .drag-wrapper.active {
-            cursor: grabbing;
-        }
-        /* .drag-wrapper.active .fact-card {
-            transform: scale(0.98);
-        } */
         .drag-wrapper {
-            scrollbar-width: none; 
-            -ms-overflow-style: none; 
-
-            mask-image: linear-gradient(
-                to right, 
-                transparent 0%, 
-                black 5%, 
-                black 90%, 
-                transparent 100%
-            );
-            -webkit-mask-image: linear-gradient(
-                to right, 
-                transparent 0%, 
-                black 5%, 
-                black 90%, 
-                transparent 100%
-            );
-
-            /* UX: Prevent highlighting and ghosting */
+            scrollbar-width: none;
+            mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
             user-select: none;
-            -webkit-user-select: none;
-            -ms-user-select: none;
-            -webkit-user-drag: none;
         }
         
-        /* Custom Slider Thumb Styling */
-        #time-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 24px;
-            width: 24px;
-            border-radius: 50%;
-            background: #ffffff;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            margin-top: -8px; /* Centers thumb on the track */
-        }
-
-        #time-slider::-moz-range-thumb {
-            height: 24px;
-            width: 24px;
-            border-radius: 50%;
-            background: #ffffff;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-        }
-        .slider-label:hover .glass-icon {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-        .slider-label:hover i {
-            color: white;
-        }
-        
-        /* Specific Darker Glass for Global Navigation */
         #global-next-btn {
-            background: rgba(30, 10, 50, 0.7); /* Darker purple for prompting action */
+            background: #1e3a8a;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(12px);
             opacity: 0;
             pointer-events: none;
             transform: translateY(20px);
-            transition: all 0.5s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         #global-next-btn:hover {
-            background: rgba(45, 15, 75, 0.9);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            background: #172554;
+            box-shadow: 0 20px 40px rgba(30, 58, 138, 0.3);
             transform: translateY(-5px);
+        }
+
+        .text-accent {
+            color: #2563eb;
+            font-weight: 800;
+        }
+
+        #navbar.shadow-md {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
     </style>
 </head>
-<body class="bg-theme text-white min-h-screen">
+<body class="min-h-screen">
+    <!-- Dynamic Saturated Spray Paint Blobs -->
+    <div class="spray-blob blob-lg blob-1"></div>
+    <div class="spray-blob blob-lg blob-2"></div>
+    <div class="spray-blob blob-md blob-3"></div>
+    <div class="spray-blob blob-md blob-4"></div>
+    <div class="spray-blob blob-sm blob-5"></div>
+    <div class="spray-blob blob-sm blob-6"></div>
+    <div class="spray-blob blob-sm blob-7"></div>
 
-    <nav id="navbar" class="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl glass z-50 rounded-full py-3 px-10 flex justify-between items-center shadow-2xl">
-        <div id="nav-logo" class="text-2xl font-extrabold text-pink-200 opacity-0 transition-opacity duration-300">MARX</div>
-        <div class="flex gap-10 font-semibold text-sm tracking-wide">
-            <a href="#home" class="hover:text-pink-300 transition-colors">Home</a>
-            <a href="#about" class="hover:text-pink-300 transition-colors">About Us</a>
+    <nav id="navbar" class="fixed top-0 left-0 w-full glass z-50 py-4 px-10 flex justify-between items-center transition-all duration-300">
+        <div id="nav-logo" class="text-2xl font-extrabold text-blue-600 opacity-0 transition-opacity duration-300">MARX</div>
+        
+        <div class="hidden md:flex gap-10 font-semibold text-sm tracking-wide text-gray-600">
+            <a href="#home" class="hover:text-blue-600 transition-colors">Home</a>
+            <a href="#about" class="hover:text-blue-600 transition-colors">Solutions</a>
+            <a href="#" class="hover:text-blue-600 transition-colors">Product</a>
+            <a href="#" class="hover:text-blue-600 transition-colors">Resources</a>
+            <a href="#" class="hover:text-blue-600 transition-colors">Pricing</a>
         </div>
+
+        <button class="btn-primary text-sm">Get Started</button>
     </nav>
 
-    <section id="home" class="h-screen flex flex-col items-center justify-center text-center">
-        <div id="hero-wrapper" class="transition-all duration-75">
-            <h1 id="main-title" class="text-8xl md:text-[11rem] font-extrabold tracking-tighter text-pink-50 drop-shadow-2xl">
-                MARX
+    <section id="home" class="relative h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+        <!-- Floating Animated Icons -->
+        <div class="floating-card top-[20%] left-[15%] w-16 h-16 flex items-center justify-center">
+            <i class="fas fa-layer-group text-blue-500 text-2xl"></i>
+        </div>
+        <div class="floating-card top-[30%] right-[10%] w-20 h-20 flex items-center justify-center" style="animation-delay: 2s;">
+            <i class="fas fa-chart-line text-green-500 text-3xl"></i>
+        </div>
+        <div class="floating-card bottom-[25%] left-[10%] w-14 h-14 flex items-center justify-center" style="animation-delay: 4s;">
+            <i class="fas fa-bullseye text-red-500 text-xl"></i>
+        </div>
+        <div class="floating-card bottom-[35%] right-[20%] w-18 h-18 flex items-center justify-center" style="animation-delay: 1s;">
+            <i class="fas fa-brain text-purple-500 text-2xl"></i>
+        </div>
+
+        <div id="hero-wrapper" class="max-w-4xl mx-auto transition-all duration-75">
+            <h1 id="main-title" class="text-6xl md:text-8xl font-extrabold tracking-tight text-gray-900 leading-[1.1]">
+                Where your <span class="text-accent">Market</span> turns into <span class="text-accent">Strategy</span> with a 
+                <span id="hero-click-icon" class="relative inline-block w-12 h-12 md:w-16 md:h-16 cursor-pointer group align-middle ml-8">
+                    <i class="fas fa-arrow-pointer text-blue-800  absolute -top-8 md:-top-16 -left-4 md:-left-8 text-8xl md:text-[10rem] pointer-events-none"></i>
+                </span>
             </h1>
-            <p id="main-subtitle" class="text-lg md:text-2xl font-light tracking-[0.6em] uppercase text-slate-900    -mt-4">
-                Marketing Expert Analysis
+            <p id="main-subtitle" class="text-lg md:text-xl text-gray-500 mt-8 max-w-2xl mx-auto font-light leading-relaxed">
+                Build expert marketing analysis, strategies, and growth paths effortlessly. From raw data to actionable insights in minutes, not months.
             </p>
+            
+            <div class="mt-10 flex flex-col md:flex-row gap-4 justify-center items-center">
+                <button id="scroll-trigger" class="btn-primary px-10 py-4 text-lg">
+                    Let's Get Started
+                </button>
+                <button class="btn-secondary px-8 py-4">
+                    <i class="fas fa-play-circle"></i>
+                    Watch Demo <span class="text-xs opacity-60 ml-1">3mins</span>
+                </button>
+            </div>
         </div>
     </section>
 
-    <main class="max-w-[90%] mx-auto pb-20">
-        <div class="flex flex-col md:flex-row items-stretch justify-between gap-24 px-4">
+    <main class="max-w-7xl mx-auto pb-20">
+        <div class="flex flex-col md:flex-row items-stretch justify-between gap-16 px-4 py-20">
             
             <div class="md:w-1/2 flex flex-col justify-center">
-                <section id="about" class="glass rounded-[2.5rem] p-10 h-full">
-                    <h2 class="text-3xl font-bold mb-6 text-pink-100 border-b border-white/10 pb-4">What is MARX?</h2>
-                    <p class="text-lg leading-relaxed text-pink-50/80 font-light">
+                <section id="about" class="bg-white rounded-[3rem] p-12 h-full shadow-xl shadow-blue-900/5 border border-gray-100">
+                    <h2 class="text-4xl font-bold mb-6 text-gray-900 tracking-tight">What is MARX?</h2>
+                    <p class="text-lg leading-relaxed text-gray-600 font-light">
                         MARX is an intelligent analytical framework designed to bridge the gap between complex market data and actionable business growth. Built for high-level strategy interpretation, it transforms raw variables into expert recommendations.
                     </p>
+                    <div class="mt-10 flex items-center gap-4 text-sm font-bold text-blue-600 uppercase tracking-widest">
+                        <span>Learn more</span>
+                        <div class="w-8 h-[2px] bg-blue-600"></div>
+                    </div>
                 </section>
             </div>
-            <!-- Review section -->
+
             <div class="md:w-1/2 flex flex-col justify-center">
-                <h2 class="text-xl font-semibold mb-4 text-pink-200 px-2">Expert Feedback</h2>
-                <div class="flex flex-row gap-4">
-                    <div class="glass p-5 rounded-2xl flex-1 text-[13px]">
-                        <div class="text-yellow-400 mb-2">★★★★★</div>
-                        <p class="italic opacity-70">"Simplified my project significantly."</p>
-                        <p class="mt-3 font-bold text-pink-300">John Doe</p>
+                <h2 class="text-xs font-bold mb-8 text-blue-600 uppercase tracking-[0.3em] px-2 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                    Expert Feedback
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass p-8 rounded-[2rem] border border-gray-100/50">
+                        <div class="text-blue-500 mb-4 text-xs tracking-widest font-bold uppercase">"High Accuracy"</div>
+                        <p class="italic text-gray-900 text-sm leading-relaxed mb-6">"Simplified my marketing project significantly. The logic is second to none."</p>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-blue-50 border border-blue-100 rounded-full flex items-center justify-center text-blue-600 text-xs font-black">JD</div>
+                            <div>
+                                <p class="font-bold text-gray-900 text-sm">John Doe</p>
+                                <p class="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Marketing Exec</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="glass p-5 rounded-2xl flex-1 text-[13px]">
-                        <div class="text-yellow-400 mb-2">★★★★★</div>
-                        <p class="italic opacity-70">"The UI and logic are robust."</p>
-                        <p class="mt-3 font-bold text-pink-300">John Doe</p>
-                    </div>
-                    <div class="glass p-5 rounded-2xl flex-1 text-[13px]">
-                        <div class="text-yellow-400 mb-2">★★★★☆</div>
-                        <p class="italic opacity-70">"Very useful market insights."</p>
-                        <p class="mt-3 font-bold text-pink-300">John Doe</p>
+                    <div class="glass p-8 rounded-[2rem] border border-gray-100/50">
+                        <div class="text-purple-500 mb-4 text-xs tracking-widest font-bold uppercase">"Robust Logic"</div>
+                        <p class="italic text-gray-900 text-sm leading-relaxed mb-6">"The UI and logical framework are robust. Invaluable for our quarterly planning."</p>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-purple-50 border border-purple-100 rounded-full flex items-center justify-center text-purple-600 text-xs font-black">AS</div>
+                            <div>
+                                <p class="font-bold text-gray-900 text-sm">Anna Smith</p>
+                                <p class="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Strategy Head</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="flex justify-center mt-20">
-            <button id="scroll-trigger" class="px-12 py-4 rounded-full btn-glass text-lg font-bold tracking-widest uppercase">
-                Let's Get Started
-            </button>
         </div>
     </main>
     <!-- Container progress bar -->
     <section id="analysis-section" class="relative min-h-[200vh] flex flex-row px-10 pb-40">   
         <div class="sticky top-32 h-[75vh] flex flex-col items-center z-40 ml-10">
-            <div class="w-1 h-full bg-white/20 absolute rounded-full"></div>
+            <div class="w-1 h-full bg-gray-300 absolute rounded-full"></div>
             <div class="flex flex-col justify-between h-full py-4 z-50">
                 <div id="step-1" class="step-circle active">1</div>
                 <div id="step-2" class="step-circle">2</div>
@@ -263,31 +332,31 @@
 
         <div class="flex-1 flex flex-col items-center gap-[10vh] mt-20">
             <!-- Budget Input -->
-            <div id="card-1" class="glass w-full max-w-xl min-h-[25vh] rounded-[1.5rem] flex flex-col items-center justify-center p-6 transition-all duration-500">
-                <h2 class="text-3xl font-extrabold text-purple-900 mb-4">Enter Your Budget in US Dollar</h2>
-                    <p class="text-white/70 text-mt font-light leading-relaxed italic mb-4">
-                        Every business growth thrives on its marketing 
+            <div id="card-1" class="glass w-full max-w-xl min-h-[25vh] rounded-[2rem] flex flex-col items-center justify-center p-10 transition-all duration-500">
+                <h2 class="text-4xl font-extrabold text-blue-900 mb-6">Enter Your Budget</h2>
+                    <p class="text-gray-500 text-md font-light leading-relaxed italic mb-8">
+                        Every business growth thrives on strategic allocation
                     </p>
-                <div class="relative w-full max-w-md">
-                    <span id="currency-sign" class="absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-bold text-purple-900 opacity-1 transition-opacity">
+                <div class="relative w-full max-w-sm">
+                    <span id="currency-sign" class="absolute left-6 top-1/2 -translate-y-1/2 text-3xl font-bold text-blue-600 opacity-1 transition-opacity">
                         $
                     </span>
                     <input 
                         type="text" 
                         id="budget-input" 
-                        placeholder="Your Budget (USD)" 
-                        class="w-full bg-white/40 border-2 border-purple-900/20 rounded-2xl py-6 px-12 text-lg font-bold text-purple-950 placeholder:text-purple-900/40 focus:outline-none focus:border-purple-600 focus:bg-white/60 transition-all text-center"
+                        placeholder="0.00" 
+                        class="w-full bg-white/60 border-2 border-blue-100 rounded-3xl py-6 px-12 text-2xl font-bold text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-blue-600 focus:bg-white transition-all text-center shadow-inner"
                     >
                 </div>
-            </div> <!--budget div-->
+            </div>
             
             <!-- Fact Cards -->
             <main class="relative">
                 <section id="card-2" class="min-h-[25vh] flex items-center justify-center px-4">
                     <div class="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-5xl">
                         <div class="w-full md:w-[400px] text-center md:text-left">
-                            <h2 class="text-4xl font-extrabold text-white mb-3">Product Type</h2>
-                            <p class="text-white/70 text-md font-light leading-relaxed">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-3">Product Type</h2>
+                            <p class="text-gray-500 text-md font-light leading-relaxed">
                                 Select your core business offering. This helps MARX analyze industry-specific patterns for your strategy.
                             </p>
                         </div>
@@ -303,8 +372,8 @@
                 <section id="card-3" class="min-h-[25vh] flex items-center justify-center px-4">
                     <div class="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-5xl">
                         <div class="w-full md:w-[400px] text-center md:text-left">
-                            <h2 class="text-4xl font-extrabold text-white mb-3">Choose Your Target Customer</h2>
-                            <p class="text-white/70 text-md font-light leading-relaxed">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-3">Target Customer</h2>
+                            <p class="text-gray-500 text-md font-light leading-relaxed">
                                 Desired target help MARX achieve the best approach for your business.
                             </p>
                         </div>
@@ -320,9 +389,9 @@
                 <section id="card-4" class="min-h-[25vh] flex items-center justify-center px-4">
                     <div class="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-5xl">
                         <div class="w-full md:w-[400px] text-center md:text-left">
-                            <h2 class="text-4xl font-extrabold text-white mb-3">Primary Goal Target</h2>
-                            <p class="text-white/70 text-md font-light leading-relaxed">
-                                Your Goal for now. PLease fill this later
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-3">Primary Goal</h2>
+                            <p class="text-gray-500 text-md font-light leading-relaxed">
+                                Define what success looks like for your marketing strategy and growth.
                             </p>
                         </div>
                         <div class="drag-wrapper w-full max-w-[580px] overflow-hidden py-8 px-2 cursor-grab active:cursor-grabbing">
@@ -337,8 +406,8 @@
                 <section id="card-5" class="min-h-[25vh] flex items-center justify-center px-4">
                     <div class="flex flex-col md:flex-row items-center justify-between gap-16 md:gap-x-24 w-full max-w-7xl">
                         <div class="w-full md:w-[650px] text-center md:text-left">
-                            <h2 class="text-4xl font-extrabold text-white mb-3">Time Horizon</h2>
-                            <p class="text-white/70 text-sm font-light leading-relaxed">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-3">Time Horizon</h2>
+                            <p class="text-gray-500 text-md font-light leading-relaxed">
                                 Define the duration for your strategic plan to adjust the intensity and frequency of the projected patterns.
                             </p>
                         </div>
@@ -352,8 +421,8 @@
                 <section id="card-6" class="min-h-[25vh] flex items-center justify-center px-4">
                     <div class="flex flex-col md:flex-row items-center justify-between gap-16 md:gap-x-24 w-full max-w-7xl">
                         <div class="w-full md:w-[650px] text-center md:text-left">
-                            <h2 class="text-4xl font-extrabold text-white mb-3">Content Capability</h2>
-                            <p class="text-white/70 text-sm font-light leading-relaxed">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-3">Content Capability</h2>
+                            <p class="text-gray-500 text-md font-light leading-relaxed">
                             Assess your team's ability to produce marketing assets
                         </div>
                         <div id="capability-container" class="w-full max-w-[580px] py-8 px-2">
@@ -366,9 +435,9 @@
                 <section id="card-7" class="min-h-[25vh] flex items-center justify-center px-4">
                     <div class="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-5xl">
                         <div class="w-full md:w-[400px] text-center md:text-left">
-                            <h2 class="text-4xl font-extrabold text-white mb-3">Sales Structure</h2>
-                            <p class="text-white/70 text-md font-light leading-relaxed">
-                                Choose the primary way your business closes deals to refine the conversion patterns for your strategy.
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-3">Sales Structure</h2>
+                            <p class="text-gray-500 text-md font-light leading-relaxed">
+                                Choose the primary way your business closes deals to refine the conversion patterns.
                             </p>
                         </div>
                         <div class="drag-wrapper w-full max-w-[580px] overflow-hidden py-8 px-2 cursor-grab active:cursor-grabbing">
@@ -382,9 +451,9 @@
                 <section id="card-8" class="min-h-screen flex items-center justify-center px-4">
                     <div class="flex flex-col md:flex-row items-center justify-between gap-16 md:gap-x-32 w-full max-w-7xl">
                         <div class="w-full md:w-[400px] text-center md:text-left">
-                            <h2 class="text-4xl font-extrabold text-white mb-3">Priority KPI</h2>
-                            <p class="text-white/70 text-sm font-light leading-relaxed">
-                                Select the metric that matters most for your current phase to optimize outcome in the final report.
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-3">Priority KPI</h2>
+                            <p class="text-gray-500 text-md font-light leading-relaxed">
+                                Select the metric that matters most for your current phase to optimize outcomes.
                             </p>
                         </div>
                         <div class="drag-wrapper w-full max-w-[580px] py-8 px-2 cursor-grab active:cursor-grabbing">

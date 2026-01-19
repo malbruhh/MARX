@@ -20,45 +20,48 @@ const currencySign = document.getElementById('currency-sign');
 // Scroll event listener
 window.addEventListener('scroll', () => {
     const scrollVal = window.scrollY;
-    const windowHeight = window.innerHeight;
-    const totalHeight = document.documentElement.scrollHeight;
+    const navbar = document.getElementById('navbar');
 
     // --- Title Shrinking Logic ---
     let scaleFactor = 1 - (scrollVal / 600);
-    if (scaleFactor < 0.1) scaleFactor = 0.1;
+    if (scaleFactor < 0.5) scaleFactor = 0.5; // Don't shrink too much for the new long headline
 
     let opacityFactor = 1 - (scrollVal / 500);
     if (opacityFactor < 0) opacityFactor = 0;
 
+    // --- Background Darkening Shift ---
+    if (scrollVal > 600) {
+        body.classList.add('dark-shift');
+    } else {
+        body.classList.remove('dark-shift');
+    }
+
     mainTitle.style.transform = `scale(${scaleFactor})`;
     heroWrapper.style.opacity = opacityFactor;
 
-    if (scrollVal > 400) {
+    // --- Navbar Effects ---
+    if (scrollVal > 50) {
+        navbar.classList.add('shadow-md');
+        navbar.style.padding = '0.75rem 2.5rem';
+    } else {
+        navbar.classList.remove('shadow-md');
+        navbar.style.padding = '1rem 2.5rem';
+    }
+
+    if (scrollVal > 300) {
         navLogo.style.opacity = '1';
     } else {
         navLogo.style.opacity = '0';
     }
-
-    // We want the light to move to the bottom as we reach the "Next Section"
-    // Trigger the inversion when the user is 60% down the page
-    const reverseThreshold = totalHeight * 0.6;
-
-    if (scrollVal > reverseThreshold) {
-        body.classList.add('inverted');
-    } else {
-        // This ensures that when you scroll back UP, it goes back to the top-light
-        body.classList.remove('inverted');
-    }
 });
 
 // Smooth Scroll to analysis Section
-startBtn.addEventListener('click', () => {
-    const target = document.getElementById('analysis-section');
-    
-    // Get the distance from the top of the document to the target element
-    const elementPosition = target.getBoundingClientRect().top + window.pageYOffset;
-    
+const heroClickIcon = document.getElementById('hero-click-icon');
+
+const scrollToAnalysis = () => {
     const firstCard = document.getElementById('card-1');
+    if (!firstCard) return;
+    
     const cardPosition = firstCard.getBoundingClientRect().top + window.pageYOffset;
     const offsetPosition = cardPosition - (window.innerHeight / 2) + (firstCard.offsetHeight / 2);
 
@@ -66,7 +69,10 @@ startBtn.addEventListener('click', () => {
         top: offsetPosition,
         behavior: 'smooth'
     });
-});
+};
+
+if (startBtn) startBtn.addEventListener('click', scrollToAnalysis);
+if (heroClickIcon) heroClickIcon.addEventListener('click', scrollToAnalysis);
 
 // --- Budget Input Logic ---
 let budgetTimeout; // Variable to hold the timer
