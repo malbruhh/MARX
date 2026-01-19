@@ -31,12 +31,11 @@ app = FastAPI(title="MARX Marketing Expert System")
 #CORS for frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://127.0.0.1:5500"], # For development; specify ["http://127.0.0.1:5500"] in production
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    allow_credentials=True,
 )
-
 # POST endpoint for analysis
 @app.post('/api/analyze')
 async def analyze(request: MarketingAnalysisRequest):

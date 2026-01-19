@@ -1,13 +1,13 @@
 export const productData = [
-    { id: 'b2b_saas', title: 'Business-to-Business SaaS', desc: 'Enterprise software solutions.', icon: 'fa-server' },
-    { id: 'b2c_retail', title: 'Business-to-Consumer Retail', desc: 'Direct consumer goods.', icon: 'fa-bag-shopping' },
+    { id: 'b2b_enterprise_saas', title: 'Business-to-Business SaaS', desc: 'Enterprise software solutions.', icon: 'fa-server' },
+    { id: 'b2c_retail_goods', title: 'Business-to-Consumer Retail', desc: 'Direct consumer goods.', icon: 'fa-bag-shopping' },
     { id: 'local_service', title: 'Local Service', desc: 'Regional physical services.', icon: 'fa-location-dot' },
-    { id: 'consulting', title: 'Consulting', desc: 'Expert professional advice.', icon: 'fa-user-tie' },
-    { id: 'digital_product', title: 'Digital Product', desc: 'Online courses and assets.', icon: 'fa-file-code' },
-    { id: 'fmcg', title: 'Fast-Moving Consumer Goods', desc: 'everyday, non-durable goods sold quickly at low prices for consumers ', icon: 'fa-cart-flatbed' },
-    { id: 'technical_tools', title: 'Niche  Technical Tools', desc: 'Niche hardware/software.', icon: 'fa-screwdriver-wrench' },
+    { id: 'high_end_consulting', title: 'Consulting', desc: 'Expert professional advice.', icon: 'fa-user-tie' },
+    { id: 'digital_info_product', title: 'Digital Product', desc: 'Online courses and assets.', icon: 'fa-file-code' },
+    { id: 'fast_moving_consumer_goods', title: 'Fast-Moving Consumer Goods', desc: 'everyday, non-durable goods sold quickly at low prices for consumers ', icon: 'fa-cart-flatbed' },
+    { id: 'niche_technical_tools', title: 'Niche  Technical Tools', desc: 'Niche hardware/software.', icon: 'fa-screwdriver-wrench' },
     { id: 'hospitality', title: 'Hospitality', desc: 'Tourism and travel.', icon: 'fa-bed' },
-    { id: 'subscription', title: 'Subscription', desc: 'Recurring revenue models.', icon: 'fa-arrows-rotate' }
+    { id: 'subscription_recurring', title: 'Subscription', desc: 'Recurring revenue models.', icon: 'fa-arrows-rotate' }
 ];
 
 export const targetCustomerData = [

@@ -1,4 +1,6 @@
 // /frontend/hooks/scrollStepListener.js
+import { sectionToStateMap, userInput } from "../store/state.js";
+import {renderSummary} from "../screens/renderSummary.js";
 
 export const updateStepListener = () => {
     const cardIds = [

@@ -1,6 +1,7 @@
 // /frontend/screens/renderSummary.js
 import { userInput } from '../store/state.js';
 import { productData, targetCustomerData, primaryGoalData, timeHorizonData, capabilityData, salesStructureData, kpiData } from '../components/inputData.js';
+import { initializeAnalyzeBtn } from '../components/analyzeBtn.js';
 
 const allData = [...productData, ...targetCustomerData, ...primaryGoalData, ...timeHorizonData, ...capabilityData, ...salesStructureData, ...kpiData];
 let lastRenderedState = "";
@@ -65,6 +66,10 @@ export function renderSummary() {
     });
     lastRenderedState = currentStateString;
     console.log("[UI] Summary dynamically updated via scroll.");
+    console.log(userInput);
+
+
+    initializeAnalyzeBtn('analyze-btn');
 }
 
 function renderMiniCard(data) {
