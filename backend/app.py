@@ -31,7 +31,7 @@ app = FastAPI(title="MARX Marketing Expert System")
 #CORS for frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5500"], # For development; specify ["http://127.0.0.1:5500"] in production
+    allow_origins=["*"], # For development; specify ["http://127.0.0.1:5500"] in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

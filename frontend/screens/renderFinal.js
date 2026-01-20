@@ -1,7 +1,9 @@
-// /frontend/screens/renderFinal.js
 import { analysisResult, userInput } from '../store/state.js';
 
 export function renderFinal() {
+    // Show fact dropdown only on results
+    const factDropdown = document.getElementById('fact-dropdown-container');
+    if (factDropdown) factDropdown.classList.remove('hidden');
     console.log(analysisResult);
     const finalSection = document.getElementById('final-section');
     if (!finalSection || !analysisResult) return;
@@ -10,51 +12,74 @@ export function renderFinal() {
     const totalMonths = Math.round(Number(userInput.budget) / analysisResult.total_monthly_budget) || 0;
 
     finalSection.innerHTML = `
-        <div class="w-full max-w-6xl mx-auto py-20 px-6 animate-fadeIn">
+        <!-- Background Blobs -->
+        <div class="spray-blob blob-md blob-1 opacity-30" style="top: -5%; left: -5%;"></div>
+        <div class="spray-blob blob-md blob-2 opacity-30" style="bottom: -5%; right: -5%;"></div>
+        <div class="spray-blob blob-sm blob-3 opacity-20" style="top: 15%; right: 5%;"></div>
 
-            <!-- Title -->
-            <h2 class="text-5xl md:text-6xl font-extrabold text-white text-center mb-12 tracking-tight">
-                Our Recommended Strategies
-            </h2>
+        <div class="w-full max-w-6xl mx-auto py-24 px-8 relative z-10 animate-fadeIn">
+            
+            <div class="flex flex-col items-center mb-20 text-center">
+                <h2 class="text-[10px] font-bold mb-4 text-blue-600 uppercase tracking-[0.6em] flex items-center gap-3">
+                    <span class="w-8 h-[1px] bg-blue-600/30"></span>
+                    Your Strategic Roadmap
+                    <span class="w-8 h-[1px] bg-blue-600/30"></span>
+                </h2>
+                <h1 class="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase leading-[0.9]">
+                    Recommended<br><span class="text-transparent" style="-webkit-text-stroke: 1.5px rgba(255,255,255,0.8)">Strategies</span>
+                </h1>
+            </div>
 
             <!-- Critical Insights + Total Budget Row -->
-            <div class="flex flex-col md:flex-row gap-6 mb-16 items-stretch">
-                <!-- Critical Insights (Larger) -->
-                <div class="glass rounded-[2rem] p-8 flex-1">
-                    <h3 class="text-2xl font-bold text-white mb-5 text-center">Critical Insights</h3>
-                    <ul class="text-white/90 space-y-2 text-base font-light list-disc list-inside">
-                        ${analysisResult.critical_insights.map(insight => `<li>${insight}</li>`).join('')}
+            <div class="flex flex-col md:flex-row gap-6 mb-20 items-stretch">
+                <!-- Critical Insights -->
+                <div class="glass rounded-[2.5rem] p-10 flex-1 border border-white/20">
+                    <h3 class="text-base font-bold text-blue-400 uppercase tracking-[0.4em] mb-6 decoration-blue-500/50 underline underline-offset-8">Critical Insights</h3>
+                    <ul class="text-slate-900 space-y-4 text-base font-light">
+                        ${analysisResult.critical_insights.map(insight => `
+                            <li class="flex items-start gap-4">
+                                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2.5 shrink-0"></span>
+                                <span>${insight}</span>
+                            </li>
+                        `).join('')}
                     </ul>
                 </div>
-                <!-- Total Budget (Smaller) -->
-                <div class="glass rounded-[2rem] p-8 w-full md:w-[220px] flex flex-col items-center justify-center text-center">
-                    <h3 class="text-xl font-bold text-white mb-3">Total Budget</h3>
-                    <p class="text-3xl font-extrabold text-white">$${analysisResult.total_monthly_budget} USD/mo</p>
-                    <p class="text-sm text-white/70 mt-2">${totalMonths} Months</p>
+                
+                <!-- Total Budget (Refined) -->
+                <div class="glass rounded-[2.5rem] p-6 w-full md:w-[240px] flex flex-col items-center justify-center text-center border border-white/20 hover:bg-white/5 transition-colors">
+                    <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mb-5 border border-blue-500/30">
+                        <i class="fas fa-wallet text-blue-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-900 uppercase tracking-widest mb-1.5">Monthly Budget</h3>
+                    <p class="text-3xl font-black text-white">$${analysisResult.total_monthly_budget}</p>
+                    <div class="mt-5 px-3 py-1.5 bg-white/10 rounded-full border border-white/10">
+                        <span class="text-blue-400 font-bold text-base">${totalMonths}</span>
+                        <span class="text-slate-900 text-base font-bold uppercase tracking-widest ml-1">Months</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Recommended Channels -->
-            <h3 class="text-3xl md:text-4xl font-bold text-white text-center mb-10">Recommended Channels</h3>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start mb-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
                 ${analysisResult.strategies.map((strat, index) => renderStrategyCard(strat, index)).join('')}
             </div>
 
-            <!-- Action Plan Section -->
-            <div class="glass rounded-[2rem] p-8 mb-8">
-                <h3 class="text-2xl font-bold text-white mb-6 text-center">Action Plan</h3>
-                <ul class="grid md:grid-cols-2 gap-3 text-white/90 text-base">
-                    ${analysisResult.action_plan.map(item => renderActionPlanItem(item)).join('')}
-                </ul>
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                <!-- Action Plan -->
+                <div class="glass rounded-[2.5rem] p-10 border border-white/20">
+                    <h3 class="text-2xl font-black text-white mb-8 tracking-tight uppercase">Action Plan</h3>
+                    <ul class="flex flex-col gap-3">
+                        ${analysisResult.action_plan.map(item => renderActionPlanItem(item)).join('')}
+                    </ul>
+                </div>
 
-            <!-- Resources Section -->
-            <div class="glass rounded-[2rem] p-8">
-                <h3 class="text-2xl font-bold text-white mb-6 text-center">Resources</h3>
-                <ul class="grid md:grid-cols-2 gap-3 text-white/90 text-base">
-                    ${analysisResult.resources.map(item => renderResourceItem(item)).join('')}
-                </ul>
+                <!-- Resources -->
+                <div class="glass rounded-[2.5rem] p-10 border border-white/20">
+                    <h3 class="text-2xl font-black text-white mb-8 tracking-tight uppercase">Resources</h3>
+                    <ul class="flex flex-col gap-3 text-slate-900">
+                        ${analysisResult.resources.map(item => renderResourceItem(item)).join('')}
+                    </ul>
+                </div>
             </div>
 
         </div>
@@ -62,58 +87,67 @@ export function renderFinal() {
 }
 
 /**
- * Renders a Strategy Card with priority-based colors
+ * Modernist Strategy Card
  */
 function renderStrategyCard(strat, index) {
-    const isMiddle = index === 1;
-
-    // Priority-based glassmorphism colors
-    const priorityStyles = {
-        'High': {
-            bg: 'bg-red-800/50 border-red-400/40',
-            header: 'bg-red-900/60 border-red-400/30'
+    const priorityConfigs = {
+        'High': { 
+            glow: '0 0 30px rgba(239, 68, 68, 0.25)', 
+            border: 'border-red-500/30',
+            inner: 'group-hover:text-red-400'
         },
-        'Medium': {
-            bg: 'bg-amber-700/50 border-amber-400/40',
-            header: 'bg-amber-800/60 border-amber-400/30'
+        'Medium': { 
+            glow: '0 0 30px rgba(245, 158, 11, 0.25)', 
+            border: 'border-amber-500/30',
+            inner: 'group-hover:text-amber-400'
         },
-        'Low': {
-            bg: 'bg-slate-600/50 border-slate-400/40',
-            header: 'bg-slate-700/60 border-slate-400/30'
+        'Low': { 
+            glow: '0 0 30px rgba(59, 130, 246, 0.25)', 
+            border: 'border-blue-500/30',
+            inner: 'group-hover:text-blue-400'
         }
     };
-
-    const style = priorityStyles[strat.priority] || priorityStyles['Medium'];
-    const marginClass = isMiddle ? 'mt-0' : 'md:mt-14';
+    
+    const config = priorityConfigs[strat.priority] || priorityConfigs['Low'];
 
     return `
-        <div class="flex flex-col gap-4 ${marginClass} transition-transform hover:scale-[1.02] duration-300">
-            <!-- Strategy Title -->
-            <div class="${style.header} backdrop-blur-md rounded-[1.5rem] p-5 text-center border">
-                <h4 class="font-bold text-white text-base leading-tight uppercase tracking-wide">
+        <div class="group relative flex flex-col h-full bg-white/[0.03] backdrop-blur-3xl rounded-[2rem] overflow-hidden border border-white/10 transition-all duration-500 hover:bg-white/[0.08] hover:${config.border} hover:-translate-y-2" style="box-shadow: ${config.glow}">
+            <!-- Header with integrated Priority -->
+            <div class="p-6 pb-4">
+                <div class="flex justify-between items-start mb-5">
+                    <span class="text-base font-black uppercase tracking-[0.2em] px-2.5 py-0.5 bg-white/10 rounded-full text-slate-900 border border-white/5">
+                        ${strat.priority} Priority
+                    </span>
+                    <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-900">
+                        <i class="fas fa-arrow-up-right-from-square text-[10px]"></i>
+                    </div>
+                </div>
+                <h4 class="text-2xl font-black text-white leading-tight uppercase mb-3 ${config.inner} transition-colors break-words">
                     ${strat.title}
                 </h4>
             </div>
 
-            <!-- Channel Tactics -->
-            <div class="${style.bg} backdrop-blur-md rounded-[1.5rem] p-5 border">
-                <h5 class="text-center font-bold text-white mb-4 text-base">Channel Tactics</h5>
-                <ul class="text-sm text-white/90 space-y-2 list-disc list-inside font-light">
-                    <li><strong class="text-white">Priority:</strong> ${strat.priority}</li>
-                    <li><strong class="text-white">Tactic:</strong> ${strat.tactic}</li>
-                    <li><strong class="text-white">Expected Outcome:</strong> ${strat.expected_outcome}</li>
-                </ul>
+            <!-- Tactic Content -->
+            <div class="px-6 flex-1">
+                <div class="h-[1px] w-full bg-gradient-to-right from-white/20 to-transparent mb-5"></div>
+                <p class="text-slate-900 text-base font-light leading-relaxed mb-6 italic">
+                    "${strat.tactic}"
+                </p>
+                <div class="flex items-center gap-2 mb-6 ${config.inner}">
+                    <i class="fas fa-bullseye text-[10px]"></i>
+                    <span class="text-base font-bold uppercase tracking-wider">${strat.expected_outcome}</span>
+                </div>
             </div>
 
-            <!-- Budget Allocation -->
-            <div class="${style.bg} backdrop-blur-md rounded-[1.5rem] p-4 border">
-                <h5 class="text-center font-bold text-white mb-3 text-base">Budget Allocation</h5>
-                <div class="flex gap-3">
-                    <div class="bg-black/30 backdrop-blur-sm rounded-xl flex-1 py-3 text-center">
-                        <span class="block text-xl font-bold text-white">${strat.percentage}%</span>
+            <!-- Footer Stats -->
+            <div class="p-6 pt-0 mt-auto">
+                <div class="flex items-end justify-between bg-white/5 rounded-[1.5rem] p-5 border border-white/5 group-hover:bg-blue-600/10 group-hover:border-blue-500/20 transition-all">
+                    <div>
+                        <p class="text-base font-bold text-slate-900 uppercase tracking-widest mb-1">Allocation</p>
+                        <p class="text-2xl font-black text-white leading-none">${strat.percentage}<span class="text-base opacity-40 ml-0.5">%</span></p>
                     </div>
-                    <div class="bg-black/30 backdrop-blur-sm rounded-xl flex-[2] py-3 text-center">
-                        <span class="block text-base font-bold text-white">$${strat.monthly_amount} / mo</span>
+                    <div class="text-right">
+                        <p class="text-base font-bold text-slate-900 tracking-tight">$${strat.monthly_amount}<span class="text-base text-slate-900 ml-1">/mo</span></p>
                     </div>
                 </div>
             </div>
@@ -122,99 +156,62 @@ function renderStrategyCard(strat, index) {
 }
 
 /**
- * Renders an Action Plan item with appropriate icon based on prefix
+ * Icons with consistent mapping
  */
 function renderActionPlanItem(item) {
     const iconMap = {
-        'Quick Win': { icon: 'fa-bolt', color: 'text-yellow-400' },
-        'KPI': { icon: 'fa-chart-line', color: 'text-blue-400' },
-        'Risk': { icon: 'fa-triangle-exclamation', color: 'text-red-400' },
-        'Scaling': { icon: 'fa-arrow-trend-up', color: 'text-green-400' }
+        'Quick Win': { icon: 'fa-bolt-lightning', color: 'text-amber-400', bg: 'bg-amber-400/10' },
+        'KPI': { icon: 'fa-chart-column', color: 'text-blue-400', bg: 'bg-blue-400/10' },
+        'Risk': { icon: 'fa-shield-halved', color: 'text-red-400', bg: 'bg-red-400/10' },
+        'Scaling': { icon: 'fa-arrow-trend-up', color: 'text-green-400', bg: 'bg-green-400/10' }
     };
 
-    // Parse prefix pattern: [Quick Win - High], [KPI], [Risk], [Scaling]
-    const prefixMatch = item.match(/^\[(Quick Win(?:\s*-\s*\w+)?|KPI|Risk|Scaling)\]\s*/i);
+    const prefixMatch = item.match(/^\[(Quick Win(?:\s*-\s*\w+)?|KPI|Risk|Scaling|Priority \w+)\]\s*/i);
+    let content = item;
+    let iconData = { icon: 'fa-check', color: 'text-blue-400', bg: 'bg-blue-400/10' };
 
     if (prefixMatch) {
         const fullPrefix = prefixMatch[1];
         const basePrefix = fullPrefix.split('-')[0].trim();
-        const content = item.replace(prefixMatch[0], '');
-        const iconData = iconMap[basePrefix] || { icon: 'fa-circle', color: 'text-white/60' };
-
-        // For Quick Win, show priority color
-        let finalColor = iconData.color;
-        if (basePrefix === 'Quick Win') {
-            const priorityMatch = fullPrefix.match(/High|Medium|Low/i);
-            if (priorityMatch) {
-                const priority = priorityMatch[0].toLowerCase();
-                if (priority === 'high') finalColor = 'text-red-400';
-                else if (priority === 'medium') finalColor = 'text-amber-400';
-                else finalColor = 'text-slate-400';
-            }
-        }
-
-        return `
-            <li class="flex items-start gap-3 bg-white/5 rounded-xl p-3">
-                <i class="fas ${iconData.icon} ${finalColor} mt-0.5"></i>
-                <span class="font-light">${content}</span>
-            </li>
-        `;
+        content = item.replace(prefixMatch[0], '');
+        iconData = iconMap[basePrefix] || iconData;
     }
 
-    // Fallback for items without recognized prefix
     return `
-        <li class="flex items-start gap-3 bg-white/5 rounded-xl p-3">
-            <i class="fas fa-circle-dot text-white/40 mt-0.5"></i>
-            <span class="font-light">${item}</span>
+        <li class="flex items-center gap-4 p-3.5 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
+            <div class="w-9 h-9 rounded-lg ${iconData.bg} flex items-center justify-center ${iconData.color} shrink-0">
+                <i class="fas ${iconData.icon} text-sm"></i>
+            </div>
+            <span class="text-slate-900 font-light text-base tracking-wide leading-relaxed">${content}</span>
         </li>
     `;
 }
 
-/**
- * Renders a Resource item with appropriate icon based on prefix
- */
 function renderResourceItem(item) {
     const iconMap = {
-        'Tool': { icon: 'fa-wrench', color: 'text-cyan-400' },
-        'Capability': { icon: 'fa-gear', color: 'text-purple-400' },
-        'Partner': { icon: 'fa-handshake', color: 'text-pink-400' },
-        'Cost Tip': { icon: 'fa-dollar-sign', color: 'text-green-400' }
+        'Tool': { icon: 'fa-screwdriver-wrench', color: 'text-cyan-400', bg: 'bg-cyan-400/10' },
+        'Capability': { icon: 'fa-brain', color: 'text-purple-400', bg: 'bg-purple-400/10' },
+        'Partner': { icon: 'fa-handshake', color: 'text-pink-400', bg: 'bg-pink-400/10' },
+        'Cost Tip': { icon: 'fa-piggy-bank', color: 'text-green-400', bg: 'bg-green-400/10' }
     };
 
-    // Parse prefix pattern: [Tool], [Capability - Critical], [Partner], [Cost Tip]
     const prefixMatch = item.match(/^\[(Tool|Capability(?:\s*-\s*\w+)?|Partner|Cost Tip)\]\s*/i);
+    let content = item;
+    let iconData = { icon: 'fa-paperclip', color: 'text-blue-400', bg: 'bg-blue-400/10' };
 
     if (prefixMatch) {
         const fullPrefix = prefixMatch[1];
         const basePrefix = fullPrefix.split('-')[0].trim();
-        const content = item.replace(prefixMatch[0], '');
-        const iconData = iconMap[basePrefix] || { icon: 'fa-circle', color: 'text-white/60' };
-
-        // For Capability, could adjust based on importance
-        let finalColor = iconData.color;
-        if (basePrefix === 'Capability') {
-            const importanceMatch = fullPrefix.match(/Critical|High|Medium|Low/i);
-            if (importanceMatch) {
-                const importance = importanceMatch[0].toLowerCase();
-                if (importance === 'critical' || importance === 'high') finalColor = 'text-red-400';
-                else if (importance === 'medium') finalColor = 'text-amber-400';
-                else finalColor = 'text-slate-400';
-            }
-        }
-
-        return `
-            <li class="flex items-start gap-3 bg-white/5 rounded-xl p-3">
-                <i class="fas ${iconData.icon} ${finalColor} mt-0.5"></i>
-                <span class="font-light">${content}</span>
-            </li>
-        `;
+        content = item.replace(prefixMatch[0], '');
+        iconData = iconMap[basePrefix] || iconData;
     }
 
-    // Fallback
     return `
-        <li class="flex items-start gap-3 bg-white/5 rounded-xl p-3">
-            <i class="fas fa-circle-dot text-white/40 mt-0.5"></i>
-            <span class="font-light">${item}</span>
+        <li class="flex items-center gap-4 p-3.5 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
+            <div class="w-9 h-9 rounded-lg ${iconData.bg} flex items-center justify-center ${iconData.color} shrink-0">
+                <i class="fas ${iconData.icon} text-sm"></i>
+            </div>
+            <span class="text-slate-900 font-light text-base tracking-wide leading-relaxed">${content}</span>
         </li>
     `;
 }

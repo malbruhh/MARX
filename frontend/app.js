@@ -111,6 +111,25 @@ budgetInput.addEventListener('input', (e) => {
 
 
 
+// --- Home Reload Logic ---
+const homeReloadBtn = document.getElementById('home-reload-btn');
+if (homeReloadBtn) {
+    
+    homeReloadBtn.addEventListener('click', () => {
+        const finalSection = document.getElementById('final-section');
+        if (finalSection && getComputedStyle(finalSection).display !== 'none') {
+            // CASE 1: User is on the final report -> Fully reset the app
+            window.location.reload();
+        } else {
+            // CASE 2: User is still in the form/summary -> Just scroll back to Hero
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    });
+}
+
 initializeCarousel(productData, 'product-carousel');
 initializeCarousel(targetCustomerData, 'customer-carousel');
 initializeCarousel(primaryGoalData, 'goal-carousel');

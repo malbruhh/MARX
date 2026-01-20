@@ -122,16 +122,42 @@ def _aggregate_recommendations(engine: ComprehensiveMarketingEngine, request: Ma
 def _extract_strategy_codes(channel_facts: list, request: MarketingAnalysisRequest) -> list:
     """Map recommended channels to strategy codes (S1-S9)"""
 
-    # Sort channels by priority
-    sorted_channels = sorted(channel_facts, key=lambda f: f['priority'])
+    # STEP 1: Deduplicate - keep best priority for each channel
+    channel_best = {}
+    for fact in channel_facts:
+        channel_name = fact['channel']
+        priority = fact['priority']
 
+        if channel_name not in channel_best or priority < channel_best[channel_name]['priority']:
+            channel_best[channel_name] = fact
+
+    # STEP 2: Sort deduplicated channels by priority
+    sorted_channels = sorted(channel_best.values(), key=lambda f: f['priority'])
+
+    # STEP 3: Select channels to maximize strategy diversity
     strategy_set = set()
+    selected_channels = []
 
-    # Map channels to strategies
-    for fact in sorted_channels[:5]:  # Top 5 channels
+    # First pass: Pick top channel for each unique strategy
+    for fact in sorted_channels:
         channel_name = fact['channel']
         if channel_name in CHANNEL_TO_STRATEGY:
-            strategy_set.add(CHANNEL_TO_STRATEGY[channel_name])
+            strategy = CHANNEL_TO_STRATEGY[channel_name]
+            if strategy not in strategy_set:
+                strategy_set.add(strategy)
+                selected_channels.append(fact)
+                if len(strategy_set) >= 3:  # Got 3 unique strategies
+                    break
+
+    # Second pass: If we still need more, add remaining high-priority channels
+    if len(strategy_set) < 3:
+        for fact in sorted_channels:
+            if fact not in selected_channels:
+                channel_name = fact['channel']
+                if channel_name in CHANNEL_TO_STRATEGY:
+                    strategy_set.add(CHANNEL_TO_STRATEGY[channel_name])
+                    if len(strategy_set) >= 3:
+                        break
 
     # Add ABM (S7) for B2B enterprise with sales team
     if (request.product_type in [ProductType.B2B_SAAS, ProductType.CONSULTING] and
