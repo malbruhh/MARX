@@ -40,7 +40,9 @@ STRATEGY_LABELS = {
 }
 
 
-def run_comprehensive_analysis(request: MarketingAnalysisRequest) -> MarketingRecommendation:
+import asyncio
+
+async def run_comprehensive_analysis(request: MarketingAnalysisRequest) -> MarketingRecommendation:
     """
     Run comprehensive marketing analysis using layered forward chaining
     Returns simplified, actionable recommendations
@@ -61,7 +63,8 @@ def run_comprehensive_analysis(request: MarketingAnalysisRequest) -> MarketingRe
         engine.declare(PriorityKPIFact(kpi=request.priority_kpi.value))
 
         # Run forward chaining - rules will fire in layers
-        engine.run()
+        # Use to_thread to prevent blocking the event loop since engine.run() is CPU-bound
+        await asyncio.to_thread(engine.run)
 
         # Aggregate inferred facts into simplified output
         recommendation = _aggregate_recommendations(engine, request)
@@ -122,16 +125,28 @@ def _aggregate_recommendations(engine: ComprehensiveMarketingEngine, request: Ma
 def _extract_strategy_codes(channel_facts: list, request: MarketingAnalysisRequest) -> list:
     """Map recommended channels to strategy codes (S1-S9)"""
 
-    # STEP 1: Deduplicate - keep best priority for each channel
+    # STEP 1: Deduplicate - prioritize by layer (higher overrides), then by priority (lower is better)
     channel_best = {}
     for fact in channel_facts:
         channel_name = fact['channel']
         priority = fact['priority']
+        layer = fact.get('layer', 0)
 
-        if channel_name not in channel_best or priority < channel_best[channel_name]['priority']:
+        if channel_name not in channel_best:
             channel_best[channel_name] = fact
+        else:
+            existing = channel_best[channel_name]
+            existing_layer = existing.get('layer', 0)
+            existing_priority = existing['priority']
+            
+            # 1. Higher layer wins (Override)
+            # 2. If same layer, better (lower) priority wins
+            if layer > existing_layer:
+                channel_best[channel_name] = fact
+            elif layer == existing_layer and priority < existing_priority:
+                channel_best[channel_name] = fact
 
-    # STEP 2: Sort deduplicated channels by priority
+    # STEP 2: Sort deduplicated channels by priority (lower is better)
     sorted_channels = sorted(channel_best.values(), key=lambda f: f['priority'])
 
     # STEP 3: Select channels to maximize strategy diversity
@@ -168,6 +183,8 @@ def _extract_strategy_codes(channel_facts: list, request: MarketingAnalysisReque
     # Convert to labeled format
     strategy_codes = [STRATEGY_LABELS[code] for code in sorted(strategy_set)]
 
+    # --DEFAULT BASE CASE IF NO RULES ARE FIRED
+    
     # Ensure at least 3 strategies with context-aware defaults
     if len(strategy_codes) < 3:
         # Choose defaults based on time horizon
@@ -194,12 +211,6 @@ def _generate_critical_insights(facts: list, request: MarketingAnalysisRequest) 
     """Generate 2-5 critical strategic insights"""
 
     insights = []
-
-    # Extract key facts
-    # strategic_approach = next((f['approach'] for f in facts if isinstance(f, StrategicApproachFact)), None)
-    # marketing_focus = next((f['focus'] for f in facts if isinstance(f, MarketingFocusFact)), None)
-    # sales_cycle = next((f['cycle'] for f in facts if isinstance(f, SalesCycleFact)), None)
-
     # Insight 1: Primary strategic direction
     if request.primary_goal == PrimaryGoal.AWARENESS:
         insights.append("Focus on brand visibility and reach - prioritize content distribution and thought leadership to build market presence")

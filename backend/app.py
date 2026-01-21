@@ -13,15 +13,7 @@ if sys.version_info >= (3, 10):
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from controllers.controller import (
-    run_analysis,
-    get_product_types,
-    get_target_customers,
-    get_primary_goals,
-    get_time_horizons,
-    get_content_capabilities,
-    get_sales_structures,
-    get_priority_kpis,
-    get_all_input_options
+    run_analysis
 )
 from models.request import MarketingAnalysisRequest
 
@@ -39,7 +31,7 @@ app.add_middleware(
 # POST endpoint for analysis
 @app.post('/api/analyze')
 async def analyze(request: MarketingAnalysisRequest):
-    return run_analysis(request)
+    return await run_analysis(request)
 
 # # GET endpoints for input options
 # @app.get('/api/inputs/product-types')

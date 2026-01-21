@@ -34,8 +34,9 @@ class SalesCycleFact(Fact):
 class ChannelPriorityFact(Fact):
     """Priority level for a specific channel"""
     channel: str
-    priority: int  # 1-5, where 1 is highest
+    priority: int  # 1-10, where 1 is highest
     budget_percent: float
+    layer: int  # Override layer (higher numbers override lower ones)
 
 class ChannelReadinessFact(Fact):
     """Organizational readiness for a channel"""

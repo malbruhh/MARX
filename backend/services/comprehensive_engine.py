@@ -851,65 +851,65 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
     @Rule(ProductFact(product_type=ProductType.B2B_SAAS.value), salience=10)
     def base_b2b_saas(self):
         """Base rule for B2B SaaS - content + paid search + LinkedIn"""
-        self.declare(ChannelPriorityFact(channel="content_marketing", priority=2, budget_percent=30.0))
-        self.declare(ChannelPriorityFact(channel="paid_search", priority=2, budget_percent=25.0))
-        self.declare(ChannelPriorityFact(channel="paid_social", priority=3, budget_percent=20.0))
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=6, budget_percent=30.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=6, budget_percent=25.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=7, budget_percent=20.0, layer=1))
 
     @Rule(ProductFact(product_type=ProductType.B2C_RETAIL.value), salience=10)
     def base_b2c_retail(self):
         """Base rule for B2C Retail - social + paid search + email"""
-        self.declare(ChannelPriorityFact(channel="paid_social", priority=2, budget_percent=35.0))
-        self.declare(ChannelPriorityFact(channel="paid_search", priority=2, budget_percent=25.0))
-        self.declare(ChannelPriorityFact(channel="email_marketing", priority=3, budget_percent=15.0))
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=6, budget_percent=35.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=6, budget_percent=25.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="email_marketing", priority=7, budget_percent=15.0, layer=1))
 
     @Rule(ProductFact(product_type=ProductType.LOCAL_SERVICE.value), salience=10)
     def base_local_service(self):
         """Base rule for Local Service - local SEO + community + paid search"""
-        self.declare(ChannelPriorityFact(channel="local_seo", priority=2, budget_percent=35.0))
-        self.declare(ChannelPriorityFact(channel="community", priority=3, budget_percent=20.0))
-        self.declare(ChannelPriorityFact(channel="paid_search", priority=3, budget_percent=20.0))
+        self.declare(ChannelPriorityFact(channel="local_seo", priority=6, budget_percent=35.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="community", priority=7, budget_percent=20.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=7, budget_percent=20.0, layer=1))
 
     @Rule(ProductFact(product_type=ProductType.CONSULTING.value), salience=10)
     def base_consulting(self):
         """Base rule for Consulting - content + events + LinkedIn"""
-        self.declare(ChannelPriorityFact(channel="content_marketing", priority=2, budget_percent=35.0))
-        self.declare(ChannelPriorityFact(channel="events_webinars", priority=3, budget_percent=20.0))
-        self.declare(ChannelPriorityFact(channel="paid_social", priority=3, budget_percent=20.0))
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=6, budget_percent=35.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="events_webinars", priority=7, budget_percent=20.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=7, budget_percent=20.0, layer=1))
 
     @Rule(ProductFact(product_type=ProductType.DIGITAL_PRODUCT.value), salience=10)
     def base_digital_product(self):
         """Base rule for Digital Product - paid social + content + SEO"""
-        self.declare(ChannelPriorityFact(channel="paid_social", priority=2, budget_percent=30.0))
-        self.declare(ChannelPriorityFact(channel="content_marketing", priority=2, budget_percent=25.0))
-        self.declare(ChannelPriorityFact(channel="organic_seo", priority=3, budget_percent=20.0))
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=6, budget_percent=30.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=6, budget_percent=25.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="organic_seo", priority=7, budget_percent=20.0, layer=1))
 
     @Rule(ProductFact(product_type=ProductType.FMCG.value), salience=10)
     def base_fmcg(self):
         """Base rule for FMCG - paid social + influencer + paid search"""
-        self.declare(ChannelPriorityFact(channel="paid_social", priority=2, budget_percent=35.0))
-        self.declare(ChannelPriorityFact(channel="influencer", priority=2, budget_percent=25.0))
-        self.declare(ChannelPriorityFact(channel="paid_search", priority=3, budget_percent=15.0))
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=6, budget_percent=35.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="influencer", priority=6, budget_percent=25.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=8, budget_percent=15.0, layer=1))
 
     @Rule(ProductFact(product_type=ProductType.TECHNICAL_TOOLS.value), salience=10)
     def base_technical_tools(self):
         """Base rule for Technical Tools - community + content + SEO"""
-        self.declare(ChannelPriorityFact(channel="community", priority=2, budget_percent=30.0))
-        self.declare(ChannelPriorityFact(channel="content_marketing", priority=2, budget_percent=30.0))
-        self.declare(ChannelPriorityFact(channel="organic_seo", priority=3, budget_percent=20.0))
+        self.declare(ChannelPriorityFact(channel="community", priority=6, budget_percent=30.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=6, budget_percent=30.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="organic_seo", priority=7, budget_percent=20.0, layer=1))
 
     @Rule(ProductFact(product_type=ProductType.HOSPITALITY.value), salience=10)
     def base_hospitality(self):
         """Base rule for Hospitality - local SEO + paid social + community"""
-        self.declare(ChannelPriorityFact(channel="local_seo", priority=2, budget_percent=30.0))
-        self.declare(ChannelPriorityFact(channel="paid_social", priority=2, budget_percent=25.0))
-        self.declare(ChannelPriorityFact(channel="community", priority=3, budget_percent=20.0))
+        self.declare(ChannelPriorityFact(channel="local_seo", priority=6, budget_percent=30.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=6, budget_percent=25.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="community", priority=7, budget_percent=20.0, layer=1))
 
     @Rule(ProductFact(product_type=ProductType.SUBSCRIPTION.value), salience=10)
     def base_subscription(self):
         """Base rule for Subscription - email + content + referral"""
-        self.declare(ChannelPriorityFact(channel="email_marketing", priority=2, budget_percent=35.0))
-        self.declare(ChannelPriorityFact(channel="content_marketing", priority=2, budget_percent=25.0))
-        self.declare(ChannelPriorityFact(channel="referral", priority=3, budget_percent=15.0))
+        self.declare(ChannelPriorityFact(channel="email_marketing", priority=6, budget_percent=35.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=6, budget_percent=25.0, layer=1))
+        self.declare(ChannelPriorityFact(channel="referral", priority=7, budget_percent=15.0, layer=1))
 
     # ==================== LAYER 3D: Customer Segment Rules (Salience = 40) ====================
     # Fill gaps for under-covered customer segments
@@ -917,21 +917,24 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
     @Rule(TargetCustomerFact(customer=TargetCustomer.SENIOR.value), salience=40)
     def customer_senior(self):
         """Senior customers - traditional channels, email, search"""
-        self.declare(ChannelPriorityFact(channel="paid_search", priority=2, budget_percent=30.0))
-        self.declare(ChannelPriorityFact(channel="email_marketing", priority=2, budget_percent=25.0))
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=4, budget_percent=30.0, layer=2))
+        self.declare(ChannelPriorityFact(channel="email_marketing", priority=4, budget_percent=25.0, layer=2))
+        # Explicitly inhibit high-social channels for seniors
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=9, budget_percent=0.0, layer=2))
 
     @Rule(TargetCustomerFact(customer=TargetCustomer.LUXURY.value), salience=40)
     def customer_luxury(self):
         """Luxury customers - content, influencer, events"""
-        self.declare(ChannelPriorityFact(channel="content_marketing", priority=2, budget_percent=30.0))
-        self.declare(ChannelPriorityFact(channel="influencer", priority=2, budget_percent=25.0))
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=3, budget_percent=30.0, layer=2))
+        self.declare(ChannelPriorityFact(channel="influencer", priority=3, budget_percent=25.0, layer=2))
+        self.declare(ChannelPriorityFact(channel="events_webinars", priority=4, budget_percent=15.0, layer=2))
 
     @Rule(TargetCustomerFact(customer=TargetCustomer.BUDGET_SHOPPER.value), salience=40)
     def customer_budget_shopper(self):
         """Budget shoppers - paid search, retargeting, email"""
-        self.declare(ChannelPriorityFact(channel="paid_search", priority=2, budget_percent=35.0))
-        self.declare(ChannelPriorityFact(channel="retargeting", priority=2, budget_percent=20.0))
-        self.declare(ChannelPriorityFact(channel="email_marketing", priority=3, budget_percent=15.0))
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=3, budget_percent=35.0, layer=2))
+        self.declare(ChannelPriorityFact(channel="retargeting", priority=3, budget_percent=20.0, layer=2))
+        self.declare(ChannelPriorityFact(channel="email_marketing", priority=4, budget_percent=15.0, layer=2))
 
     @Rule(
         AND(
@@ -942,8 +945,8 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
     )
     def customer_niche_general(self):
         """Niche customers (non-technical) - community + content + targeted ads"""
-        self.declare(ChannelPriorityFact(channel="community", priority=2, budget_percent=25.0))
-        self.declare(ChannelPriorityFact(channel="content_marketing", priority=2, budget_percent=25.0))
+        self.declare(ChannelPriorityFact(channel="community", priority=3, budget_percent=25.0, layer=2))
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=3, budget_percent=25.0, layer=2))
 
     # ==================== LAYER 3E: Gap-Filling Combination Rules (Salience = 70) ====================
     # Target specific high-gap scenarios
@@ -957,9 +960,11 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
     )
     def channel_b2c_senior(self):
         """B2C Retail for seniors - search + email + content"""
-        self.declare(ChannelPriorityFact(channel="paid_search", priority=1, budget_percent=35.0))
-        self.declare(ChannelPriorityFact(channel="email_marketing", priority=1, budget_percent=30.0))
-        self.declare(ChannelPriorityFact(channel="content_marketing", priority=2, budget_percent=20.0))
+        # Combination layer 3 (higher specificty)
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=2, budget_percent=35.0, layer=3))
+        self.declare(ChannelPriorityFact(channel="email_marketing", priority=2, budget_percent=30.0, layer=3))
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=4, budget_percent=20.0, layer=3))
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=10, budget_percent=0.0, layer=3))
 
     @Rule(
         AND(
@@ -970,9 +975,9 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
     )
     def channel_b2c_luxury(self):
         """B2C Retail luxury - influencer + content + exclusive events"""
-        self.declare(ChannelPriorityFact(channel="influencer", priority=1, budget_percent=35.0))
-        self.declare(ChannelPriorityFact(channel="content_marketing", priority=1, budget_percent=30.0))
-        self.declare(ChannelPriorityFact(channel="events_webinars", priority=2, budget_percent=20.0))
+        self.declare(ChannelPriorityFact(channel="influencer", priority=2, budget_percent=35.0, layer=3))
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=2, budget_percent=30.0, layer=3))
+        self.declare(ChannelPriorityFact(channel="events_webinars", priority=4, budget_percent=20.0, layer=3))
 
     @Rule(
         AND(
@@ -983,9 +988,9 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
     )
     def channel_b2c_budget(self):
         """B2C Retail budget shoppers - search + retargeting + email deals"""
-        self.declare(ChannelPriorityFact(channel="paid_search", priority=1, budget_percent=40.0))
-        self.declare(ChannelPriorityFact(channel="retargeting", priority=1, budget_percent=25.0))
-        self.declare(ChannelPriorityFact(channel="email_marketing", priority=2, budget_percent=20.0))
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=2, budget_percent=40.0, layer=3))
+        self.declare(ChannelPriorityFact(channel="retargeting", priority=2, budget_percent=25.0, layer=3))
+        self.declare(ChannelPriorityFact(channel="email_marketing", priority=3, budget_percent=20.0, layer=3))
 
     @Rule(
         AND(
@@ -999,9 +1004,9 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
     )
     def channel_fmcg_moderate_budget(self):
         """FMCG with moderate budget - social + micro-influencer + search"""
-        self.declare(ChannelPriorityFact(channel="paid_social", priority=1, budget_percent=40.0))
-        self.declare(ChannelPriorityFact(channel="influencer", priority=2, budget_percent=20.0))
-        self.declare(ChannelPriorityFact(channel="paid_search", priority=2, budget_percent=20.0))
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=2, budget_percent=40.0, layer=3))
+        self.declare(ChannelPriorityFact(channel="influencer", priority=3, budget_percent=20.0, layer=3))
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=4, budget_percent=20.0, layer=3))
 
     @Rule(
         AND(
@@ -1013,9 +1018,9 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
     )
     def channel_digital_product_general(self):
         """Digital product for general audience - content + search + email"""
-        self.declare(ChannelPriorityFact(channel="content_marketing", priority=1, budget_percent=35.0))
-        self.declare(ChannelPriorityFact(channel="paid_search", priority=1, budget_percent=30.0))
-        self.declare(ChannelPriorityFact(channel="email_marketing", priority=2, budget_percent=20.0))
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=3, budget_percent=35.0, layer=3))
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=3, budget_percent=30.0, layer=3))
+        self.declare(ChannelPriorityFact(channel="email_marketing", priority=4, budget_percent=20.0, layer=3))
 
     # ==================== LAYER 4: Content Strategy ====================
 
@@ -1680,3 +1685,67 @@ class ComprehensiveMarketingEngine(KnowledgeEngine):
         self.declare(PartnerRecommendationFact(
             partner_type="Local SEO Specialist or Agency"
         ))
+
+    # ==================== LAYER 11: Universal Sensitivity Rules (Overwrites) ====================
+    # These rules have the final say on channel viability based on hard constraints
+
+    @Rule(
+        TimeHorizonFact(horizon=TimeHorizon.SHORT.value),
+        salience=100
+    )
+    def inhibit_seo_short_term(self):
+        """Inhibit SEO for short horizons (Layer 5)"""
+        self.declare(ChannelPriorityFact(channel="organic_seo", priority=9, budget_percent=0.0, layer=5))
+        self.declare(ChannelPriorityFact(channel="local_seo", priority=8, budget_percent=5.0, layer=5))
+
+    @Rule(
+        BudgetLevelFact(tier=BudgetLevel.MICRO.value),
+        salience=100
+    )
+    def promote_low_cost_high_effort(self):
+        """Promote high-sweat-equity channels for micro budgets"""
+        self.declare(ChannelPriorityFact(channel="community", priority=2, budget_percent=40.0, layer=5))
+        self.declare(ChannelPriorityFact(channel="organic_seo", priority=3, budget_percent=30.0, layer=5))
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=9, budget_percent=0.0, layer=5))
+
+    @Rule(
+        PrimaryGoalFact(goal=PrimaryGoal.LEAD_GEN.value),
+        TimeHorizonFact(horizon=TimeHorizon.SHORT.value),
+        salience=110
+    )
+    def focus_immediate_results(self):
+        """Absolute priority for immediate lead gen"""
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=1, budget_percent=50.0, layer=6))
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=2, budget_percent=30.0, layer=6))
+
+    # ==================== LAYER 12: High-Dimensional Combination Rules ====================
+    # Targeted 'Jitter' rules for specific intersections
+
+    @Rule(
+        AND(
+            ProductFact(product_type=ProductType.B2C_RETAIL.value),
+            TargetCustomerFact(customer=TargetCustomer.GEN_Z.value),
+            BudgetLevelFact(tier=BudgetLevel.MICRO.value)
+        ),
+        salience=150
+    )
+    def combination_genz_retail_micro(self):
+        """High-Sensitivity Rule: Gen Z + Retail + Micro Budget"""
+        # Focus almost entirely on social community and viral potential
+        self.declare(ChannelPriorityFact(channel="community", priority=1, budget_percent=60.0, layer=10))
+        self.declare(ChannelPriorityFact(channel="influencer", priority=3, budget_percent=30.0, layer=10))
+        self.declare(ChannelPriorityFact(channel="paid_search", priority=10, budget_percent=0.0, layer=10))
+
+    @Rule(
+        AND(
+            ProductFact(product_type=ProductType.B2B_SAAS.value),
+            TargetCustomerFact(customer=TargetCustomer.B2B_LARGE.value),
+            TimeHorizonFact(horizon=TimeHorizon.LONG.value)
+        ),
+        salience=150
+    )
+    def combination_enterprise_saas_long(self):
+        """High-Sensitivity Rule: Enterprise SaaS + Large Org + Long Horizon"""
+        self.declare(ChannelPriorityFact(channel="content_marketing", priority=1, budget_percent=40.0, layer=10))
+        self.declare(ChannelPriorityFact(channel="events_webinars", priority=1, budget_percent=30.0, layer=10))
+        self.declare(ChannelPriorityFact(channel="paid_social", priority=4, budget_percent=20.0, layer=10))
